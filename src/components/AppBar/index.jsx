@@ -1,25 +1,24 @@
-import * as React from 'react';
-// import "./index.css"
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import logo from "../../assets/logo.png";
-import PropTypes from 'prop-types';
 import { ListItemText } from '@mui/material';
-const pages = ['Trang chủ', 'Toàn bộ dự án', 'Về chúng tôi', 'Liên hệ' , 'Hỗ trợ'];
+import AppBar from '@mui/material/AppBar';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Toolbar from '@mui/material/Toolbar';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
+import PropTypes from 'prop-types';
+import * as React from 'react';
+import logo from "../../assets/logo.png";
+const pages = ['Trang chủ', 'Toàn bộ dự án', 'Về chúng tôi', 'Liên hệ', 'Hỗ trợ'];
 function FSUAppBar({ isLogined }) {
-	FSUAppBar.propTypes = {
-		isLogined: PropTypes.bool.isRequired, 
-	};
+  FSUAppBar.propTypes = {
+    isLogined: PropTypes.bool.isRequired,
+  };
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -30,8 +29,8 @@ function FSUAppBar({ isLogined }) {
 
   return (
     <AppBar position="fixed" sx={{
-		background: '#FFFFFF',
-	}}>
+      background: '#FFFFFF',
+    }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography
@@ -46,20 +45,20 @@ function FSUAppBar({ isLogined }) {
               fontWeight: 700,
               letterSpacing: '.3rem',
               color: 'inherit',
-              textDecoration: 'none',	
+              textDecoration: 'none',
             }}
           >
-			<img src={ logo } style={{width:'120px'}}/>
+            <img src={logo} style={{ width: '120px' }} />
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }}}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
               aria-label="account of current user"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
-			disableRipple="true"
+              disableRipple="true"
             >
               <MenuIcon />
             </IconButton>
@@ -75,20 +74,20 @@ function FSUAppBar({ isLogined }) {
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
-			        disableRipple="true" 
+              disableRipple="true"
               sx={{
-				      display: { xs: 'block', md: 'none' }
-			        }}
+                display: { xs: 'block', md: 'none' }
+              }}
             >
               {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu} >
                   {/* <Typography disableRipple="true" sx={{ color:'black', border:"none" }} textAlign="center">{page}</Typography> */}
-					        <ListItemText sx={{ mr:8 }}>{page}</ListItemText>
-				        </MenuItem>
+                  <ListItemText sx={{ mr: 8 }}>{page}</ListItemText>
+                </MenuItem>
               ))}
             </Menu>
           </Box>
-          
+
           <Typography
             variant="h5"
             noWrap
@@ -102,32 +101,32 @@ function FSUAppBar({ isLogined }) {
               fontWeight: 700,
               letterSpacing: '.3rem',
               textDecoration: 'none',
-			color:"#000000"
+              color: "#000000"
             }}
           >
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
               <Button
-              disableRipple
+                disableRipple
                 key={page}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: '#000000', display: 'block', mr:4 }}
+                sx={{ my: 2, color: '#000000', display: 'block', mr: 4 }}
               >
                 {page}
               </Button>
             ))}
           </Box>
 
-        {isLogined ? <Box sx={{ flexGrow: 0 }}>
+          {isLogined ? <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton sx={{ p: 0 }}>
                 <Avatar alt="User" src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
           </Box>
-		: 
-		<div>Hello</div>}  
+            :
+            <div>Hello</div>}
         </Toolbar>
       </Container>
     </AppBar>
