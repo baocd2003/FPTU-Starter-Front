@@ -1,8 +1,9 @@
-import  FSUAppBar from './components/AppBar'
-import ProjectCard from './components/ProjectCard'
 import "@fontsource/archivo";
+import { Routes, Route} from "react-router-dom";
 import { createTheme, ThemeProvider } from '@mui/material';
+
 import "./App.css"
+import HomePage from './pages/HomePage';
 function App() {
   const theme = createTheme({
     typography: {
@@ -12,13 +13,11 @@ function App() {
       ].join(','),
     },});
   return (
-    <ThemeProvider theme={theme}>
-      <>
-        <FSUAppBar isLogined={false}/>
-        <ProjectCard/>
-      </>
-    </ThemeProvider>
-    
+     <ThemeProvider theme={theme}>
+      <Routes>
+          <Route path="/home" element={<HomePage/>}/>
+      </Routes>    
+      </ThemeProvider>
   )
 }
 

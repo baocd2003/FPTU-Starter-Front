@@ -9,7 +9,6 @@ function ProjectCard() {
         <SingleCard />
         <SingleCard />
         <SingleCard />
-
       </Box>
     </Container>
   );
