@@ -48,7 +48,7 @@ function FSUAppBar({ isLogined }) {
               textDecoration: 'none',
             }}
           >
-            <img src={logo} style={{ width: '120px' }} />
+            <img src={logo} style={{ width: '100px' }}/>
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
