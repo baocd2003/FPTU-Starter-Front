@@ -1,6 +1,16 @@
-
 @import url('https://fonts.googleapis.com/css?family=Poetsen+One&display=swap');
-header{
-	font-family:"Poetsen One", sans-serif !important;
 
+/* header {
+	font-family: "Poetsen One", sans-serif !important;
+} */
+
+.focusedMenuItem:focus {
+	outline: none !important;
+	color: #FBB03B;
+}
+
+.focusedMenuItem:hover {
+	outline: none !important;
+	background-color: white !important;
+	color: #FBB03B;
 }

@@ -14,6 +14,7 @@ import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 import * as React from 'react';
 import logo from "../../assets/logo.png";
+import "./index.css";
 const pages = ['Trang chủ', 'Toàn bộ dự án', 'Về chúng tôi', 'Liên hệ', 'Hỗ trợ'];
 function FSUAppBar({ isLogined }) {
   FSUAppBar.propTypes = {
@@ -30,9 +31,10 @@ function FSUAppBar({ isLogined }) {
   return (
     <AppBar position="fixed" sx={{
       background: '#FFFFFF',
+      height: '100px'
     }}>
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
+      <Container sx={{ mx: '120px', width: '100%' }}>
+        <Toolbar disableGutters={true}>
           <Typography
             variant="h6"
             noWrap
@@ -41,7 +43,6 @@ function FSUAppBar({ isLogined }) {
             sx={{
               mr: 4,
               display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
               fontWeight: 700,
               letterSpacing: '.3rem',
               color: 'inherit',
@@ -58,7 +59,6 @@ function FSUAppBar({ isLogined }) {
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              disableRipple="true"
             >
               <MenuIcon />
             </IconButton>
@@ -74,44 +74,30 @@ function FSUAppBar({ isLogined }) {
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
-              disableRipple="true"
               sx={{
                 display: { xs: 'block', md: 'none' }
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu} >
-                  {/* <Typography disableRipple="true" sx={{ color:'black', border:"none" }} textAlign="center">{page}</Typography> */}
-                  <ListItemText sx={{ mr: 8 }}>{page}</ListItemText>
+                <MenuItem
+                  key={page}
+                  onClick={handleCloseNavMenu}
+                  sx={{ mr: 8 }}
+                >
+                  <ListItemText>{page}</ListItemText>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
 
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href=""
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              textDecoration: 'none',
-              color: "#000000"
-            }}
-          >
-          </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
               <Button
-                disableRipple
+                disableRipple={true}
                 key={page}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: '#000000', display: 'block', mr: 4 }}
+                sx={{ my: 4, color: '#000000', display: 'block', mr: 4 }}
+                className='focusedMenuItem'
               >
                 {page}
               </Button>
@@ -126,7 +112,7 @@ function FSUAppBar({ isLogined }) {
             </Tooltip>
           </Box>
             :
-            <div>Hello</div>}
+            <div className='text-blue-500'>Hello</div>}
         </Toolbar>
       </Container>
     </AppBar>
