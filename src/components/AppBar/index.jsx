@@ -31,9 +31,11 @@ function FSUAppBar({ isLogined }) {
   return (
     <AppBar position="fixed" sx={{
       background: '#FFFFFF',
-      height: '100px'
+      height: '100px',
+      justifyContent: 'center !important',
+      display: 'flex'
     }}>
-      <Container sx={{ mx: '120px', width: '100%' }}>
+      <Container sx={{ mx: {md : '120px'} , padding: '0px !important', maxWidth : '1680px!important'}}>
         <Toolbar disableGutters={true}>
           <Typography
             variant="h6"
@@ -52,7 +54,7 @@ function FSUAppBar({ isLogined }) {
             <img src={logo} style={{ width: '100px' }}/>
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none'} ,justifyContent:'space-between'}}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -75,7 +77,7 @@ function FSUAppBar({ isLogined }) {
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{
-                display: { xs: 'block', md: 'none' }
+                display: { xs: 'block', md: 'none'},
               }}
             >
               {pages.map((page) => (
@@ -89,14 +91,14 @@ function FSUAppBar({ isLogined }) {
               ))}
             </Menu>
           </Box>
-
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+        <Box style={{display:'flex', flexWrap:'wrap', alignItems:'center', justifyContent: 'center'}}>
+        <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex'}}}>
             {pages.map((page) => (
               <Button
                 disableRipple={true}
                 key={page}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 4, color: '#000000', display: 'block', mr: 4 }}
+                sx={{ my: 4, color: '#000000', display: 'block',  }}
                 className='focusedMenuItem'
               >
                 {page}
@@ -104,7 +106,7 @@ function FSUAppBar({ isLogined }) {
             ))}
           </Box>
 
-          {isLogined ? <Box sx={{ flexGrow: 0 }}>
+          {isLogined ? <Box sx={{ flexGrow: 0 , maxWidth:'100%'}}>
             <Tooltip title="Open settings">
               <IconButton sx={{ p: 0 }}>
                 <Avatar alt="User" src="/static/images/avatar/2.jpg" />
@@ -113,6 +115,8 @@ function FSUAppBar({ isLogined }) {
           </Box>
             :
             <div className='text-blue-500'>Hello</div>}
+        </Box>
+         
         </Toolbar>
       </Container>
     </AppBar>

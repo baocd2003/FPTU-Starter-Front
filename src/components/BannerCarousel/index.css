@@ -1,0 +1,25 @@
+.c-image{
+	object-fit: cover;
+	height:100vh;
+	width:inherit;
+}
+
+.c-btn:focus{
+	outline: none !important;
+	color: #FBB03B;
+}
+
+.c-btn:hover{
+	outline: none !important;
+	background-color: white !important;
+	color: #FBB03B;
+}
+
+.c-btn{
+	background-color:#FCAE3D !important;
+	border-radius:10px !important;
+	padding:10px !important;
+}
+.caroulsel{
+	height:100vh;
+}

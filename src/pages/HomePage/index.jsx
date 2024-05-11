@@ -6,6 +6,7 @@ function HomePage() {
 	return (
 		<div className="home">
 			<FSUAppBar isLogined={true} />
+      <BannerCarousel/>
 			<div className="mt-[100px]">
 				<ProjectCard />
 				<ProjectCard />
