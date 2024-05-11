@@ -1,12 +1,13 @@
 import FSUAppBar from "../../components/AppBar";
 import Footer from "../../components/Footer";
 import ProjectCard from "../../components/ProjectCard";
+import BannerCarousel from "../../components/BannerCarousel";
 import './index.css';
 function HomePage() {
 	return (
 		<div className="home">
 			<FSUAppBar isLogined={true} />
-      <BannerCarousel/>
+      		<BannerCarousel/>
 			<div className="mt-[100px]">
 				<ProjectCard />
 				<ProjectCard />
