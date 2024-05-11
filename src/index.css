@@ -9,11 +9,11 @@
   color-scheme: white;
   color: #44494D;
   background-color: white;
-
+  padding-bottom: 60px;
   font-synthesis: none;
-  text-rendering: optimizeLegibility;
+  /* text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  -moz-osx-font-smoothing: grayscale; */
 }
 
 a {
@@ -73,4 +73,8 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+html {
+  padding-bottom: 0 !important;
 }
