@@ -1,8 +1,8 @@
 import "@fontsource/archivo";
-import { Routes, Route} from "react-router-dom";
-import { createTheme, ThemeProvider } from '@mui/material';
+import { ThemeProvider, createTheme } from '@mui/material';
+import { Navigate, Route, Routes } from "react-router-dom";
 
-import "./App.css"
+import "./App.css";
 import HomePage from './pages/HomePage';
 function App() {
   const theme = createTheme({
@@ -11,13 +11,15 @@ function App() {
         'Archivo',
         'cursive',
       ].join(','),
-    },});
+    },
+  });
   return (
-     <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
       <Routes>
-          <Route path={'/'} element={<HomePage/>}/>
-      </Routes>    
-      </ThemeProvider>
+        <Route path="/" element={<Navigate to="/home" />} />
+        <Route path="home" element={<HomePage />} />
+      </Routes>
+    </ThemeProvider>
   )
 }
 

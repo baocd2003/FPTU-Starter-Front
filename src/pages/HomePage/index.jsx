@@ -1,22 +1,21 @@
-import FSUAppBar from "../../components/AppBar"
-import BannerCarousel from "../../components/BannerCarousel"
-import ProjectCard from "../../components/ProjectCard"
-import './index.css'
+import FSUAppBar from "../../components/AppBar";
+import Footer from "../../components/Footer";
+import ProjectCard from "../../components/ProjectCard";
+import './index.css';
 function HomePage() {
-  return (
-	<>
-	<FSUAppBar isLogined={true}/>
-	<div className="container">
-		<BannerCarousel/>
-		<div className="mt-10">
-		<ProjectCard/>
-		<ProjectCard/>
-		<ProjectCard/>
-
+	return (
+		<div className="home">
+			<FSUAppBar isLogined={true} />
+      <BannerCarousel/>
+			<div className="mt-[100px]">
+				<ProjectCard />
+				<ProjectCard />
+				<ProjectCard />
+				<ProjectCard />
+			</div>
+			<Footer />
 		</div>
-	</div>
-  </>
-  )
+	)
 }
 
-export default HomePage
+export default HomePage;
