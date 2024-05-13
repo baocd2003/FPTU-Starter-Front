@@ -1,0 +1,20 @@
+.authenBackground {
+    background-image: url('../../assets/Teamwork.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0.5;
+}
+
+.contentContainer {
+    position: relative;
+    z-index: 1;
+    overflow-y: auto;
+    height: 100vh;
+}
