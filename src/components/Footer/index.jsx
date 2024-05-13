@@ -1,5 +1,5 @@
+import { Box, Container, Grid, Typography } from "@mui/material";
 import React from "react";
-import { Grid, Typography, Container, Box } from "@mui/material";
 import Logo from "../../assets/logo-footer.png";
 
 function Footer() {
@@ -11,7 +11,6 @@ function Footer() {
             <img
               src={Logo}
               alt="logo"
-              srcset=""
               style={{ width: "90px", height: "70px" }}
             />
             <Typography variant="body2">
@@ -19,7 +18,7 @@ function Footer() {
             </Typography>
             <Typography
               variant="body2"
-              className="text-pretty text-wrap break-all"
+              className="text-wrap break-all"
             >
               theinfinitypodcast.project@gmail.com
             </Typography>
