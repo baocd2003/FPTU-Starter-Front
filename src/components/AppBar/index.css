@@ -1,9 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Poetsen+One&display=swap');
 
-/* header {
-	font-family: "Poetsen One", sans-serif !important;
-} */
-
 .focusedMenuItem:focus {
 	outline: none !important;
 	color: #FBB03B;
@@ -13,4 +9,18 @@
 	outline: none !important;
 	background-color: white !important;
 	color: #FBB03B;
+}
+
+.login-button {
+	color: #44494D !important;
+	border-color: #44494D !important;
+	font-weight: bold !important;
+	transition: color 0.3s, border-color 0.3s, background-color 0.3s !important;
+}
+
+.login-button:hover {
+	color: #FFFFFF !important;
+	border-color: #FBB03B !important;
+	background-color: #FBB03B !important;
+	font-weight: 900 !important;
 }

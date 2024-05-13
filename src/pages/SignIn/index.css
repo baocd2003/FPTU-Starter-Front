@@ -1,0 +1,32 @@
+.login-btn {
+    transition: color 0.3s, background-color 0.3s, box-shadow 0.3s !important;
+}
+
+.login-btn:hover {
+    background-color: #FBB03B !important;
+    color: #FFFFFF;
+    font-weight: 700 !important;
+    transition: color 0.3s, background-color 0.3s, box-shadow 0.3s !important;
+}
+
+.googlebutton span {
+    margin-left: -35px;
+    font-weight: 600;
+    font-family: 'Archivo', cursive;
+    color: #44494D;
+    transition: font-weight 0.3s;
+}
+
+.googlebutton:hover .googlebutton button {
+    font-weight: bold;
+}
+
+.googlebutton div div {
+    width: 40px !important;
+    height: 40px !important;
+}
+
+.googlebutton:hover span {
+    font-weight: 700;
+    transition: font-weight 0.3s !important;
+}
