@@ -14,9 +14,11 @@
     "@emotion/styled": "^11.11.5",
     "@fontsource/archivo": "^5.0.18",
     "@mui/icons-material": "^5.15.16",
+    "@mui/lab": "^5.0.0-alpha.170",
     "@mui/material": "^5.15.16",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-icons": "^5.2.1",
     "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^6.23.0"
   },

@@ -1,0 +1,8 @@
+.progressBar{
+    background-color: #F0F0F0 !important;
+    margin : 10px 0;
+}
+
+.progressBar span{
+    background-color: #FCAE3D !important;
+}
