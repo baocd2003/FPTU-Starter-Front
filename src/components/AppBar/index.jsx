@@ -33,80 +33,82 @@ function FSUAppBar({ isLogined }) {
       background: '#FFFFFF',
       height: '100px',
       justifyContent: 'center !important',
-      display: 'flex'
+      display: 'flex',
     }}>
-      <Container sx={{ mx: {md : '120px'} , padding: '0px !important', maxWidth : '1680px!important'}}>
-        <Toolbar disableGutters={true}>
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="#"
-            sx={{
-              mr: 4,
-              display: { xs: 'none', md: 'flex' },
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            <img src={logo} style={{ width: '100px' }}/>
-          </Typography>
-
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none'} ,justifyContent:'space-between'}}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
+      <Container maxWidth={false} sx={{ padding: '0px !important' }}>
+        <Toolbar disableGutters={true} sx={{ display: 'flex', justifyContent: 'space-between', mx: { lg: '120px' } }}>
+          <div className='flex flex-row'>
+            <Typography
+              variant="h6"
+              noWrap
+              component="a"
+              href="/home"
               sx={{
-                display: { xs: 'block', md: 'none'},
+                mr: 4,
+                display: { xs: 'none', lg: 'flex' },
+                fontWeight: 700,
+                letterSpacing: '.3rem',
+                color: 'inherit',
+                textDecoration: 'none',
               }}
             >
-              {pages.map((page) => (
-                <MenuItem
-                  key={page}
-                  onClick={handleCloseNavMenu}
-                  sx={{ mr: 8 }}
-                >
-                  <ListItemText>{page}</ListItemText>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-        <Box style={{display:'flex', flexWrap:'wrap', alignItems:'center', justifyContent: 'center'}}>
-        <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex'}}}>
-            {pages.map((page) => (
-              <Button
-                disableRipple={true}
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 4, color: '#000000', display: 'block',  }}
-                className='focusedMenuItem'
-              >
-                {page}
-              </Button>
-            ))}
-          </Box>
+              <img src={logo} style={{ width: '100px' }} />
+            </Typography>
 
-          {isLogined ? <Box sx={{ flexGrow: 0 , maxWidth:'100%'}}>
+            <Box sx={{ ml: '16px', flexGrow: 1, display: { xs: 'flex', lg: 'none' }, justifyContent: 'space-between' }}>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleOpenNavMenu}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                anchorEl={anchorElNav}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
+                sx={{
+                  display: { xs: 'block', md: 'none' },
+                }}
+              >
+                {pages.map((page) => (
+                  <MenuItem
+                    key={page}
+                    onClick={handleCloseNavMenu}
+                    sx={{ mr: 8 }}
+                  >
+                    <ListItemText>{page}</ListItemText>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+            <Box style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center' }}>
+              <Box sx={{ flexGrow: 1, display: { xs: 'none', lg: 'flex' } }}>
+                {pages.map((page) => (
+                  <Button
+                    disableRipple={true}
+                    key={page}
+                    onClick={handleCloseNavMenu}
+                    sx={{ my: 4, color: '#000000', display: 'block', fontWeight: 'bold', mr: 4 }}
+                    className='focusedMenuItem'
+                  >
+                    {page}
+                  </Button>
+                ))}
+              </Box>
+            </Box>
+          </div>
+          {false ? <Box sx={{ flexGrow: 0, maxWidth: '100%', mr: { xs: '16px' } }}>
             <Tooltip title="Open settings">
               <IconButton sx={{ p: 0 }}>
                 <Avatar alt="User" src="/static/images/avatar/2.jpg" />
@@ -114,9 +116,8 @@ function FSUAppBar({ isLogined }) {
             </Tooltip>
           </Box>
             :
-            <div className='text-blue-500'>Hello</div>}
-        </Box>
-         
+            <Button href='/login' variant="outlined" className='h-[40px] w-[144px] login-button' sx={{ mr: '16px' }}>Đăng nhập</Button>
+          }
         </Toolbar>
       </Container>
     </AppBar>
