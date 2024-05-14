@@ -1,6 +1,6 @@
 import { Carousel } from 'react-responsive-carousel';
-import banner from "../../assets/banner.png";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import banner from "../../assets/banner.png";
 import Button from '@mui/material/Button';
 import './index.css'
 function BannerCarousel() {
@@ -17,7 +17,7 @@ function BannerCarousel() {
             <img src={banner} />
         </div>
     </Carousel>
-	<div className="absolute top-[80%] left-[45%]">
+	<div className="absolute top-[70%] left-[45%]">
 		<Button sx={{ my: 4, color: '#FFF', display: 'block' }} className="c-btn">Bắt đầu dự án</Button>
 	</div>
 	</div>

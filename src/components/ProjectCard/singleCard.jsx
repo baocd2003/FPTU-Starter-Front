@@ -2,30 +2,55 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import Kurumi from '../../assets/kurumi.jpg';
-function SingleCard() {
+import LinearProgress from '@mui/material/LinearProgress';
+import "./index.css"
+function SingleCard({ category, imageLink, title, description, po, amount, progress }) {
+  const formattedAmount = new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(
+    amount
+  )
   return (
-    <Card sx={{ maxWidth: {lg : 345, xs : 100} }}>
+    <Card sx={{ width: { lg: 320, xs: 200 }, height: { lg: 580, xs: 250 }, borderRadius:'20px !important' }}>
       <CardMedia
-        sx={{ height: 140 }}
-        image={Kurumi}
+        sx={{ height: { xs: 140, md: 180 }, width: { lg: 320, xs: 200 } }}
+        image={imageLink}
         title="Kurumi"
-
       />
       <CardContent>
-        <Typography gutterBottom variant="h5" component="div" sx={{textAlign:"left"}}>
-          Lizard
+        <Typography gutterBottom color="text.secondary" component="div"
+          sx={{ textAlign: "left", fontSize: '12px', marginBottom: { md: '10px !important' } }}>
+          {category}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Lizards are a widespread group of squamate reptiles, with over 6,000
-          species, ranging across all continents except Antarctica
+        <Typography variant="h4" component="div" sx={{ textAlign: "left", marginBottom: { md: '48px !important' } }}>
+          {title}
         </Typography>
+        <Typography variant="h5" component="div" sx={{ textAlign: "left", marginBottom: { md: '80px !important' } }}>
+          {description}
+        </Typography>
+        <Typography variant="h5" component="div" sx={{ textAlign: "left", fontSize: '12px' }}>
+          <span className="text-[#FBB03B] mr-1">bởi</span>{po}
+        </Typography>
+        <Typography variant="h5" component="div" sx={{ textAlign: "left", fontSize: '12px' }}>
+          {formattedAmount}<span className="ml-1">đ đã được ủng hộ</span>
+        </Typography>
+
+        <LinearProgress className='progressBar' variant="determinate" value={progress} />
       </CardContent>
-      <CardActions>
-        <Button size="small">Share</Button>
-        <Button size="small">Learn More</Button>
+      <CardActions sx={{justifyContent:'center'}}>
+
+        <Typography size="small" sx={{ flexDirection: 'column', margin:'0 10px' }}>
+          <Typography sx={{color:'#44494D', fontSize:'18px'}}>100</Typography>
+          <Typography sx={{fontSize:'12px', color:'#FCAE3D'}}>Ngày còn lại</Typography>
+        </Typography>
+        <Typography size="small" sx={{ flexDirection: 'column', margin:'0 10px' }}>
+          <Typography sx={{color:'#44494D', fontSize:'18px'}}>100</Typography>
+          <Typography sx={{fontSize:'12px', color:'#FCAE3D'}}>Người ủng hộ</Typography>
+        </Typography>
+        <Typography size="small" sx={{ flexDirection: 'column', margin:'0 10px' }}>
+          <Typography sx={{color:'#44494D', fontSize:'18px'}}>100</Typography>
+          <Typography sx={{fontSize:'12px', color:'#FCAE3D'}}>Thành công</Typography>
+        </Typography>
+
       </CardActions>
     </Card>
   );
