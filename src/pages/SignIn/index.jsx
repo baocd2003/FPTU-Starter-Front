@@ -162,11 +162,11 @@ function SignIn() {
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
                             </div>
-                            <div className='flex mt-4 xl:flex-row xl:justify-between flex-col justify-start'>
-                                <a href="#" className='underline text-[#44494D] transition-colors duration-300 hover:text-[#FBB03B] text-sm text-left'>
+                            <div className='flex mt-4 lg:flex-row lg:justify-between flex-col justify-start'>
+                                <a href="#" className='lg:w-1/2 underline text-[rgb(68,73,77)] transition-colors duration-300 hover:text-[#FBB03B] text-sm text-left'>
                                     Quên mật khẩu?
                                 </a>
-                                <div className='xl:w-1/2 xl:mt-0 w-full mt-4'>
+                                <div className='lg:w-1/2 lg:mt-0 w-full mt-4'>
                                     <Button
                                         type="submit"
                                         variant="contained"

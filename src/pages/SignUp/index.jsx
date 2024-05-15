@@ -121,7 +121,7 @@ function SignUp() {
                             width: '100%'
                         }}>
                             <div>
-                                <div className='flex xl:flex-row xl:justify-between flex-col'>
+                                <div className='flex lg:flex-row lg:justify-between flex-col'>
                                     <TextField
                                         margin="normal"
                                         required
@@ -137,12 +137,17 @@ function SignUp() {
                                         sx={{
                                             width: '100%',
                                             '& div': {
-                                                width: { lg: '90%', md: '100%' },
+                                                width: '100%',
                                             },
                                             '& input': {
                                                 height: '16px',
                                             },
-                                            fontSize: '10px'
+                                            fontSize: '10px',
+                                            '@media (min-width: 1024px)': {
+                                                '& div': {
+                                                    width: '90%',
+                                                },
+                                            }
                                         }}
                                         value={accountName}
                                         onChange={(e) => setAccountName(e.target.value)}
@@ -162,17 +167,22 @@ function SignUp() {
                                         sx={{
                                             width: '100%',
                                             '& div': {
-                                                width: { lg: '90%', md: '100%' },
-                                                marginRight: { lg: '0' },
-                                                marginLeft: { lg: 'auto' }
+                                                width: '100%',
                                             },
                                             '& input': {
                                                 height: '16px',
                                             },
-                                            '& label': {
-                                                marginLeft: { lg: '11%' }
-                                            },
                                             fontSize: '10px',
+                                            '@media (min-width: 1024px)': {
+                                                '& div': {
+                                                    width: '90%',
+                                                    marginRight: '0',
+                                                    marginLeft: 'auto',
+                                                },
+                                                '& label': {
+                                                    marginLeft: '11%',
+                                                },
+                                            }
                                         }}
                                         value={userName}
                                         onChange={(e) => setUserName(e.target.value)}
@@ -254,12 +264,12 @@ function SignUp() {
                                     labelPlacement="end"
                                 />
                             </div>
-                            <div className='xl:flex xl:mt-4 xl:flex-row xl:justify-between xl:mb-[40px] hidden'>
+                            <div className='lg:flex lg:mt-4 lg:flex-row lg:justify-between lg:mb-[40px] hidden'>
                                 <div className='flex justify-center mt-2 gap-1 text-sm'>
                                     <h2>Đã có tài khoản?</h2>
                                     <a href='/login' className='underline text-[#44494D] transition-colors duration-300 hover:text-[#FBB03B]'>Đăng nhập</a>
                                 </div>
-                                <div className='xl:w-1/2 xl:mt-0 w-full mt-4'>
+                                <div className='lg:w-1/2 xl:mt-0 w-full mt-4'>
                                     <Button
                                         type="submit"
                                         variant="contained"
@@ -277,8 +287,8 @@ function SignUp() {
                                     </Button>
                                 </div>
                             </div>
-                            <div className='flex mt-4 xl:hidden flex-col justify-start mb-[40px]'>
-                                <div className='xl:w-1/2 xl:mt-0 w-full mt-4'>
+                            <div className='flex mt-4 lg:hidden flex-col justify-start mb-[40px]'>
+                                <div className='lg:w-1/2 lg:mt-0 w-full mt-4'>
                                     <Button
                                         type="submit"
                                         variant="contained"
