@@ -27,7 +27,7 @@ function SignUp() {
     };
 
     return (
-        <div className='flex justify-center items-center h-screen'>
+        <div className='flex justify-center items-center md:h-screen h-fit lg:min-h-[800px] xl:min-h-0 pt-[100px]'>
             <div className='xl:w-screen/4*3 max-w-fit'>
                 <Container
                     component="main"
@@ -37,13 +37,14 @@ function SignUp() {
                         borderRadius: '12px',
                         boxShadow: '1px 1px 1px rgba(0, 0, 0, 0.1), -1px -1px 1px rgba(0, 0, 0, 0.1)',
                         height: 'fit-content',
-                        mb: { lg: '10px', md: '50px', sm: '50px', xs: '50px' },
+                        width: { md: '100%', xs: '90%' },
                     }}
                 >
                     <CssBaseline />
                     <Box
                         sx={{
-                            mt: { lg: '100px', md: '500px', sm: '700px', xs: '950px' },
+                            mt: { lg: '0px', xs: '40px' },
+                            mb: { lg: '0px', xs: '40px' },
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'center',
@@ -51,7 +52,7 @@ function SignUp() {
                             marginRight: 4
                         }}
                     >
-                        <div className='mt-[32px] w-full h-full xl:flex xl:items-center xl:flex-row xl:justify-between hidden'>
+                        <div className='mt-[32px] w-full h-full lg:flex lg:items-center lg:flex-row lg:justify-between hidden'>
                             <div>
                                 <Typography
                                     sx={{
@@ -78,12 +79,12 @@ function SignUp() {
                                 </Typography>
                             </div>
                             <img
-                                className="w-24 h-24 hidden xl:inline-block"
+                                className="w-24 h-24 hidden lg:inline-block"
                                 src={logo}
                                 alt="Logo"
                             />
                         </div>
-                        <div className='mt-[16px] w-full h-full flex items-center xl:hidden flex-col justify-center'>
+                        <div className='mt-[16px] w-full h-full flex items-center lg:hidden flex-col justify-center'>
                             <img
                                 className="w-32 h-32"
                                 src={logo}
