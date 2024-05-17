@@ -8,18 +8,69 @@ import React, { useState } from 'react';
 import GoogleButton from 'react-google-button';
 import logo from "../../assets/logo.png";
 import './index.css';
+import userApiInstace from '../../utils/apiInstance/userApiInstace';
+import useSignIn from 'react-auth-kit/hooks/useSignIn';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+// import CircularProgress from '@mui/material/CircularProgress';
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function SignIn() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
+    const signIn = useSignIn();
+    const navigate = useNavigate();
+    const notify = (mess) => {
+        toast.warn(mess, {
+            position: "bottom-left"
+        });
+    }
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
+        const jsonData = {
+            email: data.get('email'),
+            password: data.get('password'),
+        }
         console.log({
             email: data.get('email'),
             password: data.get('password'),
         });
+        //Save token to cookie
+        const response = userApiInstace.post("/login", jsonData).then(res => {
+            console.log(res.data);
+            if (res.data._data == null) {
+                notify(`${res.data._message[0]}`);
+            } else {
+                signIn({
+                    auth: {
+                        token: res.data._data.token,
+                        type: 'Bearer'
+                    },
+                    expiresIn: 3600,
+                    tokenType: "Bearer",
+                    authState: { email: jsonData.email }
+                })
+                console.log(Cookies.get("_auth"));
+                if (Cookies.get("_auth") != undefined) {
+                    navigate("/");
+                }
+            }
+
+
+        })
+
+        //Add authorization
+        const testResponse = axios.get("https://localhost:7235/api/Demo", {
+            headers: {
+                Authorization: `Bearer ${Cookies.get("_auth")}`
+            }
+        }).then(res => {
+            console.log(res);
+        })
+
     };
 
     return (
@@ -50,6 +101,7 @@ function SignIn() {
                     >
                         <div className='mt-[32px] w-full h-full lg:flex lg:items-center lg:flex-row lg:justify-between hidden'>
                             <div>
+
                                 <Typography
                                     sx={{
                                         color: '#000000',
@@ -97,6 +149,7 @@ function SignIn() {
                             >
                                 Đăng nhập
                             </Typography>
+                            <ToastContainer />
                             <Typography
                                 sx={{
                                     color: '#000000',

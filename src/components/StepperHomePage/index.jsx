@@ -8,7 +8,7 @@ import SingleCard from '../ProjectCard/singleCard';
 import Container from '@mui/material/Container';
 import { GoDot } from "react-icons/go";
 import './index.css'
-import Kurumi from '../../assets/kurumi.jpg';
+import Kurumi from '../../assets/samplePrj.png';
 
 function StepperHomePage() {
     const [subA, setSubA] = React.useState([]);
@@ -29,8 +29,8 @@ function StepperHomePage() {
     console.log(tabNums)
 
     return (
-        <Box sx={{ width: '100%', typography: 'body1' }}>
-            <TabContext value={value}>
+        <Box sx={{ width: '100%', typography: 'body1',display:{xs : 'none', md:'block'} }}>
+            <TabContext value={value} sx={{display:{xs : 'none !important'}}}>
                 <TabPanel value={1} maxWidth="lg">
                     <Container maxWidth="lg" className="my-10">
                         <Box className="mx-15" sx={{
