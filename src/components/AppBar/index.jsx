@@ -108,7 +108,7 @@ function FSUAppBar({ isLogined }) {
               </Box>
             </Box>
           </div>
-          {false ? <Box sx={{ flexGrow: 0, maxWidth: '100%', mr: { xs: '16px' } }}>
+          {isLogined ? <Box sx={{ flexGrow: 0, maxWidth: '100%', mr: { xs: '16px' } }}>
             <Tooltip title="Open settings">
               <IconButton sx={{ p: 0 }}>
                 <Avatar alt="User" src="/static/images/avatar/2.jpg" />

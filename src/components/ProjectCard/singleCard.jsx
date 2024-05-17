@@ -10,9 +10,9 @@ function SingleCard({ category, imageLink, title, description, po, amount, progr
     amount
   )
   return (
-    <Card sx={{ width: { lg: 320, xs: 200 }, height: { lg: 580, xs: 250 }, borderRadius:'20px !important' }}>
+    <Card sx={{ width: { lg: 320, xs: 300 }, height: { lg: 580, xs: 500 }, borderRadius:'20px !important' }}>
       <CardMedia
-        sx={{ height: { xs: 140, md: 180 }, width: { lg: 320, xs: 200 } }}
+        sx={{ height: { xs: 140, md: 180 }, width: { lg: 320, xs: 300 } }}
         image={imageLink}
         title="Kurumi"
       />

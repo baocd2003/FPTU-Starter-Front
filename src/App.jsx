@@ -6,7 +6,7 @@ import AuthenticationLayout from './layouts/AuthenticationLayout';
 import HomePage from './pages/HomePage';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
-
+import AuthOutlet from '@auth-kit/react-router/AuthOutlet'
 function App() {
   const theme = createTheme({
     typography: {
@@ -21,11 +21,16 @@ function App() {
       <Routes>
         <Route>
           <Route path="/" element={<Navigate to="/home" />} />
-          <Route path="/home" element={<HomePage />} />
+          <Route path="/home" element={
+            <HomePage />
+          } />
         </Route>
         <Route element={<AuthenticationLayout />}>
           <Route path="/login" element={<SignIn />} />
           <Route path="/register" element={<SignUp />} />
+          <Route element={<AuthOutlet fallbackPath='/login' />}>
+            <Route path='/' element={<HomePage />} />
+          </Route>
         </Route>
       </Routes>
     </ThemeProvider>

@@ -8,6 +8,12 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import React, { useState } from 'react';
 import logo from "../../assets/logo.png";
+import userApiInstace from '../../utils/apiInstance/userApiInstace';
+import useSignIn from 'react-auth-kit/hooks/useSignIn';
+import Cookies from 'js-cookie';
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import './index.css';
 
 function SignUp() {
@@ -16,7 +22,13 @@ function SignUp() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-
+    const signIn = useSignIn();
+    const navigate = useNavigate();
+    const notify = (mess) => {
+        toast.warn(mess, {
+            position: "bottom-left"
+        });
+    }
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -24,8 +36,35 @@ function SignUp() {
             email: data.get('email'),
             password: data.get('password'),
         });
-    };
+        const jsonData = {
+            name: accountName,
+            email: email,
+            password: password,
+            confirmPassword: confirmPassword
+        }
+        if (password != confirmPassword) {
+            notify("Confirm password is not matching");
+        } else {
+            userApiInstace.post("/Register-Backer", jsonData).then(res => {
+                console.log(res.data);
+                if (res.data._data == null) {
+                    notify(`${res.data._message[0]}`);
+                } else {
+                    signIn({
+                        auth: {
+                            token: res.data._data.token,
+                            type: 'Bearer'
+                        },
+                        expiresIn: 3600,
+                        tokenType: "Bearer",
+                        authState: { email: jsonData.email }
+                    })
+                    navigate("/login");
+                }
+            })
+        }
 
+    };
     return (
         <div className='flex justify-center items-center h-screen'>
             <div className='xl:w-screen/4*3 max-w-fit'>
@@ -285,6 +324,7 @@ function SignUp() {
                                     >
                                         Đăng ký
                                     </Button>
+                                    <ToastContainer />
                                 </div>
                             </div>
                             <div className='flex mt-4 lg:hidden flex-col justify-start mb-[40px]'>
