@@ -59,7 +59,7 @@ function SignUp() {
                         tokenType: "Bearer",
                         authState: { email: jsonData.email }
                     })
-                    navigate("/login");
+                    navigate("/home");
                 }
             })
         }

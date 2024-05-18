@@ -39,7 +39,7 @@ function SignIn() {
             password: data.get('password'),
         });
         //Save token to cookie
-        const response = userApiInstace.post("/login", jsonData).then(res => {
+         userApiInstace.post("/login", jsonData).then(res => {
             console.log(res.data);
             if (res.data._data == null) {
                 notify(`${res.data._message[0]}`);
@@ -58,24 +58,23 @@ function SignIn() {
                     navigate("/");
                 }
             }
-
-
         })
 
         //Add authorization
-        const testResponse = axios.get("https://localhost:7235/api/Demo", {
-            headers: {
-                Authorization: `Bearer ${Cookies.get("_auth")}`
-            }
-        }).then(res => {
-            console.log(res);
-        })
+        // const testResponse = axios.get("https://localhost:7235/api/Demo", {
+        //     headers: {
+        //         Authorization: `Bearer ${Cookies.get("_auth")}`
+        //     }
+        // }).then(res => {
+        //     console.log(res);
+        // })
 
     };
 
     return (
         <div className='flex justify-center items-center md:h-screen h-fit lg:min-h-[800px] xl:min-h-0 pt-[100px]'>
             <div className='xl:w-screen/4*3 max-w-fit'>
+                <ToastContainer />
                 <Container
                     component="main"
                     maxWidth="xl"
@@ -149,7 +148,6 @@ function SignIn() {
                             >
                                 Đăng nhập
                             </Typography>
-                            <ToastContainer />
                             <Typography
                                 sx={{
                                     color: '#000000',
