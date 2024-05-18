@@ -22,6 +22,7 @@ function SignUp() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [checked, setChecked] = useState(false);
     const signIn = useSignIn();
     const navigate = useNavigate();
     const notify = (mess) => {
@@ -29,6 +30,7 @@ function SignUp() {
             position: "bottom-left"
         });
     }
+    const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -41,6 +43,10 @@ function SignUp() {
             email: email,
             password: password,
             confirmPassword: confirmPassword
+        }
+        if(!emailRegex.test(email)){
+            notify("Invalid email");
+            return;
         }
         if (password != confirmPassword) {
             notify("Confirm password is not matching");
@@ -302,6 +308,7 @@ function SignUp() {
                                     control={<Checkbox size="small" color="primary" />}
                                     label={<span sx={{ fontSize: '14px !important' }}>Tôi đồng ý với điều khoản sử dụng dịch vụ</span>}
                                     labelPlacement="end"
+                                    onChange={() => setChecked(!checked)}
                                 />
                             </div>
                             <div className='lg:flex lg:mt-4 lg:flex-row lg:justify-between lg:mb-[40px] hidden'>
@@ -322,6 +329,7 @@ function SignUp() {
                                             boxShadow: '0 0 5px rgba(0, 0, 0, 0.1)',
                                         }}
                                         className='register-btn'
+                                        disabled={checked}
                                     >
                                         Đăng ký
                                     </Button>
