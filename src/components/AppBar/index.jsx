@@ -16,6 +16,8 @@ import * as React from 'react';
 import logo from "../../assets/logo.png";
 import "./index.css";
 import createRefresh from 'react-auth-kit/createRefresh';
+import useSignOut from 'react-auth-kit/hooks/useSignOut';
+import { useNavigate } from "react-router-dom";
 const pages = ['Trang chủ', 'Toàn bộ dự án', 'Về chúng tôi', 'Liên hệ', 'Hỗ trợ'];
 function FSUAppBar({ isLogined }) {
   FSUAppBar.propTypes = {
@@ -28,6 +30,8 @@ function FSUAppBar({ isLogined }) {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
+  const navigate = useNavigate();
+  const signOut = useSignOut();
 
   return (
     <AppBar position="fixed" sx={{
@@ -115,6 +119,7 @@ function FSUAppBar({ isLogined }) {
                 <Avatar alt="User" src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
+            <Button onClick={() => signOut()}>Sign Out</Button>
           </Box>
             :
             <Button href='/login' variant="outlined" className='h-[40px] w-[144px] login-button' sx={{ mr: '16px' }}>Đăng nhập</Button>
