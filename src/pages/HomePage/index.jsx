@@ -1,28 +1,27 @@
-import React,{useEffect} from "react";
-import FSUAppBar from "../../components/AppBar";
-import Footer from "../../components/Footer";
-import ProjectCard from "../../components/ProjectCard";
-import BannerCarousel from "../../components/BannerCarousel";
-import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import { FaHandsHelping } from "react-icons/fa";
-import { RiPieChart2Fill } from "react-icons/ri";
-import { IoIosSettings } from "react-icons/io";
+import Typography from '@mui/material/Typography';
 import Aos from "aos";
-import 'aos/dist/aos.css'
-import './index.css';
-import { duration } from "@mui/material";
+import 'aos/dist/aos.css';
 import Cookies from 'js-cookie';
+import React, { useEffect } from "react";
+import { FaHandsHelping } from "react-icons/fa";
+import { IoIosSettings } from "react-icons/io";
+import { RiPieChart2Fill } from "react-icons/ri";
+import FSUAppBar from "../../components/AppBar";
+import BannerCarousel from "../../components/BannerCarousel";
+import Footer from "../../components/Footer";
+import ProjectCard from "../../components/ProjectCard";
+import './index.css';
 function HomePage() {
 	useEffect(() => {
-		Aos.init({duration:2000})
-	},[]);
+		Aos.init({ duration: 2000 })
+	}, []);
 	console.log(Cookies.get("_auth"))
 	return (
 		<div className="home">
 			<FSUAppBar isLogined={Cookies.get("_auth") != undefined ? true : false} />
-					<BannerCarousel/>
+			<BannerCarousel />
 			<div className="mt-[100px]" >
 				<div data-aos="fade-up" className="bg-[#F0F0F0] p-3">
 					<Typography className="">
@@ -43,12 +42,11 @@ function HomePage() {
 			<div data-aos="fade-up" className="bg-[#F0F0F0] p-3 max-h-fit">
 				<Box sx={{ flexGrow: 1, margin: '60px' }}>
 					<Grid container spacing={2} sx={{ alignItems: 'center' }}>
-						<Grid item lg={6} xs={12} sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+						<Grid item lg={6} xs={12} sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', pl: '0 !important' }}>
 							<Box
-								height={300}
-								width={450}
+								height={{ md: '300px', xs: 'fit-content' }}
+								width={{ md: '450px', xs: 'fit-content' }}
 								gap={4}
-								p={2}
 								sx={{ background: '#FFFFFF', padding: '3rem' }}
 							>
 								<Typography sx={{ fontSize: '30px', color: '#FCAE3D', textAlign: 'left' }}>

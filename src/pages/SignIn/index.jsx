@@ -4,14 +4,13 @@ import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import Cookies from 'js-cookie';
 import React, { useState } from 'react';
+import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import GoogleButton from 'react-google-button';
 import logo from "../../assets/logo.png";
-import './index.css';
 import userApiInstace from '../../utils/apiInstance/userApiInstace';
-import useSignIn from 'react-auth-kit/hooks/useSignIn';
-import axios from 'axios';
-import Cookies from 'js-cookie';
+import './index.css';
 // import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -27,6 +26,9 @@ function SignIn() {
             position: "bottom-left"
         });
     }
+    const handleRegister = () => {
+        navigate('/register');
+    };
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -39,7 +41,7 @@ function SignIn() {
             password: data.get('password'),
         });
         //Save token to cookie
-         userApiInstace.post("/login", jsonData).then(res => {
+        userApiInstace.post("/login", jsonData).then(res => {
             console.log(res.data);
             if (res.data._data == null) {
                 notify(`${res.data._message[0]}`);
@@ -72,7 +74,7 @@ function SignIn() {
     };
 
     return (
-        <div className='flex justify-center items-center md:h-screen h-fit lg:min-h-[800px] xl:min-h-0 pt-[100px]'>
+        <div className='flex justify-center items-center md:h-screen h-fit md:min-h-[800px] xl:min-h-0 pt-[100px]'>
             <div className='xl:w-screen/4*3 max-w-fit'>
                 <ToastContainer />
                 <Container
@@ -100,7 +102,6 @@ function SignIn() {
                     >
                         <div className='mt-[32px] w-full h-full lg:flex lg:items-center lg:flex-row lg:justify-between hidden'>
                             <div>
-
                                 <Typography
                                     sx={{
                                         color: '#000000',
@@ -258,7 +259,7 @@ function SignIn() {
                             </div>
                             <div className='flex justify-center items-center mb-[40px] mt-8 gap-1 text-sm'>
                                 <h2>Chưa có tài khoản?</h2>
-                                <a href='/register' className='underline text-[#44494D] transition-colors duration-300 hover:text-[#FBB03B]'>Đăng ký ngay</a>
+                                <a onClick={handleRegister} className='underline text-[#44494D] transition-colors duration-300 hover:text-[#FBB03B] hover:cursor-pointer'>Đăng ký ngay</a>
                             </div>
                         </Box>
                     </Box>

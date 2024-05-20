@@ -1,0 +1,20 @@
+.userProfile {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin-top: 100px;
+}
+
+@media (min-width: 1200px) {
+    .userProfile {
+        margin-left: 80px !important;
+        margin-right: 80px !important;
+    }
+}
+
+@media (min-width: 0px) {
+    .userProfile {
+        margin-left: 28px;
+        margin-right: 28px;
+    }
+}
