@@ -7,13 +7,12 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import React, { useState } from 'react';
-import logo from "../../assets/logo.png";
-import userApiInstace from '../../utils/apiInstance/userApiInstace';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
-import Cookies from 'js-cookie';
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import logo from "../../assets/logo.png";
+import userApiInstace from '../../utils/apiInstance/userApiInstace';
 import './index.css';
 
 function SignUp() {
@@ -30,6 +29,9 @@ function SignUp() {
             position: "bottom-left"
         });
     }
+    const handleLogin = () => {
+        navigate('/login');
+    };
     const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -44,7 +46,7 @@ function SignUp() {
             password: password,
             confirmPassword: confirmPassword
         }
-        if(!emailRegex.test(email)){
+        if (!emailRegex.test(email)) {
             notify("Invalid email");
             return;
         }
@@ -61,7 +63,7 @@ function SignUp() {
                             token: res.data._data.token,
                             type: 'Bearer'
                         },
-                        expiresIn: 3600,
+                        expiresIn: 3600 * 24 * 5,
                         tokenType: "Bearer",
                         authState: { email: jsonData.email }
                     })
@@ -72,7 +74,7 @@ function SignUp() {
 
     };
     return (
-        <div className='flex justify-center items-center md:h-screen h-fit lg:min-h-[800px] xl:min-h-0 pt-[100px]'>
+        <div className='flex justify-center items-center md:h-screen h-fit md:min-h-[1000px] xl:min-h-0 pt-[100px]'>
             <div className='xl:w-screen/4*3 max-w-fit'>
                 <Container
                     component="main"
@@ -314,7 +316,7 @@ function SignUp() {
                             <div className='lg:flex lg:mt-4 lg:flex-row lg:justify-between lg:mb-[40px] hidden'>
                                 <div className='flex justify-center mt-2 gap-1 text-sm'>
                                     <h2>Đã có tài khoản?</h2>
-                                    <a href='/login' className='underline text-[#44494D] transition-colors duration-300 hover:text-[#FBB03B]'>Đăng nhập</a>
+                                    <a onClick={handleLogin} className='underline text-[#44494D] transition-colors duration-300 hover:text-[#FBB03B] hover:cursor-pointer'>Đăng nhập</a>
                                 </div>
                                 <div className='lg:w-1/2 xl:mt-0 w-full mt-4'>
                                     <Button
@@ -329,7 +331,7 @@ function SignUp() {
                                             boxShadow: '0 0 5px rgba(0, 0, 0, 0.1)',
                                         }}
                                         className='register-btn'
-                                        disabled={checked}
+                                        disabled={!checked}
                                     >
                                         Đăng ký
                                     </Button>
@@ -356,7 +358,7 @@ function SignUp() {
                                 </div>
                                 <div className='flex justify-center mt-2 gap-1 text-sm'>
                                     <h2>Đã có tài khoản?</h2>
-                                    <a href='/login' className='underline text-[#44494D] transition-colors duration-300 hover:text-[#FBB03B]'>Đăng nhập</a>
+                                    <a onClick={handleLogin} className='underline text-[#44494D] transition-colors duration-300 hover:text-[#FBB03B] hover:cursor-pointer'>Đăng nhập</a>
                                 </div>
                             </div>
                         </Box>

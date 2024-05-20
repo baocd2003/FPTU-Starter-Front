@@ -5,6 +5,11 @@
 	color: #FBB03B;
 }
 
+.focusedMenuItem:active {
+	outline: none !important;
+	color: #FBB03B;
+}
+
 .focusedMenuItem:hover {
 	outline: none !important;
 	background-color: white !important;

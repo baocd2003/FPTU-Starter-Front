@@ -1,13 +1,21 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
 import React from "react";
 import Logo from "../../assets/logo-footer.png";
+import "./index.css";
 
 function Footer() {
   return (
     <footer className="bg-[#000000] w-full bottom-0 left-0 right-0 h-[350px] mt-32 flex flex-col items-center justify-center">
-      <Container className="flex flex-col content-center h-full">
+      <Container className="flex flex-col content-center h-full"
+        sx={{
+          '@media (max-width: 600px)': {
+            paddingLeft: '0.5rem !important',
+            paddingRight: '1rem !important',
+          },
+        }}
+      >
         <Grid spacing={2} container className="!mt-0 !ms-0 ">
-          <Grid item xs={3} className="text-neutral-100 text-left">
+          <Grid item xs={3} className="text-neutral-100 text-left !pl-0 !p-1">
             <img
               src={Logo}
               alt="logo"
@@ -24,7 +32,7 @@ function Footer() {
             </Typography>
             <Typography variant="body2">0333 666 999</Typography>
           </Grid>
-          <Grid item xs={3} className="text-neutral-100 text-left">
+          <Grid item xs={3} className="text-neutral-100 text-left !pl-0 !p-1">
             <Typography
               gutterBottom
               component="div"
@@ -41,7 +49,7 @@ function Footer() {
               Phí nền tảng và các loại phí khác
             </Typography>
           </Grid>
-          <Grid item xs={3} className="text-neutral-100 text-left">
+          <Grid item xs={3} className="text-neutral-100 text-left !pl-0 !p-1">
             <Typography
               gutterBottom
               component="div"
@@ -55,7 +63,7 @@ function Footer() {
             <Typography variant="body2">Tài nguyên dành cho dự án</Typography>
             <Typography variant="body2">Tài sản thương hiệu</Typography>
           </Grid>
-          <Grid item xs={3} className="text-neutral-100 text-left">
+          <Grid item xs={3} className="text-neutral-100 text-left !pl-0 !p-1">
             <Typography
               gutterBottom
               component="div"
