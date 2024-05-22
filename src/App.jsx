@@ -8,7 +8,9 @@ import UserProfileLayout from './layouts/UserProfileLayout';
 import HomePage from './pages/HomePage';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
+import UserBookmarkProject from './pages/UserBookmarkProject';
 import UserProfile from './pages/UserProfile';
+
 function App() {
   const theme = createTheme({
     typography: {
@@ -39,6 +41,7 @@ function App() {
         </Route>
         <Route element={<UserProfileLayout />}>
           <Route path='/profile' element={<UserProfile />} />
+          <Route path='/bookmarkProject' element={<UserBookmarkProject />} />
         </Route>
       </Routes>
     </ThemeProvider>

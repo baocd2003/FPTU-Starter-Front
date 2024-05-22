@@ -5,16 +5,70 @@
     margin-top: 100px;
 }
 
+.bgImgButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: none;
+    height: fit-content;
+    background-color: inherit;
+}
+
+.userProfleTab:hover,
+.userProfleTab:focus {
+    outline: none !important;
+    background-color: white !important;
+    border-color: #FBB03B !important;
+    color: #FBB03B;
+}
+
+@media (min-width: 0px) and (max-width: 1199px) {
+    .userProfile {
+        margin-left: 28px;
+        margin-right: 28px;
+    }
+
+    .backgroundImg {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .avatarProfile {
+        margin: auto;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .briefInfo {
+        justify-content: center;
+        flex-direction: column;
+        gap: 24px;
+    }
+}
+
 @media (min-width: 1200px) {
     .userProfile {
         margin-left: 80px !important;
         margin-right: 80px !important;
     }
-}
 
-@media (min-width: 0px) {
-    .userProfile {
-        margin-left: 28px;
-        margin-right: 28px;
+    .backgroundImg {
+        display: flex !important;
+        justify-content: end !important;
+        align-items: end !important;
+    }
+
+    .avatarProfile {
+        margin-left: 64px !important;
+        flex-direction: row !important;
+    }
+
+    .briefInfo {
+        margin-left: 56px;
+        padding-top: 120px;
+        text-align: left;
+        justify-content: space-between;
     }
 }
