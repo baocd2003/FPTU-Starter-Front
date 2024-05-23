@@ -2,15 +2,15 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
 import LinearProgress from '@mui/material/LinearProgress';
-import "./index.css"
+import Typography from '@mui/material/Typography';
+import "./index.css";
 function SingleCard({ category, imageLink, title, description, po, amount, progress }) {
   const formattedAmount = new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(
     amount
   )
   return (
-    <Card sx={{ width: { lg: 320, xs: 300 }, height: { lg: 580, xs: 500 }, borderRadius:'20px !important' }}>
+    <Card sx={{ width: { lg: 320, xs: 300 }, height: { lg: 580, xs: 500 }, borderRadius: '20px !important' }}>
       <CardMedia
         sx={{ height: { xs: 140, md: 180 }, width: { lg: 320, xs: 300 } }}
         image={imageLink}
@@ -34,21 +34,21 @@ function SingleCard({ category, imageLink, title, description, po, amount, progr
           {formattedAmount}<span className="ml-1">đ đã được ủng hộ</span>
         </Typography>
 
-        <LinearProgress className='progressBar' variant="determinate" value={progress} />
+        <LinearProgress className='progressBar' variant="determinate" value={50} />
       </CardContent>
-      <CardActions sx={{justifyContent:'center'}}>
+      <CardActions sx={{ justifyContent: 'center' }}>
 
-        <Typography size="small" sx={{ flexDirection: 'column', margin:'0 10px' }}>
-          <Typography sx={{color:'#44494D', fontSize:'18px'}}>100</Typography>
-          <Typography sx={{fontSize:'12px', color:'#FCAE3D'}}>Ngày còn lại</Typography>
+        <Typography variant='div' size="small" sx={{ flexDirection: 'column', margin: '0 10px' }}>
+          <Typography variant='h1' sx={{ color: '#44494D', fontSize: '18px' }}>100</Typography>
+          <Typography variant='h2' sx={{ fontSize: '12px', color: '#FCAE3D' }}>Ngày còn lại</Typography>
         </Typography>
-        <Typography size="small" sx={{ flexDirection: 'column', margin:'0 10px' }}>
-          <Typography sx={{color:'#44494D', fontSize:'18px'}}>100</Typography>
-          <Typography sx={{fontSize:'12px', color:'#FCAE3D'}}>Người ủng hộ</Typography>
+        <Typography variant='div' size="small" sx={{ flexDirection: 'column', margin: '0 10px' }}>
+          <Typography variant='h1' sx={{ color: '#44494D', fontSize: '18px' }}>100</Typography>
+          <Typography variant='h2' sx={{ fontSize: '12px', color: '#FCAE3D' }}>Người ủng hộ</Typography>
         </Typography>
-        <Typography size="small" sx={{ flexDirection: 'column', margin:'0 10px' }}>
-          <Typography sx={{color:'#44494D', fontSize:'18px'}}>100</Typography>
-          <Typography sx={{fontSize:'12px', color:'#FCAE3D'}}>Thành công</Typography>
+        <Typography variant='div' size="small" sx={{ flexDirection: 'column', margin: '0 10px' }}>
+          <Typography variant='h1' sx={{ color: '#44494D', fontSize: '18px' }}>100</Typography>
+          <Typography variant='h2' sx={{ fontSize: '12px', color: '#FCAE3D' }}>Thành công</Typography>
         </Typography>
 
       </CardActions>

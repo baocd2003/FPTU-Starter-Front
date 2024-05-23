@@ -20,8 +20,14 @@ import useSignOut from 'react-auth-kit/hooks/useSignOut';
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import "./index.css";
+
 const pages = ['Trang chủ', 'Toàn bộ dự án', 'Về chúng tôi', 'Hỗ trợ'];
-const profileMenu = ['Tài khoản', 'Dự án của tôi', 'Đăng xuất'];
+const profileMenu = [
+  { label: 'Tài khoản', route: '/profile' },
+  { label: 'Dự án của tôi', route: '/' },
+  { label: 'Đăng xuất', route: '/' }
+];
+
 function FSUAppBar({ isLogined }) {
   FSUAppBar.propTypes = {
     isLogined: PropTypes.bool.isRequired,
@@ -87,6 +93,9 @@ function FSUAppBar({ isLogined }) {
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
                 onClick={handleOpenNavMenu}
+                sx={{
+                  outline: 'none !important'
+                }}
               >
                 <MenuIcon />
               </IconButton>
@@ -189,13 +198,20 @@ function FSUAppBar({ isLogined }) {
                 marginTop: '8px',
               }}
             >
-              {profileMenu.map((profileMenu) => (
+              {profileMenu.map((menuItem) => (
                 <MenuItem
-                  key={profileMenu}
-                  onClick={handleCloseProfileMenu}
+                  key={menuItem.label}
+                  onClick={() => {
+                    if (menuItem.route === '/logout') {
+                      signOut(); // Call signOut function if logging out
+                    } else {
+                      handleCloseProfileMenu();
+                      navigate(menuItem.route); // Navigate to the specified route
+                    }
+                  }}
                   sx={{ marginRight: 2 }}
                 >
-                  <ListItemText>{profileMenu}</ListItemText>
+                  <ListItemText>{menuItem.label}</ListItemText>
                 </MenuItem>
               ))}
             </Menu>
