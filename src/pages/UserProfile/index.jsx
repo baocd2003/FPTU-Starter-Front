@@ -10,6 +10,7 @@ import './index.css';
 
 function UserProfile() {
     const [isEditProfile, setIsEditProfile] = useState(false);
+    const [selectedGender, setSelectedGender] = useState('');
 
     //Gender
     const gender = [
@@ -17,6 +18,10 @@ function UserProfile() {
         'Nữ',
         'Khác'
     ];
+
+    const handleGenderChange = (event) => {
+        setSelectedGender(event.target.value);
+    };
 
     const handleEditProfile = () => {
         setIsEditProfile(!isEditProfile);
@@ -127,6 +132,8 @@ function UserProfile() {
                                     </InputLabel>
                                     <Select
                                         disabled={!isEditProfile}
+                                        value={selectedGender}
+                                        onChange={handleGenderChange}
                                         input={<OutlinedInput label="Giới tính" />}
                                         sx={{
                                             textAlign: 'left',
