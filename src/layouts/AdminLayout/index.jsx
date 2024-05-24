@@ -1,19 +1,17 @@
-import * as React from "react";
+import React, { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import logo from "../../assets/logo.png";
+import FSUAppBar from "../../components/AppBar";
 import { Container, Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
-import Button from "@mui/material/Button";
 import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import QueryStatsIcon from "@mui/icons-material/QueryStats";
-import MailIcon from "@mui/icons-material/Mail";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ProjectIcon from "@mui/icons-material/Folder";
 import TransactionIcon from "@mui/icons-material/AttachMoney";
@@ -21,6 +19,16 @@ import SettingsIcon from "@mui/icons-material/Settings";
 
 function AdminLayout() {
   const navigate = useNavigate();
+  const [selectedItem, setSelectedItem] = useState("Tổng quan");
+
+  //title list
+  const titleList = [
+    "Tổng quan",
+    "Tài khoản",
+    "Dự án",
+    "Giao dịch",
+    "Cấu hình",
+  ];
 
   //icon mapping
   const iconMapping = {
@@ -32,11 +40,26 @@ function AdminLayout() {
   };
 
   //navigate functions
-  const navigateDashboard = () => navigate("/admin/dashboard");
-  const navigateAccounts = () => navigate("/admin/accounts");
-  const navigateProjects = () => navigate("/admin/projects");
-  const navigateTransactions = () => navigate("/admin/transactions");
-  const navigateConfiguration = () => navigate("/admin/configuration");
+  const navigateDashboard = () => {
+    navigate("/admin/dashboard");
+    setSelectedItem(titleList[0]);
+  };
+  const navigateAccounts = () => {
+    navigate("/admin/accounts");
+    setSelectedItem(titleList[1]);
+  };
+  const navigateProjects = () => {
+    navigate("/admin/projects");
+    setSelectedItem(titleList[2]);
+  };
+  const navigateTransactions = () => {
+    navigate("/admin/transactions");
+    setSelectedItem(titleList[3]);
+  };
+  const navigateConfiguration = () => {
+    navigate("/admin/configuration");
+    setSelectedItem(titleList[4]);
+  };
 
   //navigate mapping
   const onClickMapping = {
@@ -47,32 +70,51 @@ function AdminLayout() {
     4: navigateConfiguration,
   };
 
+  const DrawerList = (
+    <Box sx={{ width: 250 }}>
+      <List>
+        {titleList.map((text, index) => (
+          <ListItem key={text} onClick={onClickMapping[index]}>
+            <ListItemButton>
+              <ListItemIcon>{iconMapping[index]}</ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
+
   return (
-    <Container>
-      <Grid container sx={{ height: "100%" }}>
-        <Grid xs={2} item>
-          {/* <Sidebar>
-            <Menu>
-              {["Tổng quan", "Tài khoản", "Dự án", "Giao dịch", "Cấu hình"].map(
-                (text, index) => (
-                  <MenuItem
-                    key={text}
-                    onClick={onClickMapping[index]}
-                    className="w-full"
-                  >
-                    {text}
-                  </MenuItem>
-                )
-              )}
-            </Menu>
-          </Sidebar> */}
-          Helloooooooooooooooooooo
-        </Grid>
-        <Grid xs={10} item>
-          <Outlet></Outlet>
-        </Grid>
+    <Grid container sx={{ height: "100%", overflow: "hidden" }}>
+      <Grid xs={2} item sx={{ height: "100%" }}>
+        <Drawer
+          variant="permanent"
+          open={true}
+          sx={{
+            "& .MuiDrawer-paper": {
+              position: "relative",
+              width: 250,
+              height: "100vh", // Ensures the Drawer takes up full height
+              backgroundColor: "white",
+              boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
+              zIndex: 1,
+              display: "flex",
+              flexDirection: "column",
+              overflow: "hidden",
+            },
+          }}
+        >
+          <div className="w-full flex justify-center">
+            <img src={logo} alt="logo" className="w-[160px] h-[160px]" />
+          </div>
+          {DrawerList}
+        </Drawer>
       </Grid>
-    </Container>
+      <Grid xs={10} item sx={{ height: "100vh", overflow: "auto" }}>
+        <Outlet selectedItem={selectedItem} />
+      </Grid>
+    </Grid>
   );
 }
 
