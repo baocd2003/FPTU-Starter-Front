@@ -12,13 +12,14 @@ import FSUAppBar from '../../components/AppBar';
 import BannerCarousel from '../../components/BannerCarousel';
 import Footer from '../../components/Footer';
 import ProjectCard from '../../components/ProjectCard';
+import { useNavigate } from "react-router-dom";
 import './index.css';
 
 function HomePage() {
 	useEffect(() => {
 		Aos.init({ duration: 2000 });
 	}, []);
-
+	const navigate = useNavigate();
 	console.log(Cookies.get('_auth'));
 
 	return (
