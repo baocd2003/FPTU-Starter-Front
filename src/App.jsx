@@ -12,6 +12,8 @@ import SignUp from "./pages/SignUp";
 import UserBookmarkProject from "./pages/UserBookmarkProject";
 import UserProfile from "./pages/UserProfile";
 import AdminProjects from "./pages/AdminProjects";
+import CreateProject from "./pages/CreateProject";
+import ChooseCategories from "./pages/CreateProject/ChooseCategories";
 
 function App() {
   const theme = createTheme({
@@ -44,6 +46,9 @@ function App() {
           <Route path="/admin" element={<Navigate to="/admin/dashboard" />} />
           <Route path="/admin/projects" element={<AdminProjects />} />
         </Route>
+        <Route path="/create-project" element={<CreateProject/>}/>
+        <Route path="/choose-cate" element={<ChooseCategories/>}/>
+
       </Routes>
     </ThemeProvider>
   );
