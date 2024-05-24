@@ -16,9 +16,9 @@ import UserProfile from "./pages/UserProfile";
 function App() {
   const theme = createTheme({
     typography: {
-      fontFamily: ["Archivo", "sans-serif"].join(","),
+      fontFamily: ["Inter", "sans-serif"].join(","),
       allVariants: {
-        fontFamily: "Archivo, sans-serif !important",
+        fontFamily: "Inter, sans-serif !important",
       },
     },
   });
