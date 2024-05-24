@@ -1,0 +1,26 @@
+@media (min-width: 0px) {
+    .adminLayoutContainer {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+}
+
+.admin-menu {
+    width: 100% !important;
+    background-color: #FFFFFF !important;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    height: 100vh;
+    /* hết cứu */
+}
+
+.admin-menu ul {
+    background-color: #FFFFFF !important;
+}
+
+.menu-item {
+    width: 100% !important;
+    height: 64px;
+}

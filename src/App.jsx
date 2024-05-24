@@ -3,9 +3,10 @@ import "@fontsource/archivo";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
+import AdminLayout from "./layouts/AdminLayout";
 import AuthenticationLayout from "./layouts/AuthenticationLayout";
 import UserProfileLayout from "./layouts/UserProfileLayout";
-import AdminLayout from "./layouts/AdminLayout";
+import AdminProjects from "./pages/AdminProjects";
 import HomePage from "./pages/HomePage";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
@@ -14,6 +15,7 @@ import UserProfile from "./pages/UserProfile";
 import AdminProjects from "./pages/AdminProjects";
 import CreateProject from "./pages/CreateProject";
 import ChooseCategories from "./pages/CreateProject/ChooseCategories";
+
 
 function App() {
   const theme = createTheme({
@@ -41,6 +43,10 @@ function App() {
         <Route element={<UserProfileLayout />}>
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/bookmarkProject" element={<UserBookmarkProject />} />
+          <Route element={<AuthOutlet fallbackPath="/login" />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/register" element={<SignUp />} />
+          </Route>
         </Route>
         <Route element={<AdminLayout />}>
           <Route path="/admin" element={<Navigate to="/admin/dashboard" />} />
