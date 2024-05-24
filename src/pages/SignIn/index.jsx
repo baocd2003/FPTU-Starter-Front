@@ -352,7 +352,7 @@ const GetGoogleUser = () => {
             console.log(res);
             if (res.data == false) {
               const jsonData = {
-                accountName: response.data.email,
+                accountName: response.data.name,
                 name: response.data.name.replace(/\s+/g, ""),
                 email: response.data.email,
                 password: response.data.email.toUpperCase() + "a",
