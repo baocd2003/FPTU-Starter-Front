@@ -1,23 +1,14 @@
-import * as React from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
-import logo from "../../assets/logo.png";
-import { Container, Grid } from "@mui/material";
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import Button from "@mui/material/Button";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import QueryStatsIcon from "@mui/icons-material/QueryStats";
-import MailIcon from "@mui/icons-material/Mail";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import ProjectIcon from "@mui/icons-material/Folder";
 import TransactionIcon from "@mui/icons-material/AttachMoney";
+import ProjectIcon from "@mui/icons-material/Folder";
+import QueryStatsIcon from "@mui/icons-material/QueryStats";
 import SettingsIcon from "@mui/icons-material/Settings";
+import { Container, Grid } from "@mui/material";
+import * as React from "react";
+import { Menu, MenuItem, Sidebar } from "react-pro-sidebar";
+import { Outlet, useNavigate } from "react-router-dom";
+import logo from "../../assets/logo.png";
+import "./index.css";
 
 function AdminLayout() {
   const navigate = useNavigate();
@@ -48,28 +39,30 @@ function AdminLayout() {
   };
 
   return (
-    <Container>
+    <Container className="adminLayoutContainer">
       <Grid container sx={{ height: "100%" }}>
-        <Grid xs={2} item>
-          {/* <Sidebar>
-            <Menu>
+        <Grid xs={3} item>
+          <Sidebar className="admin-menu">
+            <Menu className="admin-menu">
+              <div className="w-full flex justify-center mb-[48px]">
+                <img src={logo} className="w-[160px] h-[160px]" />
+              </div>
               {["Tổng quan", "Tài khoản", "Dự án", "Giao dịch", "Cấu hình"].map(
                 (text, index) => (
                   <MenuItem
                     key={text}
                     onClick={onClickMapping[index]}
-                    className="w-full"
+                    className="menu-item"
                   >
                     {text}
                   </MenuItem>
                 )
               )}
             </Menu>
-          </Sidebar> */}
-          Helloooooooooooooooooooo
+          </Sidebar>
         </Grid>
-        <Grid xs={10} item>
-          <Outlet></Outlet>
+        <Grid xs={9} item>
+          <Outlet />
         </Grid>
       </Grid>
     </Container>
