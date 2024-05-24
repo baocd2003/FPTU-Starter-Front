@@ -19,6 +19,8 @@ import "react-toastify/dist/ReactToastify.css";
 function SignIn() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+
     const signIn = useSignIn();
     const navigate = useNavigate();
     const notify = (mess) => {

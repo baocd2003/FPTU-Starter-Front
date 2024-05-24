@@ -1,28 +1,23 @@
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import EditIcon from "@mui/icons-material/Edit";
-import LockIcon from "@mui/icons-material/Lock";
-import {
-  Button,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  OutlinedInput,
-  Select,
-  TextField,
-} from "@mui/material";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import React, { useState } from "react";
-import "./index.css";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import EditIcon from '@mui/icons-material/Edit';
+import LockIcon from '@mui/icons-material/Lock';
+import { Button, FormControl, Grid, InputLabel, MenuItem, OutlinedInput, Select, TextField } from "@mui/material";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import React, { useState } from 'react';
+import './index.css';
 
 function UserProfile() {
     const [isEditProfile, setIsEditProfile] = useState(false);
     const [selectedGender, setSelectedGender] = useState('');
 
-  //Gender
-  const gender = ["Nam", "Nữ", "Khác"];
+    //Gender
+    const gender = [
+        'Nam',
+        'Nữ',
+        'Khác'
+    ];
 
     const handleGenderChange = (event) => {
         setSelectedGender(event.target.value);
@@ -305,112 +300,7 @@ function UserProfile() {
                 }
             </div>
         </div>
-        {!isEditProfile ? (
-          <div className="mt-[48px] flex justify-center profileButton">
-            <Button
-              variant="contained"
-              startIcon={<LockIcon />}
-              disabled
-              sx={{
-                color: "#44494D",
-                backgroundColor: "white",
-                textTransform: "none !important",
-                "&:hover": {
-                  backgroundColor: "#DD5746",
-                  color: "white",
-                },
-                "&:active": {
-                  outline: "none !important",
-                },
-                "&:focus": {
-                  outline: "none !important",
-                },
-                fontWeight: "bold",
-                width: "160px",
-              }}
-            >
-              Đổi mật khẩu
-            </Button>
-            <Button
-              variant="contained"
-              startIcon={<EditIcon />}
-              onClick={handleEditProfile}
-              sx={{
-                color: "#44494D",
-                backgroundColor: "white",
-                textTransform: "none !important",
-                "&:hover": {
-                  backgroundColor: "#FBB03B",
-                  color: "white",
-                },
-                "&:active": {
-                  outline: "none !important",
-                },
-                "&:focus": {
-                  outline: "none !important",
-                },
-                fontWeight: "bold",
-                width: "160px",
-              }}
-            >
-              Chỉnh sửa
-            </Button>
-          </div>
-        ) : (
-          <div className="mt-[48px] flex justify-center profileButton">
-            <Button
-              variant="contained"
-              startIcon={<ArrowBackIcon />}
-              onClick={handleEditProfile}
-              sx={{
-                color: "#44494D",
-                backgroundColor: "white",
-                textTransform: "none !important",
-                "&:hover": {
-                  backgroundColor: "#E2E2E2",
-                  color: "#44494D",
-                },
-                "&:active": {
-                  outline: "none !important",
-                },
-                "&:focus": {
-                  outline: "none !important",
-                },
-                fontWeight: "bold",
-                width: "160px",
-              }}
-            >
-              Bỏ qua
-            </Button>
-            <Button
-              variant="contained"
-              disabled
-              startIcon={<EditIcon />}
-              sx={{
-                color: "#44494D",
-                backgroundColor: "white",
-                textTransform: "none !important",
-                "&:hover": {
-                  backgroundColor: "#FBB03B",
-                  color: "white",
-                },
-                "&:active": {
-                  outline: "none !important",
-                },
-                "&:focus": {
-                  outline: "none !important",
-                },
-                fontWeight: "bold",
-                width: "160px",
-              }}
-            >
-              Lưu chỉnh sửa
-            </Button>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+    )
 }
 
-export default UserProfile;
+export default UserProfile

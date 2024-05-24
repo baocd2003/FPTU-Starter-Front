@@ -41,7 +41,8 @@ function SignUp() {
             password: data.get('password'),
         });
         const jsonData = {
-            name: accountName,
+            accountName: accountName,
+            name: userName,
             email: email,
             password: password,
             confirmPassword: confirmPassword
