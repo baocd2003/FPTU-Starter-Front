@@ -32,7 +32,8 @@
     "react-pro-sidebar": "^1.1.0",
     "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^6.23.0",
-    "react-toastify": "^10.0.5"
+    "react-toastify": "^10.0.5",
+    "sweetalert2": "^11.11.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
