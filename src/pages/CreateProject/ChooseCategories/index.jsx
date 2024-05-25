@@ -10,8 +10,10 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Cookies from 'js-cookie';
 import { useNavigate } from "react-router-dom";
+import { FaLongArrowAltRight } from "react-icons/fa";
 import Button from '@mui/material/Button';
-import CreateProject from '..';
+import Swal from 'sweetalert2';
+import './index.css'
 function ChooseCategories() {
     const [categories, setCategories] = useState([]);
     const [selectedCate, setSelectedCate] = useState("");
@@ -54,7 +56,7 @@ function ChooseCategories() {
         <div className='home'>
             <FSUAppBar isLogined={Cookies.get('_auth') !== undefined} />
             <div className="mt-[100px]">
-                <div className='flex justify-center items-center md:h-[300px] h-fit md:min-h-[300px] xl:min-h-0 pt-[100px]'>
+                <div className='flex flex-col justify-center items-center md:h-[300px] h-fit md:min-h-[300px] xl:min-h-0 pt-[100px]'>
                     <div className='xl:w-screen/4*3 max-w-fit'>
                         <Container className="w-full flex flex-column justify-center items-center">
                             <Typography variant='h4' sx={{ marginBottom: '2rem !important' }}>Trước tiên, hãy thiết lập dự án</Typography>
@@ -76,7 +78,7 @@ function ChooseCategories() {
                             </FormControl>
                         </Container>
                     </div>
-                    <Button onClick={handleNext}>Next</Button>
+                    <Typography className="flex justify-end items-center next-but text-right w-full container p-6 mt-6" onClick={handleNext}>Tiếp <FaLongArrowAltRight /></Typography>
                    
                 </div>
             </div>
