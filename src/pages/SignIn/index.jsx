@@ -83,8 +83,8 @@ function SignIn() {
           }, 0);
         });
         console.log(Cookies.get("_auth"));
-        setIsLoading(false);
       }
+      setIsLoading(false);
     })
   };
 
