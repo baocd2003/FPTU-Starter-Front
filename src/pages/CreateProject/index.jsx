@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from 'react'
-import FSUAppBar from '../../components/AppBar';
-import Cookies from 'js-cookie';
-import { useLocation } from 'react-router-dom';
+import { Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
-import ChooseCategories from './ChooseCategories';
-import { Typography } from '@mui/material';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs from 'dayjs';
-import { FilePond, registerPlugin } from 'react-filepond'
-import 'filepond/dist/filepond.min.css'
-import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation'
-import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
-import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import axios from 'axios';
+import dayjs from 'dayjs';
+import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+import 'filepond/dist/filepond.min.css';
+import Cookies from 'js-cookie';
+import React, { useEffect, useState } from 'react';
+import { FilePond, registerPlugin } from 'react-filepond';
+import { useLocation } from 'react-router-dom';
+import FSUAppBar from '../../components/AppBar';
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
 function CreateProject({ selectedCate }) {
 
@@ -179,7 +179,7 @@ function CreateProject({ selectedCate }) {
       <FSUAppBar isLogined={Cookies.get('_auth') !== undefined} />
       <div className="mt-[100px]">
         <div className='flex justify-center items-center md:h-[1200px] h-fit md:min-h-[1200px] xl:min-h-0 pt-[100px]'>
-          <div className='xl:w-screen/4*3 max-w-fit'>
+          <div className='max-w-fit'>
             <Typography sx={{ marginBottom: '1rem', fontSize: '40px' }} variant='h4'>Thông tin cơ bản</Typography>
             <Typography sx={{ marginBottom: '3rem' }}>Đặt tên cho dự án của bạn, tải lên hình ảnh hoặc video và thiết lập chi tiết chiến dịch của bạn.</Typography>
 
