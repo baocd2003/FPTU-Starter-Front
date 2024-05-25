@@ -19,7 +19,6 @@ import SettingsIcon from "@mui/icons-material/Settings";
 
 function AdminLayout() {
   const navigate = useNavigate();
-  const [selectedItem, setSelectedItem] = useState("Tổng quan");
 
   //title list
   const titleList = [
@@ -42,23 +41,18 @@ function AdminLayout() {
   //navigate functions
   const navigateDashboard = () => {
     navigate("/admin/dashboard");
-    setSelectedItem(titleList[0]);
   };
   const navigateAccounts = () => {
     navigate("/admin/accounts");
-    setSelectedItem(titleList[1]);
   };
   const navigateProjects = () => {
     navigate("/admin/projects");
-    setSelectedItem(titleList[2]);
   };
   const navigateTransactions = () => {
     navigate("/admin/transactions");
-    setSelectedItem(titleList[3]);
   };
   const navigateConfiguration = () => {
     navigate("/admin/configuration");
-    setSelectedItem(titleList[4]);
   };
 
   //navigate mapping
@@ -112,7 +106,7 @@ function AdminLayout() {
         </Drawer>
       </Grid>
       <Grid xs={10} item sx={{ height: "100vh", overflow: "auto" }}>
-        <Outlet selectedItem={selectedItem} />
+        <Outlet />
       </Grid>
     </Grid>
   );
