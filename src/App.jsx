@@ -12,7 +12,6 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import UserBookmarkProject from "./pages/UserBookmarkProject";
 import UserProfile from "./pages/UserProfile";
-import AdminProjects from "./pages/AdminProjects";
 import CreateProject from "./pages/CreateProject";
 import ChooseCategories from "./pages/CreateProject/ChooseCategories";
 

@@ -22,6 +22,7 @@ function SignIn() {
     const [isLoading, setIsLoading] = useState(false);
 
     const signIn = useSignIn();
+    
     const navigate = useNavigate();
     const notify = (mess) => {
         toast.warn(mess, {
@@ -31,6 +32,10 @@ function SignIn() {
     const handleRegister = () => {
         navigate('/register');
     };
+    function expireCookie(name,value,expiresIn) {
+        const expiration = new Date(Date.now() + expiresIn * 1000);
+        document.cookie = `${name}=${value}; expires=${expiration.toUTCString()}; path=/`;
+      }
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -58,6 +63,7 @@ function SignIn() {
                     authState: { email: jsonData.email }
                 })
                 console.log(Cookies.get("_auth"));
+                expireCookie("_auth",res.data._data.token, 3600);
                 if (Cookies.get("_auth") != undefined) {
                     navigate("/");
                 }

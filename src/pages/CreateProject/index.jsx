@@ -15,12 +15,15 @@ import 'filepond/dist/filepond.min.css'
 import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation'
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
-import userApiInstace from '../../utils/apiInstance/userApiInstace';
 import axios from 'axios';
+import Swal from 'sweetalert2';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
 function CreateProject({ selectedCate }) {
 
   //init state project
+  const [isLoading,setIsLoading] = useState(false);
   const [thumbnailFile, setThumbnailFile] = useState([]);
   const [liveDemoFile, setLiveDemoFile] = useState([]);
   const [videoSrc, seVideoSrc] = useState("");
@@ -47,8 +50,8 @@ function CreateProject({ selectedCate }) {
   useEffect(() => {
     const fetchUser = async () => {
       await axios.get("https://localhost:7235/api/UserManagement/user-profile", {
-        headers : {
-          Authorization : `Bearer ${token}`,
+        headers: {
+          Authorization: `Bearer ${token}`,
         }
       }).then(res => {
         console.log(res.data);
@@ -56,7 +59,7 @@ function CreateProject({ selectedCate }) {
       })
     }
     fetchUser();
-  },[token])
+  }, [token])
   const selectedCategory = location.state?.selectedCate;
   console.log(selectedCategory);
 
@@ -80,7 +83,7 @@ function CreateProject({ selectedCate }) {
   //add project
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setIsLoading(true);
     try {
       thumbnailFormData.set('thumbnailFile', thumbnailFile[0].file);
       liveDemoFormData.set('liveDemoFile', liveDemoFile[0].file);
@@ -102,14 +105,15 @@ function CreateProject({ selectedCate }) {
       const projectAddRequest = {
         ProjectName: projectName,
         ProjectDescription: projectDescription,
-        StartDate: `${startDate.get('year')} - ${startDate.get('month') + 1 < 10 ? `0${startDate.get('month') + 1}`: startDate.get('month') + 1} - ${startDate.get('date')}`,
-        EndDate: `${endDate.get('year')} - ${endDate.get('month') + 1 < 10 ? `0${endDate.get('month') + 1}`: endDate.get('month') + 1} - ${endDate.get('date')}`,
+        StartDate: `${startDate.get('year')} - ${startDate.get('month') + 1 < 10 ? `0${startDate.get('month') + 1}` : startDate.get('month') + 1} - ${startDate.get('date')}`,
+        EndDate: `${endDate.get('year')} - ${endDate.get('month') + 1 < 10 ? `0${endDate.get('month') + 1}` : endDate.get('month') + 1} - ${endDate.get('date')}`,
         ProjectTarget: projectTarget,
         ProjectBalance: projectBalance,
         ProjectBankAccount: projectBankAccount,
         ProjectOwnerEmail: po.userEmail,
         CategoryId: selectedCategory,
         ProjectThumbnail: thumbnailData,
+        ProjectStatus: 1,
         ProjectLiveDemo: liveDemoData,
         Packages: [
           {
@@ -133,9 +137,9 @@ function CreateProject({ selectedCate }) {
         } else {
           console.error('Error adding project:', response.statusText); // Log error message from response
         }
-        return response; 
+        return response;
       })
-        .catch(error => {  
+        .catch(error => {
           console.error('Network error or other error:', error); // Log the error object
         });
 
@@ -144,6 +148,20 @@ function CreateProject({ selectedCate }) {
       }
 
       const data = await response.json();
+      if(data){
+        setIsLoading(false);
+        Swal.fire({
+          title: "Thông báo",
+          text: "Thành công tạo dự án",
+          icon: "success",
+          showCancelButton: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = "/";
+          }
+        });
+      }
+
       console.log('Project added successfully:', data);
     } catch (error) {
       console.error('Error adding project:', error);
@@ -152,6 +170,12 @@ function CreateProject({ selectedCate }) {
 
   return (
     <div className="home">
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <FSUAppBar isLogined={Cookies.get('_auth') !== undefined} />
       <div className="mt-[100px]">
         <div className='flex justify-center items-center md:h-[1200px] h-fit md:min-h-[1200px] xl:min-h-0 pt-[100px]'>
@@ -185,7 +209,14 @@ function CreateProject({ selectedCate }) {
               <Grid container className='items-center justify-center mb-6' spacing={2}>
                 <Grid item xs={6} className="text-left">
                   Mô tả dự án
+                  <Typography sx={{ fontSize: '14px', opacity: '0.5' }}>Viết tiêu đề và phụ đề rõ ràng, ngắn gọn để giúp mọi người nhanh chóng hiểu được dự án của bạn. Cả hai sẽ
+                    xuất hiện trên các trang dự án và trước khi ra mắt của bạn.
+                  </Typography>
+                  <Typography sx={{ fontSize: '14px', opacity: '0.5' }}>Những người ủng hộ tiềm năng cũng sẽ nhìn thấy chúng nếu dự án của bạn xuất hiện trên các trang danh mục, kết quả tìm kiếm
+                    hoặc trong email chúng tôi gửi tới cộng đồng của mình.
+                  </Typography>
                 </Grid>
+                
                 <Grid item xs={6} className="text-left">
                   <TextField
                     fullWidth
@@ -223,19 +254,13 @@ function CreateProject({ selectedCate }) {
                       onChange={(newValue) => setEndDate(newValue)}
                     />
                   </LocalizationProvider>
-
                 </Grid>
               </Grid>
               <br />
               <Grid container className='items-center justify-center mb-6' spacing={2}>
                 <Grid item xs={6} className="text-left">
                   <Typography sx={{ fontSize: '16px', marginBottom: '1rem' }}>Mục tiêu dự án</Typography>
-                  <Typography sx={{ fontSize: '14px', opacity: '0.5' }}>Đặt mục tiêu có thể đạt được bao gồm
-                    những gì bạn cần để hoàn thành dự án của mình.
-                  </Typography>
-                  <Typography sx={{ fontSize: '14px', opacity: '0.5' }}>Nguồn tài trợ là tất cả hoặc không có gì. Nếu bạn không đạt
-                    được mục tiêu của mình, bạn sẽ không nhận được tiền.
-                  </Typography>
+                  
                 </Grid>
                 <Grid item xs={6} className="text-left">
                   <TextField
@@ -248,12 +273,19 @@ function CreateProject({ selectedCate }) {
                 </Grid>
               </Grid>
               <br />
-              
+
               <br />
               <Grid container className='items-center justify-center mb-6' spacing={2}>
                 <Grid className="text-left" item xs={6}>
                   <Typography>Hình ảnh dự án</Typography>
+                  <Typography sx={{ fontSize: '14px', opacity: '0.5' }}>Viết tiêu đề và phụ đề rõ ràng, ngắn gọn để giúp mọi người nhanh chóng hiểu được dự án của bạn. Cả hai sẽ
+                    xuất hiện trên các trang dự án và trước khi ra mắt của bạn.
+                  </Typography>
+                  <Typography sx={{ fontSize: '14px', opacity: '0.5' }}>Những người ủng hộ tiềm năng cũng sẽ nhìn thấy chúng nếu dự án của bạn xuất hiện trên các trang danh mục, kết quả tìm kiếm
+                    hoặc trong email chúng tôi gửi tới cộng đồng của mình.
+                  </Typography>
                 </Grid>
+                
                 <Grid className="text-left" item xs={6}>
                   <FilePond
                     files={thumbnailFile}
@@ -268,8 +300,8 @@ function CreateProject({ selectedCate }) {
                 </Grid>
               </Grid>
               <Grid container className='items-center justify-center mb-6' spacing={2}>
-                <Grid item xs={6}>
-                  <Typography>Live Demo</Typography>
+                <Grid  clasName="text-left" item xs={6}>
+                  <Typography sx={{textAlign :'left !important'}} clasName="text-left">Live Demo</Typography>
                 </Grid>
                 <Grid item xs={6}>
                   <FilePond
@@ -281,6 +313,7 @@ function CreateProject({ selectedCate }) {
                     name="files"
                     labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
                   />
+
                 </Grid>
               </Grid>
               {/* <label>ThumbNail</label>
