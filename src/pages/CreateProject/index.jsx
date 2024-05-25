@@ -1,22 +1,20 @@
-import React, { useState, useEffect } from 'react'
-import FSUAppBar from '../../components/AppBar';
-import Cookies from 'js-cookie';
-import { useLocation } from 'react-router-dom';
+import { Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
-import ChooseCategories from './ChooseCategories';
-import { Typography } from '@mui/material';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs from 'dayjs';
-import { FilePond, registerPlugin } from 'react-filepond'
-import 'filepond/dist/filepond.min.css'
-import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation'
-import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
-import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
-import userApiInstace from '../../utils/apiInstance/userApiInstace';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import axios from 'axios';
+import dayjs from 'dayjs';
+import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+import 'filepond/dist/filepond.min.css';
+import Cookies from 'js-cookie';
+import React, { useEffect, useState } from 'react';
+import { FilePond, registerPlugin } from 'react-filepond';
+import { useLocation } from 'react-router-dom';
+import FSUAppBar from '../../components/AppBar';
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
 function CreateProject({ selectedCate }) {
 
@@ -47,8 +45,8 @@ function CreateProject({ selectedCate }) {
   useEffect(() => {
     const fetchUser = async () => {
       await axios.get("https://localhost:7235/api/UserManagement/user-profile", {
-        headers : {
-          Authorization : `Bearer ${token}`,
+        headers: {
+          Authorization: `Bearer ${token}`,
         }
       }).then(res => {
         console.log(res.data);
@@ -56,7 +54,7 @@ function CreateProject({ selectedCate }) {
       })
     }
     fetchUser();
-  },[token])
+  }, [token])
   const selectedCategory = location.state?.selectedCate;
   console.log(selectedCategory);
 
@@ -102,8 +100,8 @@ function CreateProject({ selectedCate }) {
       const projectAddRequest = {
         ProjectName: projectName,
         ProjectDescription: projectDescription,
-        StartDate: `${startDate.get('year')} - ${startDate.get('month') + 1 < 10 ? `0${startDate.get('month') + 1}`: startDate.get('month') + 1} - ${startDate.get('date')}`,
-        EndDate: `${endDate.get('year')} - ${endDate.get('month') + 1 < 10 ? `0${endDate.get('month') + 1}`: endDate.get('month') + 1} - ${endDate.get('date')}`,
+        StartDate: `${startDate.get('year')} - ${startDate.get('month') + 1 < 10 ? `0${startDate.get('month') + 1}` : startDate.get('month') + 1} - ${startDate.get('date')}`,
+        EndDate: `${endDate.get('year')} - ${endDate.get('month') + 1 < 10 ? `0${endDate.get('month') + 1}` : endDate.get('month') + 1} - ${endDate.get('date')}`,
         ProjectTarget: projectTarget,
         ProjectBalance: projectBalance,
         ProjectBankAccount: projectBankAccount,
@@ -133,9 +131,9 @@ function CreateProject({ selectedCate }) {
         } else {
           console.error('Error adding project:', response.statusText); // Log error message from response
         }
-        return response; 
+        return response;
       })
-        .catch(error => {  
+        .catch(error => {
           console.error('Network error or other error:', error); // Log the error object
         });
 
@@ -155,7 +153,7 @@ function CreateProject({ selectedCate }) {
       <FSUAppBar isLogined={Cookies.get('_auth') !== undefined} />
       <div className="mt-[100px]">
         <div className='flex justify-center items-center md:h-[1200px] h-fit md:min-h-[1200px] xl:min-h-0 pt-[100px]'>
-          <div className='xl:w-screen/4*3 max-w-fit'>
+          <div className='max-w-fit'>
             <Typography sx={{ marginBottom: '1rem', fontSize: '40px' }} variant='h4'>Thông tin cơ bản</Typography>
             <Typography sx={{ marginBottom: '3rem' }}>Đặt tên cho dự án của bạn, tải lên hình ảnh hoặc video và thiết lập chi tiết chiến dịch của bạn.</Typography>
 
@@ -248,7 +246,7 @@ function CreateProject({ selectedCate }) {
                 </Grid>
               </Grid>
               <br />
-              
+
               <br />
               <Grid container className='items-center justify-center mb-6' spacing={2}>
                 <Grid className="text-left" item xs={6}>
