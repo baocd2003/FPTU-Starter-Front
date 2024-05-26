@@ -293,143 +293,143 @@ function SignIn() {
 }
 
 const handleGoogleLogin = () => {
-    const oauth2Endpoint = "https://accounts.google.com/o/oauth2/v2/auth";
-    const CLIENT_ID =
-        "252559592629-ccrsf6knt2jcvo4b706geb6ubrcn4ojk.apps.googleusercontent.com";
-    const REDIRECTED_URL = "http://localhost:5173/login";
+  const oauth2Endpoint = "https://accounts.google.com/o/oauth2/v2/auth";
+  const CLIENT_ID =
+    "252559592629-ccrsf6knt2jcvo4b706geb6ubrcn4ojk.apps.googleusercontent.com";
+  const REDIRECTED_URL = "http://localhost:5173/login";
 
-    const form = document.createElement("form");
-    form.setAttribute("method", "GET");
-    form.setAttribute("action", oauth2Endpoint);
+  const form = document.createElement("form");
+  form.setAttribute("method", "GET");
+  form.setAttribute("action", oauth2Endpoint);
 
-    var params = {
-        client_id: CLIENT_ID,
-        redirect_uri: REDIRECTED_URL,
-        response_type: "token",
-        scope: "openid profile email",
-        include_granted_scopes: "true",
-        state: "somerandomstatevalue",
-    };
+  var params = {
+    client_id: CLIENT_ID,
+    redirect_uri: REDIRECTED_URL,
+    response_type: "token",
+    scope: "openid profile email",
+    include_granted_scopes: "true",
+    state: "somerandomstatevalue",
+  };
 
-    for (var p in params) {
-        var input = document.createElement("input");
-        input.setAttribute("type", "hidden");
-        input.setAttribute("name", p);
-        input.setAttribute("value", params[p]);
-        form.appendChild(input);
-    }
+  for (var p in params) {
+    var input = document.createElement("input");
+    input.setAttribute("type", "hidden");
+    input.setAttribute("name", p);
+    input.setAttribute("value", params[p]);
+    form.appendChild(input);
+  }
 
-    document.body.appendChild(form);
-    form.submit();
+  document.body.appendChild(form);
+  form.submit();
 };
 
 const checkIfRedirectedFromOAuth = () => {
-    var fragmentString = location.hash.substring(1);
-    var params = {};
-    var regex = /([^&=]+)=([^&]*)/g,
-        m;
-    while ((m = regex.exec(fragmentString))) {
-        params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+  var fragmentString = location.hash.substring(1);
+  var params = {};
+  var regex = /([^&=]+)=([^&]*)/g,
+    m;
+  while ((m = regex.exec(fragmentString))) {
+    params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+  }
+  if (Object.keys(params).length > 0 && params["state"]) {
+    if (params["state"] == "somerandomstatevalue") {
+      localStorage.setItem("oauth2-test-params", JSON.stringify(params));
+      GetGoogleUser();
+    } else {
+      console.log("State mismatch. Possible CSRF attack");
     }
-    if (Object.keys(params).length > 0 && params["state"]) {
-        if (params["state"] == "somerandomstatevalue") {
-            localStorage.setItem("oauth2-test-params", JSON.stringify(params));
-            GetGoogleUser();
-        } else {
-            console.log("State mismatch. Possible CSRF attack");
-        }
-    }
+  }
 }
 
 const GetGoogleUser = () => {
-    const signIn = useSignIn();
-    const navigate = useNavigate();
-    const params = JSON.parse(localStorage.getItem("oauth2-test-params"));
-    if (params && params["access_token"]) {
-        axios
-            .get("https://www.googleapis.com/oauth2/v3/userinfo", {
-                params: {
-                    access_token: params["access_token"],
-                },
-            })
-            .then((response) => {
-                console.log("Google data: " + JSON.stringify(response.data, null, 2));
+  const signIn = useSignIn();
+  const navigate = useNavigate();
+  const params = JSON.parse(localStorage.getItem("oauth2-test-params"));
+  if (params && params["access_token"]) {
+    axios
+      .get("https://www.googleapis.com/oauth2/v3/userinfo", {
+        params: {
+          access_token: params["access_token"],
+        },
+      })
+      .then((response) => {
+        console.log("Google data: " + JSON.stringify(response.data, null, 2));
 
-                userApiInstace
-                    .get("check-user-exist", {
-                        params: { email: response.data.name },
-                    })
-                    .then((res) => {
-                        console.log(res);
-                        if (res.data == false) {
-                            const jsonData = {
-                                accountName: response.data.email.split('@')[0],
-                                name: response.data.email.split('@')[0],
-                                email: response.data.email,
-                                password: response.data.email.toUpperCase() + "a",
-                                confirmPassword: response.data.email.toUpperCase() + "a",
-                            };
-                            const notify = (mess) => {
-                                toast.warn(mess, {
-                                    position: "bottom-left"
-                                });
-                            }
-                            userApiInstace.post("/register-google", jsonData).then((res) => {
-                                console.log(res.data);
-                                if (res.data._data == null) {
-                                    notify(`${res.data._message[0]}`);
-                                } else {
-                                    signIn({
-                                        auth: {
-                                            token: res.data._data.token,
-                                            type: "Bearer",
-                                        },
-                                        expiresIn: 3600 * 24 * 5,
-                                        tokenType: "Bearer",
-                                        authState: { email: jsonData.email },
-                                    });
-                                    navigate("/home");
-                                }
-                            });
-                        } else {
-                            const jsonData = {
-                                email: response.data.email,
-                                password: response.data.email.toUpperCase() + "a",
-                            };
-                            userApiInstace.post("/login", jsonData).then((res) => {
-                                console.log(res.data);
-                                if (res.data._data == null) {
-                                    notify(`${res.data._message[0]}`);
-                                } else {
-                                    signIn({
-                                        auth: {
-                                            token: res.data._data.token,
-                                            type: "Bearer",
-                                        },
-                                        expiresIn: 3600,
-                                        tokenType: "Bearer",
-                                        authState: { email: jsonData.email },
-                                    });
-                                    console.log(Cookies.get("_auth"));
-                                    if (Cookies.get("_auth") != undefined) {
-                                        navigate("/");
-                                    }
-                                }
-                            });
-                        }
-                    });
-            })
-            .catch((error) => {
-                if (error.response && error.response.status === 401) {
-                    // invalid token => prompt for user permission.
-                    handleGoogleLogin();
+        userApiInstace
+          .get("check-user-exist", {
+            params: { email: response.data.name },
+          })
+          .then((res) => {
+            console.log(res);
+            if (res.data == false) {
+              const jsonData = {
+                accountName: response.data.email.split('@')[0],
+                name: response.data.email.split('@')[0],
+                email: response.data.email,
+                password: response.data.email.toUpperCase() + "a",
+                confirmPassword: response.data.email.toUpperCase() + "a",
+              };
+              const notify = (mess) => {
+                toast.warn(mess, {
+                  position: "bottom-left"
+                });
+              }
+              userApiInstace.post("/register-google", jsonData).then((res) => {
+                console.log(res.data);
+                if (res.data._data == null) {
+                  notify(`${res.data._message[0]}`);
                 } else {
-                    console.error("Error fetching user data:", error);
+                  signIn({
+                    auth: {
+                      token: res.data._data.token,
+                      type: "Bearer",
+                    },
+                    expiresIn: 3600 * 24 * 5,
+                    tokenType: "Bearer",
+                    authState: { email: jsonData.email },
+                  });
+                  navigate("/home");
                 }
-            });
-    } else {
-        handleGoogleLogin();
-    }
+              });
+            } else {
+              const jsonData = {
+                email: response.data.email,
+                password: response.data.email.toUpperCase() + "a",
+              };
+              userApiInstace.post("/login", jsonData).then((res) => {
+                console.log(res.data);
+                if (res.data._data == null) {
+                  notify(`${res.data._message[0]}`);
+                } else {
+                  signIn({
+                    auth: {
+                      token: res.data._data.token,
+                      type: "Bearer",
+                    },
+                    expiresIn: 3600,
+                    tokenType: "Bearer",
+                    authState: { email: jsonData.email },
+                  });
+                  console.log(Cookies.get("_auth"));
+                  if (Cookies.get("_auth") != undefined) {
+                    navigate("/");
+                  }
+                }
+              });
+            }
+          });
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 401) {
+          // invalid token => prompt for user permission.
+          handleGoogleLogin();
+        } else {
+          console.error("Error fetching user data:", error);
+        }
+      });
+  } else {
+    handleGoogleLogin();
+  }
 }
 
 export default SignIn
