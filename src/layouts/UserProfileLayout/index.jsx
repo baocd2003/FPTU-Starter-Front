@@ -94,7 +94,7 @@ function UserProfileLayout() {
                         position: 'relative',
                         width: '100%',
                         height: '320px',
-                        backgroundColor: isImage ? 'transparent' : '#E2E2E2',
+                        backgroundColor: isBgImage ? 'transparent' : '#E2E2E2',
                         borderRadius: '16px',
                     }}
                         className='backgroundImg'

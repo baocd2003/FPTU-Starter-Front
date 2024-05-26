@@ -1,12 +1,10 @@
 import { Typography } from '@mui/material';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import axios from 'axios';
-import Swal from 'sweetalert2';
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import axios from 'axios';
 import dayjs from 'dayjs';
@@ -18,12 +16,14 @@ import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
 import { FilePond, registerPlugin } from 'react-filepond';
 import { useLocation } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import FSUAppBar from '../../components/AppBar';
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
 function CreateProject({ selectedCate }) {
 
   //init state project
-  const [isLoading,setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const [thumbnailFile, setThumbnailFile] = useState([]);
   const [liveDemoFile, setLiveDemoFile] = useState([]);
   const [videoSrc, seVideoSrc] = useState("");
@@ -49,7 +49,7 @@ function CreateProject({ selectedCate }) {
   console.log(token);
   useEffect(() => {
     const fetchUser = async () => {
-      await axios.get("https://localhost:7235/api/UserManagement/user-profile", {
+      await axios.get("https://localhost:7235/api/user/user-profile", {
         headers: {
           Authorization: `Bearer ${token}`,
         }
@@ -62,7 +62,6 @@ function CreateProject({ selectedCate }) {
   }, [token])
   const selectedCategory = location.state?.selectedCate;
   console.log(selectedCategory);
-
   const handleVidChange = (file) => {
     const reader = new FileReader();
 
@@ -148,7 +147,7 @@ function CreateProject({ selectedCate }) {
       }
 
       const data = await response.json();
-      if(data){
+      if (data) {
         setIsLoading(false);
         Swal.fire({
           title: "Thông báo",
@@ -208,15 +207,14 @@ function CreateProject({ selectedCate }) {
 
               <Grid container className='items-center justify-center mb-6' spacing={2}>
                 <Grid item xs={6} className="text-left">
-                  Mô tả dự án
-                  <Typography sx={{ fontSize: '14px', opacity: '0.5' }}>Viết tiêu đề và phụ đề rõ ràng, ngắn gọn để giúp mọi người nhanh chóng hiểu được dự án của bạn. Cả hai sẽ
+
+                  Mô tả dự án<Typography sx={{ fontSize: '14px', opacity: '0.5' }}>Viết tiêu đề và phụ đề rõ ràng, ngắn gọn để giúp mọi người nhanh chóng hiểu được dự án của bạn. Cả hai sẽ
                     xuất hiện trên các trang dự án và trước khi ra mắt của bạn.
                   </Typography>
                   <Typography sx={{ fontSize: '14px', opacity: '0.5' }}>Những người ủng hộ tiềm năng cũng sẽ nhìn thấy chúng nếu dự án của bạn xuất hiện trên các trang danh mục, kết quả tìm kiếm
                     hoặc trong email chúng tôi gửi tới cộng đồng của mình.
                   </Typography>
                 </Grid>
-                
                 <Grid item xs={6} className="text-left">
                   <TextField
                     fullWidth
@@ -260,7 +258,6 @@ function CreateProject({ selectedCate }) {
               <Grid container className='items-center justify-center mb-6' spacing={2}>
                 <Grid item xs={6} className="text-left">
                   <Typography sx={{ fontSize: '16px', marginBottom: '1rem' }}>Mục tiêu dự án</Typography>
-                  
                 </Grid>
                 <Grid item xs={6} className="text-left">
                   <TextField
@@ -268,12 +265,9 @@ function CreateProject({ selectedCate }) {
                     fullWidth
                     value={projectTarget}
                     placeholder='Nhập số tiền'
-                    onChange={(e) => setProjectTarget(e.target.value)}
-                  />
+                    onChange={(e) => setProjectTarget(e.target.value)} />
                 </Grid>
               </Grid>
-              <br />
-
               <br />
               <Grid container className='items-center justify-center mb-6' spacing={2}>
                 <Grid className="text-left" item xs={6}>
@@ -285,7 +279,6 @@ function CreateProject({ selectedCate }) {
                     hoặc trong email chúng tôi gửi tới cộng đồng của mình.
                   </Typography>
                 </Grid>
-                
                 <Grid className="text-left" item xs={6}>
                   <FilePond
                     files={thumbnailFile}
@@ -300,8 +293,8 @@ function CreateProject({ selectedCate }) {
                 </Grid>
               </Grid>
               <Grid container className='items-center justify-center mb-6' spacing={2}>
-                <Grid  clasName="text-left" item xs={6}>
-                  <Typography sx={{textAlign :'left !important'}} clasName="text-left">Live Demo</Typography>
+                <Grid clasName="text-left" item xs={6}>
+                  <Typography sx={{ textAlign: 'left !important' }} clasName="text-left">Live Demo</Typography>
                 </Grid>
                 <Grid item xs={6}>
                   <FilePond
