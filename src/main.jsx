@@ -8,7 +8,7 @@ const store = createStore({
     authName:'_auth',
     authType:'cookie',
     cookieDomain: window.location.hostname,
-    cookieSecure:false
+    cookieSecure:false,
 })
 ReactDOM.createRoot(document.getElementById('root')).render(
     <AuthProvider 

@@ -44,25 +44,29 @@ function FSUAppBar({ isLogined }) {
 
   const token = Cookies.get("_auth");
 
+  const fetchUserProfile = async () => {
+    try {
+      setIsLoading(true);
+      const response = await userManagementApiInstance.get("/user-profile", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response.data != null) {
+        console.log(response.data._data);
+        setUser(response.data._data);
+      }
+    } catch (error) {
+      console.error('Error fetching sample API:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   React.useEffect(() => {
     if (isLogined) {
-      setIsLoading(true);
-      userManagementApiInstance.get("/user-profile",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .then(response => {
-          if (response.data != null) {
-            console.log(response.data._data);
-            setUser(response.data._data);
-            setIsLoading(false)
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching sample API:', error);
-        });
+      fetchUserProfile();
     }
-  }, [isLogined]);
+  }, [isLogined, token]);
 
   //Left menu responsive
   const handleOpenNavMenu = (event) => {
@@ -97,13 +101,13 @@ function FSUAppBar({ isLogined }) {
         showCancelButton: true,
         confirmButtonColor: "#FBB03B",
         cancelButtonColor: "D8D8D8",
-        confirmButtonText: "Có, đăng xuất!",
-        cancelButtonText: "Không, ở lại!",
+        confirmButtonText: "Đăng xuất!",
+        cancelButtonText: "Ở lại!",
         reverseButtons: true
       }).then((result) => {
         if (result.isConfirmed) {
           signOut();
-          window.location.href = "/";
+          window.location.href = "/home";
         }
       });
     } else {
@@ -269,7 +273,7 @@ function FSUAppBar({ isLogined }) {
                   </MenuItem>
                 ))}
               </Menu>
-              <a href='/profile' className='username cursor-pointer text-[#44494D] hover:text-[#FBB03B] hover:underline transition-all duration-300'>{user.accountName}</a>
+              <a onClick={() => navigate("/profile")} className='username cursor-pointer text-[#44494D] hover:text-[#FBB03B] hover:underline transition-all duration-300'>{user.accountName}</a>
             </Box>
               :
               <Button onClick={handleClick} variant="outlined" className='h-[40px] w-[144px] login-button' sx={{ mr: '16px' }}>Đăng nhập</Button>

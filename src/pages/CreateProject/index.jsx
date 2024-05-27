@@ -1,94 +1,67 @@
-import React,{useState} from 'react'
-
-function CreateProject() {
-    const [thumbnailFormData, setThumbNailFormData] = useState(new FormData());
-    const [liveDemoFormData, setLiveDemoFormData] = useState(new FormData());
-    const [projectName, setProjectName] = useState('');
-    const [projectDescription, setProjectDescription] = useState('');
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
-    const [projectTarget, setProjectTarget] = useState('');
-    const [projectBalance, setProjectBalance] = useState('');
-    const [projectBankAccount, setProjectBankAccount] = useState('');
-    const [projectOwnerEmail, setProjectOwnerEmail] = useState('');
-    const [categoryId, setCategoryId] = useState('');
-    const [packageName, setPackageName] = useState('');
-    const [requiredAmount, setRequiredAmount] = useState('');
-    const [limitQuantity, setLimitQuantity] = useState('');
-    const [packageType, setPackageType] = useState('');
-  
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-
-      try {
-        const thumbnailUrl = await fetch('https://localhost:7235/api/projects/add-thumbnail', {
-        method: 'POST',
-        body: thumbnailFormData
-import { Typography } from "@mui/material";
-import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import axios from "axios";
-import Swal from "sweetalert2";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import dayjs from "dayjs";
-import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
-import FilePondPluginImagePreview from "filepond-plugin-image-preview";
-import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
-import "filepond/dist/filepond.min.css";
-import Cookies from "js-cookie";
-import React, { useEffect, useState } from "react";
-import { FilePond, registerPlugin } from "react-filepond";
-import { useLocation } from "react-router-dom";
-import FSUAppBar from "../../components/AppBar";
-registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
+import { Typography } from '@mui/material';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import axios from 'axios';
+import dayjs from 'dayjs';
+import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+import 'filepond/dist/filepond.min.css';
+import Cookies from 'js-cookie';
+import React, { useEffect, useState } from 'react';
+import { FilePond, registerPlugin } from 'react-filepond';
+import { useLocation } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import FSUAppBar from '../../components/AppBar';
+registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
 function CreateProject({ selectedCate }) {
+
   //init state project
   const [isLoading, setIsLoading] = useState(false);
+
   const [thumbnailFile, setThumbnailFile] = useState([]);
   const [liveDemoFile, setLiveDemoFile] = useState([]);
   const [videoSrc, seVideoSrc] = useState("");
   const [po, setPO] = useState({});
   const [thumbnailFormData, setThumbNailFormData] = useState(new FormData());
   const [liveDemoFormData, setLiveDemoFormData] = useState(new FormData());
-  const [projectName, setProjectName] = useState("");
-  const [projectDescription, setProjectDescription] = useState("");
+  const [projectName, setProjectName] = useState('');
+  const [projectDescription, setProjectDescription] = useState('');
   const start = Date.now();
   const [startDate, setStartDate] = useState(dayjs(start));
   const [endDate, setEndDate] = useState(dayjs(start));
-  const [projectTarget, setProjectTarget] = useState("");
+  const [projectTarget, setProjectTarget] = useState('');
   const [projectBalance, setProjectBalance] = useState(0);
-  const [projectBankAccount, setProjectBankAccount] = useState("");
-  const [projectOwnerEmail, setProjectOwnerEmail] = useState("");
-  const [packageName, setPackageName] = useState("");
+  const [projectBankAccount, setProjectBankAccount] = useState('');
+  const [projectOwnerEmail, setProjectOwnerEmail] = useState('');
+  const [packageName, setPackageName] = useState('');
   const [requiredAmount, setRequiredAmount] = useState(0);
   const [limitQuantity, setLimitQuantity] = useState(0);
-  const [packageType, setPackageType] = useState("");
+  const [packageType, setPackageType] = useState('');
   const location = useLocation();
   //get selected category
   const token = Cookies.get("_auth");
   console.log(token);
   useEffect(() => {
     const fetchUser = async () => {
-      await axios
-        .get("https://localhost:7235/api/UserManagement/user-profile", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          console.log(res.data);
-          setPO(res.data._data);
-        });
-    };
+      await axios.get("https://localhost:7235/api/user/user-profile", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      }).then(res => {
+        console.log(res.data);
+        setPO(res.data._data)
+      })
+    }
     fetchUser();
-  }, [token]);
+  }, [token])
   const selectedCategory = location.state?.selectedCate;
   console.log(selectedCategory);
-
   const handleVidChange = (file) => {
     const reader = new FileReader();
 
@@ -98,12 +71,12 @@ function CreateProject({ selectedCate }) {
     };
 
     reader.onerror = (error) => {
-      console.error("Error reading video file:", error);
+      console.error('Error reading video file:', error);
     };
 
     reader.readAsDataURL(file); // Read the video content
   };
-  console.log();
+  console.log()
   // handleVidChange(liveDemoFile[0] ? liveDemoFile[0].file : "aa");
   console.log(videoSrc);
   //add project
@@ -111,24 +84,19 @@ function CreateProject({ selectedCate }) {
     e.preventDefault();
     setIsLoading(true);
     try {
-      thumbnailFormData.set("thumbnailFile", thumbnailFile[0].file);
-      liveDemoFormData.set("liveDemoFile", liveDemoFile[0].file);
-      const thumbnailUrl = await fetch(
-        "https://localhost:7235/api/projects/add-thumbnail",
-        {
-          method: "POST",
-          body: thumbnailFormData,
-        }
-      );
+      thumbnailFormData.set('thumbnailFile', thumbnailFile[0].file);
+      liveDemoFormData.set('liveDemoFile', liveDemoFile[0].file);
+      const thumbnailUrl = await fetch('https://localhost:7235/api/projects/add-thumbnail', {
+        method: 'POST',
+        body: thumbnailFormData
+      });
 
       const thumbnailData = await thumbnailUrl.json();
-      const liveDemoUrl = await fetch(
-        "https://localhost:7235/api/projects/add-live-demo",
-        {
-          method: "POST",
-          body: liveDemoFormData,
-        }
-      );
+      const liveDemoUrl = await fetch('https://localhost:7235/api/projects/add-live-demo', {
+        method: 'POST',
+        body: liveDemoFormData
+      });
+
 
       const liveDemoData = await liveDemoUrl.json();
       console.log(thumbnailData);
@@ -136,16 +104,8 @@ function CreateProject({ selectedCate }) {
       const projectAddRequest = {
         ProjectName: projectName,
         ProjectDescription: projectDescription,
-        StartDate: `${startDate.get("year")} - ${
-          startDate.get("month") + 1 < 10
-            ? `0${startDate.get("month") + 1}`
-            : startDate.get("month") + 1
-        } - ${startDate.get("date")}`,
-        EndDate: `${endDate.get("year")} - ${
-          endDate.get("month") + 1 < 10
-            ? `0${endDate.get("month") + 1}`
-            : endDate.get("month") + 1
-        } - ${endDate.get("date")}`,
+        StartDate: `${startDate.get('year')} - ${startDate.get('month') + 1 < 10 ? `0${startDate.get('month') + 1}` : startDate.get('month') + 1} - ${startDate.get('date')}`,
+        EndDate: `${endDate.get('year')} - ${endDate.get('month') + 1 < 10 ? `0${endDate.get('month') + 1}` : endDate.get('month') + 1} - ${endDate.get('date')}`,
         ProjectTarget: projectTarget,
         ProjectBalance: projectBalance,
         ProjectBankAccount: projectBankAccount,
@@ -159,117 +119,34 @@ function CreateProject({ selectedCate }) {
             PackageName: packageName,
             RequiredAmount: requiredAmount,
             LimitQuantity: limitQuantity,
-            PackageType: packageType,
-          },
-        ],
-      };
-      console.log(projectAddRequest);
-      const response = await fetch("https://localhost:7235/api/projects", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(projectAddRequest),
-      })
-        .then((response) => {
-          if (response.ok) {
-            console.log("Project added successfully!");
-          } else {
-            console.error("Error adding project:", response.statusText); // Log error message from response
+            PackageType: packageType
           }
-          return response;
-        })
-        .catch((error) => {
-          console.error("Network error or other error:", error); // Log the error object
-        });
-        const thumbnailData = await thumbnailUrl.json();
-        const liveDemoUrl = await fetch('https://localhost:7235/api/projects/add-live-demo', {
-            method: 'POST',
-            body: liveDemoFormData
-        });
-        const liveDemoData = await liveDemoUrl.json();
-        console.log(thumbnailData);
-        console.log(liveDemoData);
-        const projectAddRequest = {
-            ProjectName: projectName,
-            ProjectDescription: projectDescription,
-            StartDate: startDate,
-            EndDate: endDate,
-            ProjectTarget: projectTarget,
-            ProjectBalance: projectBalance,
-            ProjectBankAccount: projectBankAccount,
-            ProjectOwnerEmail: projectOwnerEmail,
-            CategoryId: categoryId,
-            ProjectThumbnail: thumbnailData,
-            ProjectLiveDemo: liveDemoData,
-            Packages: [
-              {
-                PackageName: packageName,
-                RequiredAmount: requiredAmount,
-                LimitQuantity: limitQuantity,
-                PackageType: packageType
-              }
-            ]
-          };
-          console.log(projectAddRequest)
-        const response = await fetch('https://localhost:7235/api/projects', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-        },
-          body: JSON.stringify(projectAddRequest)
-        })
-        ;
-  
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-  
-        const data = await response.json();
-        console.log('Project added successfully:', data);
-        // Handle success response, e.g., show a success message to the user
-      } catch (error) {
-        console.error('Error adding project:', error);
-        // Handle error, e.g., show an error message to the user
-      }
-    };
-  const handleChange = (e) => {
-    // const { name, value } = e.target;
-    // formData.set(name, value);
-  };
-
-  const handleThumbnailFileChange = (e) => {
-    const { name, files } = e.target;
-    thumbnailFormData.set(name, files[0]);
-    console.log(thumbnailFormData)
-  };
-
-  const handleLiveDemoChange = (e) => {
-    const { name, files } = e.target;
-    liveDemoFormData.set(name, files[0]);
-    console.log(liveDemoFormData)
-  }
-
-
-  const handleFileSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const response = await fetch('https://localhost:7235/api/ProjectManagement/add-thumbnail', {
+        ]
+      };
+      console.log(projectAddRequest)
+      const response = await fetch('https://localhost:7235/api/projects', {
         method: 'POST',
-        body: formData
-      });
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(projectAddRequest)
+      }).then(response => {
+        if (response.ok) {
+          console.log('Project added successfully!');
+        } else {
+          console.error('Error adding project:', response.statusText); // Log error message from response
+        }
+        return response;
+      })
+        .catch(error => {
+          console.error('Network error or other error:', error); // Log the error object
+        });
 
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error('Network response was not ok');
       }
 
       const data = await response.json();
-      console.log('Project added successfully:', data);
-      // Handle success response, e.g., show a success message to the user
-    } catch (error) {
-      console.error('Error adding project:', error);
-      // Handle error, e.g., show an error message to the user
       if (data) {
         setIsLoading(false);
         Swal.fire({
@@ -284,177 +161,37 @@ function CreateProject({ selectedCate }) {
         });
       }
 
-      console.log("Project added successfully:", data);
+      console.log('Project added successfully:', data);
     } catch (error) {
-      console.error("Error adding project:", error);
+      console.error('Error adding project:', error);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-  <label>
-    Project Name:
-    <input
-      type="text"
-      value={projectName}
-      onChange={(e) => setProjectName(e.target.value)}
-    />
-  </label>
-  <br />
-  <label>
-    Project Description:
-    <textarea
-      value={projectDescription}
-      onChange={(e) => setProjectDescription(e.target.value)}
-    />
-  </label>
-  <br />
-  <label>
-    Start Date:
-    <input
-      type="date"
-      value={startDate}
-      onChange={(e) => setStartDate(e.target.value)}
-    />
-  </label>
-  <br />
-  <label>
-    End Date:
-    <input
-      type="date"
-      value={endDate}
-      onChange={(e) => setEndDate(e.target.value)}
-    />
-  </label>
-  <br />
-  <label>
-    Project Target:
-    <input
-      type="text"
-      value={projectTarget}
-      onChange={(e) => setProjectTarget(e.target.value)}
-    />
-  </label>
-  <br />
-  <label>
-    Project Balance:
-    <input
-      type="number"
-      value={projectBalance}
-      onChange={(e) => setProjectBalance(e.target.value)}
-    />
-  </label>
-  <br />
-  <label>
-    Project Bank Account:
-    <input
-      type="text"
-      value={projectBankAccount}
-      onChange={(e) => setProjectBankAccount(e.target.value)}
-    />
-  </label>
-  <br />
-  <label>
-    Project Owner ID:
-    <input
-      type="text"
-      value={projectOwnerEmail}
-      onChange={(e) => setProjectOwnerEmail(e.target.value)}
-    />
-  </label>
-  <br />
-  <label>
-    Category ID:
-    <input
-      type="text"
-      value={categoryId}
-      onChange={(e) => setCategoryId(e.target.value)}
-    />
-  </label>
-  <br />
-  <label>
-    Package Name:
-    <input
-      type="text"
-      value={packageName}
-      onChange={(e) => setPackageName(e.target.value)}
-    />
-  </label>
-  <br />
-  <label>
-    Required Amount:
-    <input
-      type="number"
-      value={requiredAmount}
-      onChange={(e) => setRequiredAmount(e.target.value)}
-    />
-  </label>
-  <br />
-  <label>
-    Limit Quantity:
-    <input
-      type="number"
-      value={limitQuantity}
-      onChange={(e) => setLimitQuantity(e.target.value)}
-    />
-  </label>
-  <br />
-  <label>
-    Package Type:
-    <input
-      type="text"
-      value={packageType}
-      onChange={(e) => setPackageType(e.target.value)}
-    />
-  </label>
-  <label>ThumbNail</label>
-  <input type="file" name ="thumbnailFile" onChange={handleThumbnailFileChange}/>
-  <label>Live demo</label>
-  <input type="file" name ="liveDemoFile" onChange={handleLiveDemoChange}/>
-  <br />
-  <button type="submit">Submit</button>
-</form>
     <div className="home">
       <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={isLoading}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <FSUAppBar isLogined={Cookies.get("_auth") !== undefined} />
+      <FSUAppBar isLogined={Cookies.get('_auth') !== undefined} />
       <div className="mt-[100px]">
-        <div className="flex justify-center items-center md:h-[1200px] h-fit md:min-h-[1200px] xl:min-h-0 pt-[100px]">
-          <div className="max-w-fit">
-            <Typography
-              sx={{ marginBottom: "1rem", fontSize: "40px" }}
-              variant="h4"
-            >
-              Thông tin cơ bản
-            </Typography>
-            <Typography sx={{ marginBottom: "3rem" }}>
-              Đặt tên cho dự án của bạn, tải lên hình ảnh hoặc video và thiết
-              lập chi tiết chiến dịch của bạn.
-            </Typography>
+        <div className='flex justify-center items-center md:h-[1200px] h-fit md:min-h-[1200px] xl:min-h-0 pt-[100px]'>
+          <div className='max-w-fit'>
+            <Typography sx={{ marginBottom: '1rem', fontSize: '40px' }} variant='h4'>Thông tin cơ bản</Typography>
+            <Typography sx={{ marginBottom: '3rem' }}>Đặt tên cho dự án của bạn, tải lên hình ảnh hoặc video và thiết lập chi tiết chiến dịch của bạn.</Typography>
 
             <form onSubmit={handleSubmit} className="container">
-              <Grid
-                container
-                className="items-center justify-center mb-8"
-                spacing={4}
-              >
+
+              <Grid container className='items-center justify-center mb-8' spacing={4}>
                 <Grid item xs={6} className="text-left">
-                  <Typography sx={{ fontSize: "16px", marginBottom: "1rem" }}>
-                    Tiêu đề dự án
+                  <Typography sx={{ fontSize: '16px', marginBottom: '1rem' }}>Tiêu đề dự án</Typography>
+                  <Typography sx={{ fontSize: '14px', opacity: '0.5' }}>Viết tiêu đề và phụ đề rõ ràng, ngắn gọn để giúp mọi người nhanh chóng hiểu được dự án của bạn. Cả hai sẽ
+                    xuất hiện trên các trang dự án và trước khi ra mắt của bạn.
                   </Typography>
-                  <Typography sx={{ fontSize: "14px", opacity: "0.5" }}>
-                    Viết tiêu đề và phụ đề rõ ràng, ngắn gọn để giúp mọi người
-                    nhanh chóng hiểu được dự án của bạn. Cả hai sẽ xuất hiện
-                    trên các trang dự án và trước khi ra mắt của bạn.
-                  </Typography>
-                  <Typography sx={{ fontSize: "14px", opacity: "0.5" }}>
-                    Những người ủng hộ tiềm năng cũng sẽ nhìn thấy chúng nếu dự
-                    án của bạn xuất hiện trên các trang danh mục, kết quả tìm
-                    kiếm hoặc trong email chúng tôi gửi tới cộng đồng của mình.
+                  <Typography sx={{ fontSize: '14px', opacity: '0.5' }}>Những người ủng hộ tiềm năng cũng sẽ nhìn thấy chúng nếu dự án của bạn xuất hiện trên các trang danh mục, kết quả tìm kiếm
+                    hoặc trong email chúng tôi gửi tới cộng đồng của mình.
                   </Typography>
                 </Grid>
                 <Grid item xs={6}>
@@ -468,25 +205,16 @@ function CreateProject({ selectedCate }) {
                 </Grid>
               </Grid>
 
-              <Grid
-                container
-                className="items-center justify-center mb-6"
-                spacing={2}
-              >
+              <Grid container className='items-center justify-center mb-6' spacing={2}>
                 <Grid item xs={6} className="text-left">
-                  Mô tả dự án
-                  <Typography sx={{ fontSize: "14px", opacity: "0.5" }}>
-                    Viết tiêu đề và phụ đề rõ ràng, ngắn gọn để giúp mọi người
-                    nhanh chóng hiểu được dự án của bạn. Cả hai sẽ xuất hiện
-                    trên các trang dự án và trước khi ra mắt của bạn.
+
+                  Mô tả dự án<Typography sx={{ fontSize: '14px', opacity: '0.5' }}>Viết tiêu đề và phụ đề rõ ràng, ngắn gọn để giúp mọi người nhanh chóng hiểu được dự án của bạn. Cả hai sẽ
+                    xuất hiện trên các trang dự án và trước khi ra mắt của bạn.
                   </Typography>
-                  <Typography sx={{ fontSize: "14px", opacity: "0.5" }}>
-                    Những người ủng hộ tiềm năng cũng sẽ nhìn thấy chúng nếu dự
-                    án của bạn xuất hiện trên các trang danh mục, kết quả tìm
-                    kiếm hoặc trong email chúng tôi gửi tới cộng đồng của mình.
+                  <Typography sx={{ fontSize: '14px', opacity: '0.5' }}>Những người ủng hộ tiềm năng cũng sẽ nhìn thấy chúng nếu dự án của bạn xuất hiện trên các trang danh mục, kết quả tìm kiếm
+                    hoặc trong email chúng tôi gửi tới cộng đồng của mình.
                   </Typography>
                 </Grid>
-
                 <Grid item xs={6} className="text-left">
                   <TextField
                     fullWidth
@@ -497,35 +225,28 @@ function CreateProject({ selectedCate }) {
                 </Grid>
               </Grid>
 
-              <Grid
-                container
-                className="items-center justify-center"
-                spacing={2}
-              >
+              <Grid container className='items-center justify-center' spacing={2}>
                 <Grid item xs={6} className="text-left">
                   <Typography>Ngày ra mắt (tùy chọn)</Typography>
                 </Grid>
                 <Grid item xs={6} className="text-left">
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs} >
                     <DatePicker
                       value={startDate}
                       onChange={(newValue) => setStartDate(newValue)}
                     />
                   </LocalizationProvider>
+
                 </Grid>
               </Grid>
 
               <br />
-              <Grid
-                container
-                className="items-center justify-center"
-                spacing={2}
-              >
+              <Grid container className='items-center justify-center' spacing={2}>
                 <Grid item xs={6} className="text-left">
                   <Typography>Ngày kết thúc dự án (tùy chọn)</Typography>
                 </Grid>
                 <Grid item xs={6} className="text-left">
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs} >
                     <DatePicker
                       value={endDate}
                       onChange={(newValue) => setEndDate(newValue)}
@@ -534,48 +255,30 @@ function CreateProject({ selectedCate }) {
                 </Grid>
               </Grid>
               <br />
-              <Grid
-                container
-                className="items-center justify-center mb-6"
-                spacing={2}
-              >
+              <Grid container className='items-center justify-center mb-6' spacing={2}>
                 <Grid item xs={6} className="text-left">
-                  <Typography sx={{ fontSize: "16px", marginBottom: "1rem" }}>
-                    Mục tiêu dự án
-                  </Typography>
+                  <Typography sx={{ fontSize: '16px', marginBottom: '1rem' }}>Mục tiêu dự án</Typography>
                 </Grid>
                 <Grid item xs={6} className="text-left">
                   <TextField
                     type="text"
                     fullWidth
                     value={projectTarget}
-                    placeholder="Nhập số tiền"
-                    onChange={(e) => setProjectTarget(e.target.value)}
-                  />
+                    placeholder='Nhập số tiền'
+                    onChange={(e) => setProjectTarget(e.target.value)} />
                 </Grid>
               </Grid>
               <br />
-
-              <br />
-              <Grid
-                container
-                className="items-center justify-center mb-6"
-                spacing={2}
-              >
+              <Grid container className='items-center justify-center mb-6' spacing={2}>
                 <Grid className="text-left" item xs={6}>
                   <Typography>Hình ảnh dự án</Typography>
-                  <Typography sx={{ fontSize: "14px", opacity: "0.5" }}>
-                    Viết tiêu đề và phụ đề rõ ràng, ngắn gọn để giúp mọi người
-                    nhanh chóng hiểu được dự án của bạn. Cả hai sẽ xuất hiện
-                    trên các trang dự án và trước khi ra mắt của bạn.
+                  <Typography sx={{ fontSize: '14px', opacity: '0.5' }}>Viết tiêu đề và phụ đề rõ ràng, ngắn gọn để giúp mọi người nhanh chóng hiểu được dự án của bạn. Cả hai sẽ
+                    xuất hiện trên các trang dự án và trước khi ra mắt của bạn.
                   </Typography>
-                  <Typography sx={{ fontSize: "14px", opacity: "0.5" }}>
-                    Những người ủng hộ tiềm năng cũng sẽ nhìn thấy chúng nếu dự
-                    án của bạn xuất hiện trên các trang danh mục, kết quả tìm
-                    kiếm hoặc trong email chúng tôi gửi tới cộng đồng của mình.
+                  <Typography sx={{ fontSize: '14px', opacity: '0.5' }}>Những người ủng hộ tiềm năng cũng sẽ nhìn thấy chúng nếu dự án của bạn xuất hiện trên các trang danh mục, kết quả tìm kiếm
+                    hoặc trong email chúng tôi gửi tới cộng đồng của mình.
                   </Typography>
                 </Grid>
-
                 <Grid className="text-left" item xs={6}>
                   <FilePond
                     files={thumbnailFile}
@@ -589,18 +292,9 @@ function CreateProject({ selectedCate }) {
                   />
                 </Grid>
               </Grid>
-              <Grid
-                container
-                className="items-center justify-center mb-6"
-                spacing={2}
-              >
+              <Grid container className='items-center justify-center mb-6' spacing={2}>
                 <Grid clasName="text-left" item xs={6}>
-                  <Typography
-                    sx={{ textAlign: "left !important" }}
-                    clasName="text-left"
-                  >
-                    Live Demo
-                  </Typography>
+                  <Typography sx={{ textAlign: 'left !important' }} clasName="text-left">Live Demo</Typography>
                 </Grid>
                 <Grid item xs={6}>
                   <FilePond
@@ -612,6 +306,7 @@ function CreateProject({ selectedCate }) {
                     name="files"
                     labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
                   />
+
                 </Grid>
               </Grid>
               {/* <label>ThumbNail</label>
@@ -623,9 +318,12 @@ function CreateProject({ selectedCate }) {
             </form>
           </div>
         </div>
+
       </div>
+
     </div>
+
   );
 }
 
-export default CreateProject;
+export default CreateProject
