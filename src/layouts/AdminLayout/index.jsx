@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
+import { useMediaQuery } from "@mui/material";
 import logo from "../../assets/logo.png";
 import FSUAppBar from "../../components/AppBar";
 import { Container, Grid } from "@mui/material";
@@ -16,9 +16,18 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ProjectIcon from "@mui/icons-material/Folder";
 import TransactionIcon from "@mui/icons-material/AttachMoney";
 import SettingsIcon from "@mui/icons-material/Settings";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import Hidden from "@mui/material/Hidden";
 
 function AdminLayout() {
   const navigate = useNavigate();
+  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
 
   //title list
   const titleList = [
@@ -81,21 +90,31 @@ function AdminLayout() {
 
   return (
     <Grid container sx={{ height: "100%", overflow: "hidden" }}>
-      <Grid xs={2} item sx={{ height: "100%" }}>
+      <Hidden smUp>
+        <FSUAppBar position="fixed" isLogined={false}>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 2, display: { sm: "none" } }}
+          >
+            <MenuIcon />
+          </IconButton>
+        </FSUAppBar>
+      </Hidden>
+      <Hidden smUp>
         <Drawer
-          variant="permanent"
-          open={true}
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true,
+          }}
           sx={{
             "& .MuiDrawer-paper": {
-              position: "relative",
               width: 250,
-              height: "100vh", // Ensures the Drawer takes up full height
               backgroundColor: "white",
-              boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
-              zIndex: 1,
-              display: "flex",
-              flexDirection: "column",
-              overflow: "hidden",
             },
           }}
         >
@@ -104,8 +123,34 @@ function AdminLayout() {
           </div>
           {DrawerList}
         </Drawer>
-      </Grid>
-      <Grid xs={10} item sx={{ height: "100vh", overflow: "auto" }}>
+      </Hidden>
+      <Hidden smDown>
+        <Grid item xs={2} sx={{ height: "100%" }}>
+          <Drawer
+            variant="permanent"
+            open
+            sx={{
+              "& .MuiDrawer-paper": {
+                position: "relative",
+                width: 250,
+                height: "100vh",
+                backgroundColor: "white",
+                boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
+                zIndex: 1,
+                display: "flex",
+                flexDirection: "column",
+                overflow: "hidden",
+              },
+            }}
+          >
+            <div className="w-full flex justify-center">
+              <img src={logo} alt="logo" className="w-[160px] h-[160px]" />
+            </div>
+            {DrawerList}
+          </Drawer>
+        </Grid>
+      </Hidden>
+      <Grid item xs={12} sm={10} sx={{ height: "100vh", overflow: "auto" }}>
         <Outlet />
       </Grid>
     </Grid>
