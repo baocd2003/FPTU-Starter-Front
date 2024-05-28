@@ -15,8 +15,9 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import UserBookmarkProject from "./pages/UserBookmarkProject";
 import UserProfile from "./pages/UserProfile";
-
-
+import InitStep from "./pages/CreateProject/InitStep";
+import SecondStep from "./pages/CreateProject/SecondStep";
+import ThirdStep from "./pages/CreateProject/ThirdStep";
 function App() {
   const theme = createTheme({
     typography: {
@@ -53,7 +54,11 @@ function App() {
           <Route path="/admin" element={<Navigate to="/admin/dashboard" />} />
           <Route path="/admin/projects" element={<AdminProjects />} />
         </Route>
-        <Route path="/create-project" element={<CreateProject />} />
+        <Route element={<CreateProject />} >
+          <Route path="/create-project" element={<InitStep/>}/>
+          <Route path="/create-project/second" element={<SecondStep/>}/>
+          <Route path="/create-project/third" element={<ThirdStep/>}/>
+        </Route>
         <Route path="/choose-cate" element={<ChooseCategories />} />
 
       </Routes>
