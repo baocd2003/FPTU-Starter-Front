@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import SearchBar from "../../components/SearchBar";
+import SearchBarProjects from "../../components/SearchBarProjects";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -125,7 +125,7 @@ function EnhancedTableToolbar(props) {
       }}
     >
       <Typography
-        sx={{ flex: "1 1 100%", textAlign: "left", padding: 4 }}
+        sx={{ flex: "1 1 100%", textAlign: "left", padding: 2 }}
         variant="h6"
         id="tableTitle"
         component="div"
@@ -177,7 +177,7 @@ function AdminProjects() {
         <EnhancedTableToolbar projectsCount={rows.length} />
         <Box sx={{ padding: 2, display: "flex", justifyContent: "center" }}>
           <Box sx={{ width: "100%", maxWidth: "1200px" }}>
-            <SearchBar width="100%" />
+            <SearchBarProjects width="100%" />
           </Box>
         </Box>
         <TableContainer sx={{ padding: 4 }}>

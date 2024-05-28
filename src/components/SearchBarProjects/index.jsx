@@ -57,7 +57,7 @@ const StyledInputBase = styled(InputBase)(() => ({
   height: "100%",
 }));
 
-const SearchBar = ({
+const SearchBarProjects = ({
   value,
   width,
   onChange,
@@ -149,12 +149,12 @@ const SearchBar = ({
           size="small"
           fullWidth={isSmallScreen}
         >
-          <InputLabel id="select-small-label">Age</InputLabel>
+          <InputLabel id="select-small-label">Trạng thái</InputLabel>
           <Select
             labelId="select-small-label"
             id="select-small"
             value={age}
-            label="Age"
+            label="Trạng thái"
             onChange={handleChangeSelect}
           >
             <MenuItem value="">
@@ -177,12 +177,12 @@ const SearchBar = ({
           size="small"
           fullWidth={isSmallScreen}
         >
-          <InputLabel id="select-small-label-2">Age</InputLabel>
+          <InputLabel id="select-small-label-2">Mục tiêu</InputLabel>
           <Select
             labelId="select-small-label-2"
             id="select-small-2"
             value={age}
-            label="Age"
+            label="Mục tiêu"
             onChange={handleChangeSelect}
           >
             <MenuItem value="">
@@ -205,12 +205,12 @@ const SearchBar = ({
           size="small"
           fullWidth={isSmallScreen}
         >
-          <InputLabel id="select-small-label-3">Age</InputLabel>
+          <InputLabel id="select-small-label-3">Thể loại</InputLabel>
           <Select
             labelId="select-small-label-3"
             id="select-small-3"
             value={age}
-            label="Age"
+            label="Thể loại"
             onChange={handleChangeSelect}
           >
             <MenuItem value="">
@@ -226,7 +226,7 @@ const SearchBar = ({
   );
 };
 
-SearchBar.propTypes = {
+SearchBarProjects.propTypes = {
   // custom top-level class
   className: PropTypes.string,
   // changes the default width of component
@@ -249,4 +249,4 @@ SearchBar.propTypes = {
   disabled: PropTypes.bool,
 };
 
-export default SearchBar;
+export default SearchBarProjects;
