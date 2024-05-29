@@ -35,29 +35,32 @@ function UserProfile() {
 
     useEffect(() => {
         if (token) {
-            userManagementApiInstance.get("/user-profile", {
-                headers: { Authorization: `Bearer ${token}` },
-            })
-                .then(response => {
-                    const userData = response.data._data;
-                    setUser(userData);
-                    setUserEmail(userData.userEmail);
-                    setAccountName(userData.accountName);
-                    setUserName(userData.userName);
-                    setUserBirthDate(userData.userBirthDate ? dayjs(userData.userBirthDate) : null);
-                    setUserPhone(userData.userPhone);
-                    setUserAddress(userData.userAddress);
-                    setSelectedGender(userData.userGender == null ? '' : genderMapping[userData.userGender])
-                })
-                .catch(error => {
-                    console.error('Error fetching user profile:', error);
-                })
-                .finally(() => {
-                    setIsLoading(false);
-                });
+            fetchUserData();
         }
     }, [token]);
 
+    const fetchUserData = () => {
+        userManagementApiInstance.get("/user-profile", {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+            .then(response => {
+                const userData = response.data._data;
+                setUser(userData);
+                setUserEmail(userData.userEmail || '');
+                setAccountName(userData.accountName || '');
+                setUserName(userData.userName || '');
+                setUserBirthDate(userData.userBirthDate ? dayjs(userData.userBirthDate) : null);
+                setUserPhone(userData.userPhone || '');
+                setUserAddress(userData.userAddress || '');
+                setSelectedGender(userData.userGender == null ? '' : genderMapping[userData.userGender]);
+            })
+            .catch(error => {
+                console.error('Error fetching user profile:', error);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    }
 
     const handleGenderChange = (event) => {
         setSelectedGender(event.target.value);
@@ -65,6 +68,11 @@ function UserProfile() {
 
     const handleEditProfile = () => {
         setIsEditProfile(!isEditProfile);
+        if (isEditProfile == true) {
+            if (token) {
+                fetchUserData();
+            }
+        }
     }
 
     const handleUpdateProfile = () => {
@@ -107,7 +115,6 @@ function UserProfile() {
             });
     }
 
-
     return (
         <div className='mt-[64px] w-[100%] flex justify-center items-center'>
             {isLoading || !user ? (
@@ -138,7 +145,7 @@ function UserProfile() {
                                         },
                                         fontSize: '10px'
                                     }}
-                                    value={userEmail}
+                                    value={userEmail || ''}
                                 />
                             </Grid>
                             <Grid item xs={12} lg={6}>
@@ -160,7 +167,7 @@ function UserProfile() {
                                         },
                                         fontSize: '10px'
                                     }}
-                                    value={accountName}
+                                    value={accountName || ''}
                                     onChange={(e) => setAccountName(e.target.value)}
                                 />
                             </Grid>
@@ -183,7 +190,7 @@ function UserProfile() {
                                         },
                                         fontSize: '10px'
                                     }}
-                                    value={userName}
+                                    value={userName || ''}
                                     onChange={(e) => setUserName(e.target.value)}
                                 />
                             </Grid>
@@ -220,7 +227,7 @@ function UserProfile() {
                                         </InputLabel>
                                         <Select
                                             disabled={!isEditProfile}
-                                            value={selectedGender}
+                                            value={selectedGender || ''}
                                             onChange={handleGenderChange}
                                             input={<OutlinedInput label="Giới tính" />}
                                             sx={{
@@ -258,7 +265,7 @@ function UserProfile() {
                                         },
                                         fontSize: '10px'
                                     }}
-                                    value={userPhone}
+                                    value={userPhone || ''}
                                     onChange={(e) => setUserPhone(e.target.value)}
                                 />
                             </Grid>
@@ -267,6 +274,7 @@ function UserProfile() {
                                     margin="normal"
                                     fullWidth
                                     label="Địa chỉ"
+                                    required
                                     disabled={!isEditProfile}
                                     InputLabelProps={{
                                         sx: {
@@ -280,11 +288,10 @@ function UserProfile() {
                                         },
                                         fontSize: '10px'
                                     }}
-                                    value={userAddress}
+                                    value={userAddress || ''}
                                     onChange={(e) => setUserAddress(e.target.value)}
                                 />
                             </Grid>
-
                         </Grid>
                     </div>
                     {!isEditProfile ? (
@@ -331,6 +338,9 @@ function UserProfile() {
                                     '&:focus': {
                                         outline: 'none !important'
                                     },
+                                    '.MuiButton-startIcon': {
+                                        marginRight: '12px',
+                                    },
                                     fontWeight: 'bold',
                                     width: '160px'
                                 }}
@@ -357,6 +367,9 @@ function UserProfile() {
                                     },
                                     '&:focus': {
                                         outline: 'none !important'
+                                    },
+                                    '.MuiButton-startIcon': {
+                                        marginRight: '12px',
                                     },
                                     fontWeight: 'bold',
                                     width: '160px'

@@ -17,9 +17,11 @@
 }
 
 .login-button {
+	width: 144px;
+	height: 40px;
 	color: #44494D !important;
-	border-color: #44494D !important;
-	font-weight: bold !important;
+	border: 1px solid #44494D !important;
+	font-weight: 600 !important;
 	transition: color 0.3s, border-color 0.3s, background-color 0.3s !important;
 }
 
@@ -27,4 +29,8 @@
 	color: #FFFFFF !important;
 	border-color: #FBB03B !important;
 	background-color: #FBB03B !important;
+}
+
+.login-button:focus {
+	outline: 0 !important;
 }
