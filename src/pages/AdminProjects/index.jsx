@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import SearchBarProjects from "../../components/SearchBarProjects";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -12,10 +13,6 @@ import TableSortLabel from "@mui/material/TableSortLabel";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
-import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
-import DeleteIcon from "@mui/icons-material/Delete";
-import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 
 function createData(id, name, creator, goal, createdAt, status) {
@@ -65,7 +62,7 @@ function stableSort(array, comparator) {
 
 const headCells = [
   { id: "name", numeric: false, label: "Tên" },
-  { id: "creator", numeric: false, label: "Người tạo" },
+  { id: "creator", numeric: false, label: "Chủ dự án" },
   { id: "goal", numeric: true, label: "Mục tiêu" },
   { id: "createdAt", numeric: false, label: "Ngày tạo" },
   { id: "status", numeric: false, label: "Trạng thái" },
@@ -128,7 +125,7 @@ function EnhancedTableToolbar(props) {
       }}
     >
       <Typography
-        sx={{ flex: "1 1 100%", textAlign: "left", padding: 4 }}
+        sx={{ flex: "1 1 100%", textAlign: "left", padding: 2 }}
         variant="h6"
         id="tableTitle"
         component="div"
@@ -178,6 +175,11 @@ function AdminProjects() {
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar projectsCount={rows.length} />
+        <Box sx={{ padding: 2, display: "flex", justifyContent: "center" }}>
+          <Box sx={{ width: "100%", maxWidth: "1200px" }}>
+            <SearchBarProjects width="100%" />
+          </Box>
+        </Box>
         <TableContainer sx={{ padding: 4 }}>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
             <EnhancedTableHead

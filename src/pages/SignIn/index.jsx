@@ -40,6 +40,19 @@ function SignIn() {
   const handleRegister = () => {
     navigate('/register');
   };
+  function setCookie(name, value, expiresIn) {
+    var now = new Date();
+    var time = now.getTime() + (7 * 60 * 60 * 1000);
+    var expireTime = time + 1000*expiresIn;
+    now.setTime(expireTime);
+    console.log(now);
+    console.log(now.toUTCString());
+    const cookieString = `${name}=${value}; expires=${now.toUTCString()}; path=/`;
+    document.cookie = cookieString;
+  }
+  var now = new Date();
+    var time = now.getTime();
+    console.log(time)
   const handleSubmit = (event) => {
     setIsLoading(true);
     event.preventDefault();
@@ -67,6 +80,7 @@ function SignIn() {
           tokenType: "Bearer",
           authState: { email: jsonData.email }
         })
+
         Swal.fire({
           title: "Thành công",
           text: "Đăng nhập thành công",
@@ -81,6 +95,7 @@ function SignIn() {
           }, 0);
         });
         console.log(Cookies.get("_auth"));
+        setCookie("_auth",Cookies.get("_auth"),3600);
       }
       setIsLoading(false);
     })

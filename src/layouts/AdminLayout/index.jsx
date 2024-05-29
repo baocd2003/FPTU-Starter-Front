@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import logo from "../../assets/logo.png";
-import FSUAppBar from "../../components/AppBar";
 import { Container, Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
