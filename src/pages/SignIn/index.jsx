@@ -1,7 +1,5 @@
-import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -11,7 +9,7 @@ import Cookies from 'js-cookie';
 import React, { useState } from 'react';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import GoogleButton from 'react-google-button';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Swal from 'sweetalert2';
@@ -22,7 +20,7 @@ import './index.css';
 function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const { setIsLoading } = useOutletContext();
 
   if (location.hash) {
     console.log("Yes");
@@ -90,12 +88,6 @@ function SignIn() {
 
   return (
     <>
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 100 }}
-        open={isLoading}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
       <div className='flex justify-center items-center md:h-screen h-fit md:min-h-[800px] xl:min-h-0 pt-[100px]'>
         <div className='xl:w-screen/4*3 max-w-fit'>
           <ToastContainer />
