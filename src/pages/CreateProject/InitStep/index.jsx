@@ -151,6 +151,7 @@ function InitStep() {
     }
   };
   return (
+    <div className='flex justify-center items-center md:h-[1200px] h-fit md:min-h-[1200px] xl:min-h-0 pt-[100px]'>
       <div className='max-w-fit'>
         <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -299,6 +300,8 @@ function InitStep() {
           <button type="submit">Khởi tạo dự án</button>
         </form>
       </div>
+    </div>
+
   )
 }
 
