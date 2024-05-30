@@ -18,6 +18,7 @@ import UserProfile from "./pages/UserProfile";
 import InitStep from "./pages/CreateProject/InitStep";
 import SecondStep from "./pages/CreateProject/SecondStep";
 import ThirdStep from "./pages/CreateProject/ThirdStep";
+import ChooseSubCates from "./pages/CreateProject/ChooseSubCates";
 function App() {
   const theme = createTheme({
     typography: {
@@ -60,6 +61,8 @@ function App() {
           <Route path="/create-project/third" element={<ThirdStep/>}/>
         </Route>
         <Route path="/choose-cate" element={<ChooseCategories />} />
+        <Route path="/choose-subCates" element={<ChooseSubCates />} />
+
 
       </Routes>
     </ThemeProvider>
