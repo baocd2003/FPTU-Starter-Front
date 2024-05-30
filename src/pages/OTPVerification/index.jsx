@@ -1,15 +1,14 @@
-import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Cookies from 'js-cookie';
+import { MuiOtpInput } from 'mui-one-time-password-input';
 import React, { useState } from 'react';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
-import { useLocation, useNavigate } from "react-router-dom";
+import Countdown from 'react-countdown';
+import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Swal from 'sweetalert2';
@@ -19,10 +18,16 @@ import './index.css';
 
 function OTPVerification() {
     const [otp, setOTP] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
+    const { setIsLoading } = useOutletContext();
     const location = useLocation();
 
     const userName = location.state?.userName;
+    const email = location.state?.email;
+
+    const handleChange = (newValue) => {
+        console.log(newValue);
+        setOTP(newValue);
+    };
 
     const signIn = useSignIn();
     const navigate = useNavigate();
@@ -31,6 +36,12 @@ function OTPVerification() {
             position: "bottom-left"
         });
     }
+    //Countdown
+    const targetTime = Date.now() + 6 * 60 * 1000;
+    const renderer = ({ minutes, seconds }) => {
+        return <span className='text-[#FBB03B] font-bold'>{minutes} phút {seconds} giây</span>;
+    };
+
     const handleLogin = () => {
         navigate('/login');
     };
@@ -38,16 +49,8 @@ function OTPVerification() {
         setIsLoading(true);
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        const jsonData = {
-            code: data.get('otp'),
-            userName: userName,
-        }
-        console.log({
-            code: data.get('otp'),
-            userName: userName,
-        });
         //Save token to cookie
-        userApiInstace.post(`/login-2FA?code=${data.get('otp')}&userName=${userName}`).then(res => {
+        userApiInstace.post(`/login-2FA?code=${otp}&userName=${userName}`).then(res => {
             console.log(res.data);
             if (res.data._data == null) {
                 notify(`${res.data._message[0]}`);
@@ -59,7 +62,7 @@ function OTPVerification() {
                     },
                     expiresIn: 3600,
                     tokenType: "Bearer",
-                    authState: { email: jsonData.email }
+                    authState: { email: email }
                 })
                 Swal.fire({
                     title: "Thành công",
@@ -82,14 +85,8 @@ function OTPVerification() {
 
     return (
         <>
-            <Backdrop
-                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 100 }}
-                open={isLoading}
-            >
-                <CircularProgress color="inherit" />
-            </Backdrop>
             <div className='flex justify-center items-center md:h-screen h-fit md:min-h-[800px] xl:min-h-0 pt-[100px]'>
-                <div className='xl:w-screen/4*3 max-w-fit'>
+                <div className='xl:w-screen/4*3 w-[90%]'>
                     <ToastContainer />
                     <Container
                         component="main"
@@ -184,37 +181,32 @@ function OTPVerification() {
                                 marginRight: 4,
                                 width: '100%'
                             }}>
-                                <div>
-                                    <TextField
-                                        margin="normal"
-                                        fullWidth
-                                        id="otp"
-                                        label="Mã OTP"
+                                <div className='my-4'>
+                                    <MuiOtpInput
+                                        length={6}
                                         name="otp"
-                                        autoFocus
-                                        InputLabelProps={{
-                                            sx: {
-                                                fontSize: '14px',
-                                            },
-                                        }}
-                                        sx={{
-                                            width: '100%',
-                                            '& input': {
-                                                height: '16px',
-                                            },
-                                            fontSize: '10px'
-                                        }}
+                                        id='otp'
                                         value={otp}
-                                        onChange={(e) => setOTP(e.target.value)}
+                                        onChange={handleChange}
+                                        className='otpBox'
+                                        validateChar={(val) => !isNaN(val)}
                                     />
                                 </div>
-                                <div className='flex mt-4 lg:flex-row lg:justify-center flex-col justify-center'>
-                                    <div className='lg:w-1/2 lg:mt-0 w-full mt-8'>
+                                <div className='flex my-6 gap-1 text-sm otpTimer'>
+                                    <h2>Mã OTP của bạn còn hiệu lực trong</h2>
+                                    <Countdown date={targetTime} renderer={renderer} />
+                                </div>
+                                <div className='flex mt-4 flex-row justify-between mb-[40px] verifyLg'>
+                                    <div className='flex justify-center mt-2 gap-1 text-sm'>
+                                        <h2>Đã có tài khoản?</h2>
+                                        <a onClick={handleLogin} className='underline text-[#44494D] transition-colors duration-300 hover:text-[#FBB03B] hover:cursor-pointer'>Đăng nhập</a>
+                                    </div>
+                                    <div className='lg:w-1/2 lg:mt-0 w-full mt-4'>
                                         <Button
                                             type="submit"
                                             variant="contained"
                                             sx={{
-                                                mt: 2,
+                                                mb: 2, float: 'right',
                                                 width: { lg: '75%', xs: '100%' },
                                                 backgroundColor: '#D9D9D9',
                                                 color: '#44494D',
@@ -225,11 +217,32 @@ function OTPVerification() {
                                         >
                                             Xác thực
                                         </Button>
+                                        <ToastContainer />
                                     </div>
                                 </div>
-                                <div className='flex justify-center items-center mb-[40px] mt-8 gap-1 text-sm'>
-                                    <h2>Đã có tài khoản?</h2>
-                                    <a onClick={handleLogin} className='underline text-[#44494D] transition-colors duration-300 hover:text-[#FBB03B] hover:cursor-pointer'>Đăng nhập</a>
+                                <div className='flex mt-4 flex-col justify-center mb-[40px] verifyMd'>
+                                    <div className='xl:mt-0 w-full mt-4'>
+                                        <Button
+                                            type="submit"
+                                            variant="contained"
+                                            sx={{
+                                                mb: 2, float: 'right',
+                                                width: { lg: '75%', xs: '100%' },
+                                                backgroundColor: '#D9D9D9',
+                                                color: '#44494D',
+                                                fontWeight: 700,
+                                                boxShadow: '0 0 5px rgba(0, 0, 0, 0.1)',
+                                            }}
+                                            className='login-btn'
+                                        >
+                                            Xác thực
+                                        </Button>
+                                        <ToastContainer />
+                                    </div>
+                                    <div className='flex justify-center mt-2 gap-1 text-sm'>
+                                        <h2>Đã có tài khoản?</h2>
+                                        <a onClick={handleLogin} className='underline text-[#44494D] transition-colors duration-300 hover:text-[#FBB03B] hover:cursor-pointer'>Đăng nhập</a>
+                                    </div>
                                 </div>
                             </Box>
                         </Box>

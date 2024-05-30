@@ -1,15 +1,13 @@
-import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
-import CircularProgress from '@mui/material/CircularProgress';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import React, { useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import logo from "../../assets/logo.png";
@@ -23,7 +21,7 @@ function SignUp() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [checked, setChecked] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const { setIsLoading } = useOutletContext();
     const navigate = useNavigate();
     const notify = (mess) => {
         toast.warn(mess, {
@@ -35,8 +33,8 @@ function SignUp() {
     };
     const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const handleSubmit = (event) => {
-        setIsLoading(true);
         event.preventDefault();
+        setIsLoading(true);
         const data = new FormData(event.currentTarget);
         console.log({
             email: data.get('email'),
@@ -55,26 +53,25 @@ function SignUp() {
         }
         if (password != confirmPassword) {
             notify("Confirm password is not matching");
-        } else {
+            return;
+        }
+        try {
             userApiInstace.post("/Register-Backer", jsonData).then(res => {
                 console.log(res.data);
                 if (res.data._data == null) {
                     notify(`${res.data._message[0]}`);
+                    setIsLoading(false);
                 } else {
-                    navigate("/verification", { state: { userName } });
+                    setIsLoading(false);
+                    navigate("/verification", { state: { userName, email } });
                 }
             })
+        } catch (error) {
+            notify("An error occurred. Please try again.");
         }
-        setIsLoading(false);
     };
     return (
         <>
-            <Backdrop
-                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 100 }}
-                open={isLoading}
-            >
-                <CircularProgress color="inherit" />
-            </Backdrop>
             <div className='flex justify-center items-center md:h-screen h-fit md:min-h-[1000px] xl:min-h-0 pt-[100px]'>
                 <div className='xl:w-screen/4*3 max-w-fit'>
                     <Container

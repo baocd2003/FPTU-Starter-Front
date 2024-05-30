@@ -1,6 +1,5 @@
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import WalletIcon from '@mui/icons-material/Wallet';
 import { ListItemText } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Avatar from '@mui/material/Avatar';
@@ -33,7 +32,7 @@ const profileMenu = [
   { label: 'Đăng xuất', route: 'logout' }
 ];
 
-function FSUAppBar({ isLogined }) {
+function FSUAppBar({ isLogined, refetchData }) {
   FSUAppBar.propTypes = {
     isLogined: PropTypes.bool.isRequired,
   };
@@ -43,6 +42,12 @@ function FSUAppBar({ isLogined }) {
   const [isLoading, setIsLoading] = React.useState(false);
 
   const token = Cookies.get("_auth");
+
+  React.useEffect(() => {
+    if (refetchData) {
+      fetchUserProfile();
+    }
+  }, [refetchData]);
 
   const fetchUserProfile = async () => {
     try {
@@ -208,7 +213,7 @@ function FSUAppBar({ isLogined }) {
               </Box>
             </div>
             {isLogined && user ? <Box sx={{ maxWidth: '100%', mr: { xs: '16px', display: 'flex', alignItems: 'center' } }}>
-              <div className='mr-[32px] !flex flex-row justify-end items-center'>
+              {/* <div className='mr-[32px] !flex flex-row justify-end items-center'>
                 <WalletIcon fontSize='medium'
                   sx={{
                     color: '#44494D',
@@ -217,7 +222,7 @@ function FSUAppBar({ isLogined }) {
                   }}
                 />
                 <h2 className='text-[#44494D] username'>0 VND</h2>
-              </div>
+              </div> */}
               <Badge badgeContent={0} max={99} showZero sx={{
                 marginRight: '32px',
                 "& .MuiBadge-badge": {
@@ -276,7 +281,7 @@ function FSUAppBar({ isLogined }) {
               <a onClick={() => navigate("/profile")} className='username cursor-pointer text-[#44494D] hover:text-[#FBB03B] hover:underline transition-all duration-300'>{user.accountName}</a>
             </Box>
               :
-              <Button onClick={handleClick} variant="outlined" className='h-[40px] w-[144px] login-button' sx={{ mr: '16px' }}>Đăng nhập</Button>
+              <Button onClick={handleClick} variant="outlined" className='login-button' sx={{ mr: '16px' }}>Đăng nhập</Button>
             }
           </Toolbar>
         </Container>

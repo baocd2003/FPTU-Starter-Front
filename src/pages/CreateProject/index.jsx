@@ -8,9 +8,9 @@ function CreateProject() {
 
       <FSUAppBar isLogined={Cookies.get('_auth') !== undefined} />
       <div className="mt-[100px]">
-        <div className='flex justify-center items-center md:h-[1200px] h-fit md:min-h-[1200px] xl:min-h-0 pt-[100px]'>
+       
         <Outlet />
-        </div>
+        
       </div>
     </div>
 
