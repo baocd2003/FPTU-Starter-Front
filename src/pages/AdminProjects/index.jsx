@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import Cookies from "js-cookie";
 import SearchBarProjects from "../../components/SearchBarProjects";
+import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -116,7 +118,6 @@ EnhancedTableHead.propTypes = {
 //title
 function EnhancedTableToolbar(props) {
   const { projectsCount } = props;
-
   return (
     <Toolbar
       sx={{
@@ -146,6 +147,27 @@ function AdminProjects() {
   const [orderBy, setOrderBy] = useState("createdAt");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [projectList, setProjectList] = useState([]);
+
+  const token = Cookies.get("_auth");
+
+  useEffect(() => {
+    if (token) {
+      projectApiInstance
+        .get("", {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => {
+          const projects = response.data._data;
+          console.log(projects);
+
+          setProjectList(projects);
+        })
+        .catch((error) => {
+          console.error("Error fetching project list:", error);
+        });
+    }
+  }, [token]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -164,7 +186,7 @@ function AdminProjects() {
 
   const visibleRows = React.useMemo(
     () =>
-      stableSort(rows, getComparator(order, orderBy)).slice(
+      stableSort(projectList, getComparator(order, orderBy)).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
       ),
@@ -174,7 +196,7 @@ function AdminProjects() {
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar projectsCount={rows.length} />
+        <EnhancedTableToolbar projectsCount={projectList.length} />
         <Box sx={{ padding: 2, display: "flex", justifyContent: "center" }}>
           <Box sx={{ width: "100%", maxWidth: "1200px" }}>
             <SearchBarProjects width="100%" />
@@ -188,23 +210,23 @@ function AdminProjects() {
               onRequestSort={handleRequestSort}
             />
             <TableBody>
-              {visibleRows.map((row, index) => {
+              {projectList.map((item, index) => {
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
                   <TableRow
                     hover
                     tabIndex={-1}
-                    key={row.id}
+                    key={item.id}
                     sx={{ cursor: "pointer" }}
                   >
-                    <TableCell component="th" id={labelId} scope="row">
-                      {row.name}
+                    <TableCell component="th" id={labelId} scope="item">
+                      {item.projectName}
                     </TableCell>
-                    <TableCell>{row.creator}</TableCell>
-                    <TableCell align="right">{row.goal}</TableCell>
-                    <TableCell>{row.createdAt}</TableCell>
-                    <TableCell>{row.status}</TableCell>
+                    <TableCell>{item.projectOwnerName}</TableCell>
+                    <TableCell align="right">{item.projectTarget}</TableCell>
+                    <TableCell>{item.startDate}</TableCell>
+                    <TableCell>{item.projectStatus}</TableCell>
                   </TableRow>
                 );
               })}
@@ -215,7 +237,7 @@ function AdminProjects() {
           sx={{ margin: 4 }}
           rowsPerPageOptions={[10, 20]}
           component="div"
-          count={rows.length}
+          count={projectList.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
