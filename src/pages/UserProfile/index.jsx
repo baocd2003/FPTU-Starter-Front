@@ -8,6 +8,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
 import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
 import userManagementApiInstance from '../../utils/apiInstance/userManagementApiInstance';
 import './index.css';
@@ -23,6 +24,7 @@ function UserProfile() {
     const [userAddress, setUserAddress] = useState('');
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const navigate = useNavigate();
     const token = Cookies.get("_auth");
 
     // Gender options
@@ -84,7 +86,9 @@ function UserProfile() {
             userPhone: userPhone,
             userBirthDate: `${userBirthDate.get('year')} - ${userBirthDate.get('month') + 1 < 10 ? `0${userBirthDate.get('month') + 1}` : userBirthDate.get('month') + 1} - ${userBirthDate.get('date')}`,
             userAddress: userAddress,
-            userGender: selectedGender
+            userGender: selectedGender,
+            userAvt: user.userAvatarUrl,
+            userBackground: user.userBgAvatarUrl,
         }
         console.log(userUpdateRequest);
         userManagementApiInstance.put("/user-profile", userUpdateRequest, {

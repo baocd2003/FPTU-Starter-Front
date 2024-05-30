@@ -17,6 +17,17 @@ import logo from "../../assets/logo.png";
 import userApiInstace from '../../utils/apiInstance/userApiInstace';
 import './index.css';
 
+function setCookie(name, value, expiresIn) {
+  var now = new Date();
+  var time = now.getTime() + (7 * 60 * 60 * 1000);
+  var expireTime = time + 1000 * expiresIn;
+  now.setTime(expireTime);
+  console.log(now);
+  console.log(now.toUTCString());
+  const cookieString = `${name}=${value}; expires=${now.toUTCString()}; path=/`;
+  document.cookie = cookieString;
+}
+
 function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -40,19 +51,10 @@ function SignIn() {
   const handleRegister = () => {
     navigate('/register');
   };
-  function setCookie(name, value, expiresIn) {
-    var now = new Date();
-    var time = now.getTime() + (7 * 60 * 60 * 1000);
-    var expireTime = time + 1000*expiresIn;
-    now.setTime(expireTime);
-    console.log(now);
-    console.log(now.toUTCString());
-    const cookieString = `${name}=${value}; expires=${now.toUTCString()}; path=/`;
-    document.cookie = cookieString;
-  }
+
   var now = new Date();
-    var time = now.getTime();
-    console.log(time)
+  var time = now.getTime();
+  console.log(time)
   const handleSubmit = (event) => {
     setIsLoading(true);
     event.preventDefault();
@@ -95,7 +97,7 @@ function SignIn() {
           }, 0);
         });
         console.log(Cookies.get("_auth"));
-        setCookie("_auth",Cookies.get("_auth"),3600);
+        setCookie("_auth", Cookies.get("_auth"), 3600);
       }
       setIsLoading(false);
     })
@@ -373,16 +375,15 @@ const GetGoogleUser = () => {
                 accountName: response.data.email.split('@')[0],
                 name: response.data.email.split('@')[0],
                 email: response.data.email,
-                password: response.data.email.toUpperCase() + "a",
-                confirmPassword: response.data.email.toUpperCase() + "a",
+                password: response.data.email.toUpperCase() + "a1",
+                confirmPassword: response.data.email.toUpperCase() + "a1",
               };
               const notify = (mess) => {
                 toast.warn(mess, {
                   position: "bottom-left"
                 });
               }
-              userApiInstace.post("/register-google", jsonData).then((res) => {
-                console.log(res.data);
+              userApiInstace.post(`/register-google?avatarUrl=${response.data.picture}`, jsonData).then((res) => {
                 if (res.data._data == null) {
                   notify(`${res.data._message[0]}`);
                 } else {
@@ -395,13 +396,14 @@ const GetGoogleUser = () => {
                     tokenType: "Bearer",
                     authState: { email: jsonData.email },
                   });
+                  setCookie("_auth", Cookies.get("_auth"), 3600);
                   navigate("/home");
                 }
               });
             } else {
               const jsonData = {
                 email: response.data.email,
-                password: response.data.email.toUpperCase() + "a",
+                password: response.data.email.toUpperCase() + "a1",
               };
               userApiInstace.post("/login", jsonData).then((res) => {
                 console.log(res.data);

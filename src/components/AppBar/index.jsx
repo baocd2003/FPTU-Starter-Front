@@ -1,6 +1,10 @@
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import BallotIcon from '@mui/icons-material/Ballot';
+import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { ListItemText } from '@mui/material';
+import { ListItemIcon, ListItemText } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Avatar from '@mui/material/Avatar';
 import Backdrop from '@mui/material/Backdrop';
@@ -9,6 +13,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Container from '@mui/material/Container';
+import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -27,9 +32,9 @@ import "./index.css";
 
 const pages = ['Trang chủ', 'Toàn bộ dự án', 'Về chúng tôi', 'Hỗ trợ'];
 const profileMenu = [
-  { label: 'Tài khoản', route: '/profile' },
-  { label: 'Dự án của tôi', route: '/' },
-  { label: 'Đăng xuất', route: 'logout' }
+  { label: 'Tài khoản', route: '/profile', icon: <AccountCircleIcon /> },
+  { label: 'Dự án của tôi', route: '/', icon: <BallotIcon /> },
+  { label: 'Đăng xuất', route: 'logout', icon: <LogoutIcon /> }
 ];
 
 function FSUAppBar({ isLogined, refetchData }) {
@@ -41,7 +46,6 @@ function FSUAppBar({ isLogined, refetchData }) {
   const [anchorElProfile, setAnchorElProfile] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const token = Cookies.get("_auth");
 
   React.useEffect(() => {
     if (refetchData) {
@@ -51,6 +55,7 @@ function FSUAppBar({ isLogined, refetchData }) {
 
   const fetchUserProfile = async () => {
     try {
+      const token = Cookies.get("_auth");
       setIsLoading(true);
       const response = await userManagementApiInstance.get("/user-profile", {
         headers: { Authorization: `Bearer ${token}` },
@@ -71,7 +76,7 @@ function FSUAppBar({ isLogined, refetchData }) {
     if (isLogined) {
       fetchUserProfile();
     }
-  }, [isLogined, token]);
+  }, [isLogined]);
 
   //Left menu responsive
   const handleOpenNavMenu = (event) => {
@@ -255,7 +260,7 @@ function FSUAppBar({ isLogined, refetchData }) {
                 anchorEl={anchorElProfile}
                 anchorOrigin={{
                   vertical: 'bottom',
-                  horizontal: 'left',
+                  horizontal: 'right',
                 }}
                 transformOrigin={{
                   vertical: 'top',
@@ -265,20 +270,35 @@ function FSUAppBar({ isLogined, refetchData }) {
                 onClose={handleCloseProfileMenu}
                 sx={{
                   display: 'block',
-                  marginTop: '8px',
+                  '& .MuiPaper-root': {
+                    borderRadius: '10px',
+                    marginTop: '8px',
+                  },
                 }}
               >
-                {profileMenu.map((menuItem) => (
+                <MenuItem
+                  sx={{ width: '30vh', height: '54px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', pointerEvents: 'none', }}
+                >
+                  <h1 className='text-[1rem] font-bold mb-1.5 text-ellipsis overflow-hidden whitespace-nowrap max-w-full'>{user.accountName}</h1>
+                  <h2 className='text-[0.8rem] text-[#44494D]-600/25 text-ellipsis overflow-hidden whitespace-nowrap max-w-full'>{user.userEmail}</h2>
+                </MenuItem>
+                <Divider />
+                {profileMenu.map((menuItem, index) => (
                   <MenuItem
                     key={menuItem.label}
                     onClick={() => handleProfileMenuClick(menuItem.route)}
-                    sx={{ marginRight: 2 }}
+                    sx={{ width: 'fit-content', height: '54px' }}
                   >
-                    <ListItemText>{menuItem.label}</ListItemText>
+                    <ListItemIcon sx={{ marginRight: '0.5rem', color: '#44494D' }}>
+                      {menuItem.icon}
+                    </ListItemIcon>
+                    <ListItemText sx={{ width: '15vh', color: '#44494D' }}>{menuItem.label}</ListItemText>
+                    {index === 0 && <ArrowForwardIosIcon sx={{ width: '1.1rem', height: '1.1rem', visibility: 'hidden', color: '#44494D' }} className='menuArrow' />}
+                    {index !== 0 && <ArrowForwardIosIcon sx={{ width: '1.1rem', height: '1.1rem', visibility: 'hidden !important', color: '#44494D' }} className='menuArrow' />}
                   </MenuItem>
                 ))}
               </Menu>
-              <a onClick={() => navigate("/profile")} className='username cursor-pointer text-[#44494D] hover:text-[#FBB03B] hover:underline transition-all duration-300'>{user.accountName}</a>
+              {/* <a onClick={() => navigate("/profile")} className='username cursor-pointer text-[#44494D] hover:text-[#FBB03B] hover:underline transition-all duration-300'>{user.accountName}</a> */}
             </Box>
               :
               <Button onClick={handleClick} variant="outlined" className='login-button' sx={{ mr: '16px' }}>Đăng nhập</Button>

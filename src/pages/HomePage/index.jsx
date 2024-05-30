@@ -4,27 +4,30 @@ import Typography from '@mui/material/Typography';
 import Aos from 'aos';
 import 'aos/dist/aos.css';
 import Cookies from 'js-cookie';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaHandsHelping } from "react-icons/fa";
 import { IoIosSettings } from "react-icons/io";
 import { RiPieChart2Fill } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
 import FSUAppBar from '../../components/AppBar';
 import BannerCarousel from '../../components/BannerCarousel';
 import Footer from '../../components/Footer';
 import ProjectCard from '../../components/ProjectCard';
-import { useNavigate } from "react-router-dom";
 import './index.css';
 
 function HomePage() {
+	const [checkIsLogin, setCheckIsLogin] = useState(false);
 	useEffect(() => {
 		Aos.init({ duration: 2000 });
+		const isLogined = Cookies.get('_auth') !== undefined;
+		setCheckIsLogin(isLogined);
 	}, []);
 	const navigate = useNavigate();
 	console.log(Cookies.get('_auth'));
 
 	return (
 		<div className="home">
-			<FSUAppBar isLogined={Cookies.get('_auth') !== undefined} />
+			<FSUAppBar isLogined={checkIsLogin} />
 			<BannerCarousel />
 			<div className="mt-[100px]">
 				<div data-aos="fade-up" className="bg-[#F0F0F0] p-3">

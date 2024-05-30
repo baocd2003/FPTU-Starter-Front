@@ -45,6 +45,7 @@ function UserProfileLayout() {
     const handleOpenBg = () => {
         inputBgRef.current.click();
     }
+
     const updateBackground = async (event) => {
         setIsLoadingBgImg(true);
         const file = event.target.files[0];
@@ -66,7 +67,12 @@ function UserProfileLayout() {
                     accountName: user.accountName,
                     userName: user.userName,
                     userEmail: user.userEmail,
-                    userBackground: imgResponse.data
+                    userBackground: imgResponse.data,
+                    userPhone: user.userPhone,
+                    userBirthDate: user.userBirthDate,
+                    userAddress: user.userAddress,
+                    userGender: user.userGender,
+                    userAvt: user.userAvatarUrl
                 };
                 const response = await userManagementApiInstance.put("/user-profile", userUpdateRequest, {
                     headers: { Authorization: `Bearer ${token}` },
@@ -110,14 +116,18 @@ function UserProfileLayout() {
                     Authorization: `Bearer ${token}`
                 },
             });
-
             if (imgResponse.status === 200) {
                 console.log(imgResponse.data);
                 const userUpdateRequest = {
                     accountName: user.accountName,
                     userName: user.userName,
                     userEmail: user.userEmail,
-                    userAvt: imgResponse.data
+                    userAvt: imgResponse.data,
+                    userBackground: user.userBgAvatarUrl,
+                    userPhone: user.userPhone,
+                    userBirthDate: user.userBirthDate,
+                    userAddress: user.userAddress,
+                    userGender: user.userGender,
                 };
                 const response = await userManagementApiInstance.put("/user-profile", userUpdateRequest, {
                     headers: { Authorization: `Bearer ${token}` },

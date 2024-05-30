@@ -34,3 +34,7 @@
 .login-button:focus {
 	outline: 0 !important;
 }
+
+.MuiMenuItem-root:hover .menuArrow {
+	visibility: visible;
+}
