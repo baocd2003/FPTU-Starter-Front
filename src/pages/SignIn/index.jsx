@@ -364,7 +364,7 @@ const GetGoogleUser = () => {
 
         userApiInstace
           .get("check-user-exist", {
-            params: { email: response.data.name },
+            params: { email: response.data.email },
           })
           .then((res) => {
             console.log(res);
