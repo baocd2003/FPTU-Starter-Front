@@ -15,24 +15,8 @@ import TableSortLabel from "@mui/material/TableSortLabel";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
+import Modal from "@mui/material/Modal";
 import { visuallyHidden } from "@mui/utils";
-
-function createData(id, name, creator, goal, createdAt, status) {
-  return { id, name, creator, goal, createdAt, status };
-}
-
-const rows = [
-  createData(1, "Project A", "Alice", 50000.0, "2023-01-15", "Active"),
-  createData(2, "Project B", "Bob", 75000.0, "2023-02-20", "Completed"),
-  createData(3, "Project C", "Charlie", 30000.0, "2023-03-10", "Active"),
-  createData(4, "Project D", "David", 150000.0, "2023-04-05", "Inactive"),
-  createData(5, "Project E", "Eve", 120000.0, "2023-05-15", "Active"),
-  createData(6, "Project F", "Frank", 90000.0, "2023-06-10", "Completed"),
-  createData(7, "Project G", "Grace", 70000.0, "2023-07-20", "Active"),
-  createData(8, "Project H", "Hank", 85000.0, "2023-08-15", "Inactive"),
-  createData(9, "Project I", "Ivy", 65000.0, "2023-09-10", "Completed"),
-  createData(10, "Project J", "Jack", 110000.0, "2023-10-05", "Active"),
-];
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -63,11 +47,11 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-  { id: "name", numeric: false, label: "Tên" },
-  { id: "creator", numeric: false, label: "Chủ dự án" },
-  { id: "goal", numeric: true, label: "Mục tiêu" },
-  { id: "createdAt", numeric: false, label: "Ngày tạo" },
-  { id: "status", numeric: false, label: "Trạng thái" },
+  { id: "projectName", numeric: false, label: "Tên" },
+  { id: "projectOwnerName", numeric: false, label: "Chủ dự án" },
+  { id: "projectTarget", numeric: true, label: "Mục tiêu" },
+  { id: "startDate", numeric: false, label: "Ngày tạo" },
+  { id: "projectStatus", numeric: false, label: "Trạng thái" },
 ];
 
 function EnhancedTableHead(props) {
@@ -84,7 +68,8 @@ function EnhancedTableHead(props) {
             key={headCell.id}
             align={headCell.numeric ? "right" : "left"}
           >
-            {headCell.id !== "creator" && headCell.id !== "status" ? (
+            {headCell.id !== "projectOwnerName" &&
+            headCell.id !== "projectStatus" ? (
               <TableSortLabel
                 active={orderBy === headCell.id}
                 direction={orderBy === headCell.id ? order : "asc"}
@@ -115,7 +100,7 @@ EnhancedTableHead.propTypes = {
   orderBy: PropTypes.string.isRequired,
 };
 
-//title
+// Title component
 function EnhancedTableToolbar(props) {
   const { projectsCount } = props;
   return (
@@ -133,14 +118,13 @@ function EnhancedTableToolbar(props) {
       >
         Dự án ({projectsCount})
       </Typography>
-      {/* <Tooltip title="Filter list">
-        <IconButton sx={{ padding: 4 }}>
-          <FilterListIcon />
-        </IconButton>
-      </Tooltip> */}
     </Toolbar>
   );
 }
+
+EnhancedTableToolbar.propTypes = {
+  projectsCount: PropTypes.number.isRequired,
+};
 
 function AdminProjects() {
   const [order, setOrder] = useState("desc");
@@ -148,25 +132,27 @@ function AdminProjects() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [projectList, setProjectList] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
 
   const token = Cookies.get("_auth");
 
   useEffect(() => {
-    if (token) {
-      projectApiInstance
-        .get("", {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .then((response) => {
+    const fetchProjects = async () => {
+      if (token) {
+        try {
+          const response = await projectApiInstance.get("", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
           const projects = response.data._data;
-          console.log(projects);
-
           setProjectList(projects);
-        })
-        .catch((error) => {
+        } catch (error) {
           console.error("Error fetching project list:", error);
-        });
-    }
+        }
+      }
+    };
+
+    fetchProjects();
   }, [token]);
 
   const handleRequestSort = (event, property) => {
@@ -184,13 +170,23 @@ function AdminProjects() {
     setPage(0);
   };
 
+  const handleRowClick = (project) => {
+    setSelectedProject(project);
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setSelectedProject(null);
+  };
+
   const visibleRows = React.useMemo(
     () =>
       stableSort(projectList, getComparator(order, orderBy)).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
       ),
-    [order, orderBy, page, rowsPerPage]
+    [order, orderBy, page, rowsPerPage, projectList]
   );
 
   return (
@@ -210,7 +206,7 @@ function AdminProjects() {
               onRequestSort={handleRequestSort}
             />
             <TableBody>
-              {projectList.map((item, index) => {
+              {visibleRows.map((item, index) => {
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
@@ -219,6 +215,7 @@ function AdminProjects() {
                     tabIndex={-1}
                     key={item.id}
                     sx={{ cursor: "pointer" }}
+                    onClick={() => handleRowClick(item)}
                   >
                     <TableCell component="th" id={labelId} scope="item">
                       {item.projectName}
@@ -248,6 +245,39 @@ function AdminProjects() {
           }
         />
       </Paper>
+      <Modal
+        open={openModal}
+        onClose={handleCloseModal}
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      >
+        <Box
+          sx={{
+            padding: 4,
+            backgroundColor: "white",
+            margin: "auto",
+            marginTop: "10%",
+            width: "50%",
+            borderRadius: 1,
+          }}
+        >
+          {selectedProject && (
+            <>
+              <Typography id="modal-title" variant="h6" component="h2">
+                {selectedProject.projectName}
+              </Typography>
+              <Typography id="modal-description" sx={{ mt: 2 }}>
+                Chủ dự án: {selectedProject.projectOwnerName}
+              </Typography>
+              <Typography>Mục tiêu: {selectedProject.projectTarget}</Typography>
+              <Typography>Ngày tạo: {selectedProject.startDate}</Typography>
+              <Typography>
+                Trạng thái: {selectedProject.projectStatus}
+              </Typography>
+            </>
+          )}
+        </Box>
+      </Modal>
     </Box>
   );
 }
