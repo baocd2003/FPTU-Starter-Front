@@ -112,7 +112,7 @@ function InitStep() {
         ProjectBalance: projectBalance,
         ProjectBankAccount: projectBankAccount,
         ProjectOwnerEmail: po.userEmail,
-        CategoryId: selectedCategory,
+        SubCategories:  selectedCategory,
         ProjectThumbnail: thumbnailData,
         ProjectStatus: 1,
         ProjectLiveDemo: liveDemoData,

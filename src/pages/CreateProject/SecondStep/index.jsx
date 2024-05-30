@@ -24,9 +24,7 @@ import TextField from '@mui/material/TextField';
 function SecondStep() {
     const location = useLocation();
     const [secondRequest, setSecondRequest] = useState({});
-    const [images, setImages] = useState([{
-        url: ""
-    }]);
+    const [images, setImages] = useState([]);
     const [storyFiles, setStoryFiles] = useState([]);
     const [storyFormData, setStoryFormData] = useState(new FormData());
     const passRequest = location.state?.projectAddRequest;
@@ -49,21 +47,27 @@ function SecondStep() {
             storyFiles.map((sFile, index) => {
                 storyFormData.append("storyFiles", sFile.file);
             })
-            await projectApiInstance.post("/add-story", storyFormData).then(res => {
-                const imageUrls = res.data; // Assuming response.data contains the array of URLs
-                setImages(imageUrls.map((url) => ({ url })));
-                // setStoryFormData(new FormData());
-                console.log(secondRequest);
-            }).catch(err => {
-                console.log(err);
-            })
-            console.log(images);
-            setSecondRequest({ ...passRequest, images: images });
-            console.log(secondRequest);
+            const pData = await projectApiInstance.post("/add-story", storyFormData);
+            const imageUrls = pData.data;
+            console.log(imageUrls);
 
+            // Update images state asynchronously within the function
+            const nImages = imageUrls.map((url) => ({ url }));
+            console.log(nImages);
+            const jsonSecondReq = {...passRequest , images : nImages};
+            console.log(jsonSecondReq);
+            setSecondRequest(jsonSecondReq);
+            console.log(secondRequest);
+            navigate("/create-project/third", { state: { jsonSecondReq } })
         }
     }
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        
+        await uploadStoryFiles();
+        console.log(secondRequest);
+    }
     // const checkBankAccount = async () => {
     //     var data = JSON.stringify({
     //         "bankCode": "TPBANK",
@@ -91,7 +95,7 @@ function SecondStep() {
                     <Typography sx={{ marginBottom: '1rem', fontSize: '40px' }} variant='h4'>Thông tin cơ bản</Typography>
                     <Typography sx={{ marginBottom: '3rem' }}>Đặt tên cho dự án của bạn, tải lên hình ảnh hoặc video và thiết lập chi tiết chiến dịch của bạn.</Typography>
                     <div className="filepond-container">
-                        <Typography className='text-left' sx={{marginBottom :'4rem !important'}}>
+                        <Typography className='text-left' sx={{ marginBottom: '4rem !important' }}>
                             <Typography sx={{ fontSize: '16px', marginBottom: '1rem' }}>Câu chuyện dự án</Typography>
                             <Typography sx={{ fontSize: '14px', opacity: '0.5' }}>Mô tả những gì bạn đang gây quỹ để làm, tại sao bạn quan tâm đến nó, bạn dự định thực hiện nó như thế nào và bạn là ai. Đọc thêm về cách kể câu chuyện của bạn.</Typography>
                         </Typography>
@@ -110,7 +114,7 @@ function SecondStep() {
                         />
                     </div>
 
-                    <Grid container className='items-center justify-center mb-8' sx={{marginTop:'100px'}} spacing={4}>
+                    <Grid container className='items-center justify-center mb-8' sx={{ marginTop: '100px' }} spacing={4}>
                         <Grid item xs={6} className="text-left">
                             <Typography sx={{ fontSize: '16px', marginBottom: '1rem' }} >Tài khoản ngân hàng</Typography>
                             <Typography sx={{ fontSize: '14px', opacity: '0.5' }}>Thêm tài khoản séc nơi bạn muốn nhận tiền. Tài khoản này phải được đặt tại Bỉ và có thể nhận tiền gửi trực tiếp bằng loại tiền mà bạn gây quỹ. Các dự án gây quỹ bằng đồng euro có thể sử dụng tài khoản ngân hàng ở các quốc gia Châu Âu hiện hành. Chúng tôi không hỗ trợ chuyển khoản ngân hàng, tài khoản tiết kiệm hoặc tài khoản ngân hàng ảo.
@@ -139,7 +143,7 @@ function SecondStep() {
                         </Grid>
 
                     </Grid>
-                    <button style={{marginTop:'100px '}} type="submit" onClick={() => uploadStoryFiles()}>Tiep theo</button>
+                    <button style={{ marginTop: '100px ' }} type="submit" onClick={uploadStoryFiles}>Tiep theo</button>
                 </Container>
 
             </div>
