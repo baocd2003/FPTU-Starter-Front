@@ -37,7 +37,6 @@ function SingleCard({ category, imageLink, title, description, po, amount, progr
         <LinearProgress className='progressBar' variant="determinate" value={50} />
       </CardContent>
       <CardActions sx={{ justifyContent: 'center' }}>
-
         <Typography variant='div' size="small" sx={{ flexDirection: 'column', margin: '0 10px' }}>
           <Typography variant='h1' sx={{ color: '#44494D', fontSize: '18px' }}>100</Typography>
           <Typography variant='h2' sx={{ fontSize: '12px', color: '#FCAE3D' }}>Ngày còn lại</Typography>
