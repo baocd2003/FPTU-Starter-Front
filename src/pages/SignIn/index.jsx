@@ -341,8 +341,11 @@ const checkIfRedirectedFromOAuth = () => {
     params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
   }
   if (Object.keys(params).length > 0 && params["state"]) {
+    const { setIsLoading } = useOutletContext();
+      setIsLoading(true);
     if (params["state"] == "somerandomstatevalue") {
       localStorage.setItem("oauth2-test-params", JSON.stringify(params));
+      
       GetGoogleUser();
     } else {
       console.log("State mismatch. Possible CSRF attack");
