@@ -9,16 +9,17 @@ import UserProfileLayout from "./layouts/UserProfileLayout";
 import AdminProjects from "./pages/AdminProjects";
 import CreateProject from "./pages/CreateProject";
 import ChooseCategories from "./pages/CreateProject/ChooseCategories";
+import ChooseSubCates from "./pages/CreateProject/ChooseSubCates";
+import InitStep from "./pages/CreateProject/InitStep";
+import SecondStep from "./pages/CreateProject/SecondStep";
+import ThirdStep from "./pages/CreateProject/ThirdStep";
 import HomePage from "./pages/HomePage";
 import OTPVerification from "./pages/OTPVerification";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import UserBookmarkProject from "./pages/UserBookmarkProject";
 import UserProfile from "./pages/UserProfile";
-import InitStep from "./pages/CreateProject/InitStep";
-import SecondStep from "./pages/CreateProject/SecondStep";
-import ThirdStep from "./pages/CreateProject/ThirdStep";
-import ChooseSubCates from "./pages/CreateProject/ChooseSubCates";
+import UserProjects from "./pages/UserProjects";
 function App() {
   const theme = createTheme({
     typography: {
@@ -56,13 +57,15 @@ function App() {
           <Route path="/admin/projects" element={<AdminProjects />} />
         </Route>
         <Route element={<CreateProject />} >
-          <Route path="/create-project" element={<InitStep/>}/>
-          <Route path="/create-project/second" element={<SecondStep/>}/>
-          <Route path="/create-project/third" element={<ThirdStep/>}/>
+          <Route path="/create-project" element={<InitStep />} />
+          <Route path="/create-project/second" element={<SecondStep />} />
+          <Route path="/create-project/third" element={<ThirdStep />} />
         </Route>
         <Route path="/choose-cate" element={<ChooseCategories />} />
         <Route path="/choose-subCates" element={<ChooseSubCates />} />
-
+        <Route>
+          <Route path="/projects" element={<UserProjects />} />
+        </Route>
 
       </Routes>
     </ThemeProvider>
