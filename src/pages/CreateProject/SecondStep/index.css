@@ -2,7 +2,7 @@
     max-height: 500px !important; 
 }
   .filepond-container .filepond--list {
-    height: 400px !important; 
+    height: 300px !important; 
     overflow-y: auto; 
   }
 /* .filepond-container .filepond--root {

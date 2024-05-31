@@ -21,6 +21,8 @@ registerPlugin(
     FilePondPluginImagePreview
 );
 import TextField from '@mui/material/TextField';
+import CircularProgress from "@mui/material/CircularProgress";
+import Backdrop from "@mui/material/Backdrop";
 function SecondStep() {
     const location = useLocation();
     const [secondRequest, setSecondRequest] = useState({});
@@ -31,6 +33,8 @@ function SecondStep() {
     const [banks, setBanks] = useState([]);
     const [selectedBank, setSelectedBank] = useState();
     const [bankAccount, setBankAccount] = useState("");
+    const [accountName, setAccountName] = useState("");
+    const [isLoading,setIsLoading] = useState(false);
     const navigate = useNavigate();
     useEffect(() => {
         const passRequest = location.state?.projectAddRequest;
@@ -44,54 +48,61 @@ function SecondStep() {
 
     const uploadStoryFiles = async () => {
         if (storyFiles.length > 0) {
+            setIsLoading(true);
             storyFiles.map((sFile, index) => {
                 storyFormData.append("storyFiles", sFile.file);
             })
-            const pData = await projectApiInstance.post("/add-story", storyFormData);
+            const pData = await projectApiInstance.post("/add-story", storyFormData)
             const imageUrls = pData.data;
+
             console.log(imageUrls);
 
             // Update images state asynchronously within the function
             const nImages = imageUrls.map((url) => ({ url }));
             console.log(nImages);
-            const jsonSecondReq = {...passRequest , images : nImages};
+            const jsonSecondReq = { ...passRequest, images: nImages };
             console.log(jsonSecondReq);
             setSecondRequest(jsonSecondReq);
             console.log(secondRequest);
             navigate("/create-project/third", { state: { jsonSecondReq } })
+        } else {
+            console.log(bankAccount, selectedBank);
         }
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         await uploadStoryFiles();
         console.log(secondRequest);
     }
-    // const checkBankAccount = async () => {
-    //     var data = JSON.stringify({
-    //         "bankCode": "TPBANK",
-    //         "accountNo": "13210013240000",
-    //         "accountType": "account",
-    //         "partnerRefId": "P199212928",
-    //         "signature": "b5bb9a6e9c71281fb1e06d"
-    //     });
-    //     await axios.post('https://gateway.dev.appotapay.com/api/v1/service/transfer/bank/account/info', data, {
-    //         headers: {
-    //             "X-APPOTAPAY-AUTH": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJwYW9wYW8xIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiYmFvY2QxNUBnbWFpbC5jb20iLCJqdGkiOiJKY21GOHVqMklTdmVMNUZ2dk5rNHBucDh4cmhJTno4LTE2MTQyMjU2MjQiLCJhcGlfa2V5IjoiSmNtRjh1ajJJU3ZlTDVGdnZOazRwbnA4eHJoSU56OCIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkJhY2tlciIsImV4cCI6MTcxNzM5ODk5OCwiaXNzIjoiQVBQT1RBUEFZIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo3MjM1In0.8nzY53gK02by19XgjzASRt8HrJcoZWJmlJQlIbajjmM`,
-    //             "Content-Type": "application/json"
-    //         }
-    //     }
-    //     ).then(res => {
-    //         console.log(res.data);
-    //     })
-    //     console.log(data)
-    // }
+    const checkBankAccount = async () => {
+        const data = {
+            bin: selectedBank,
+            accountNumber: bankAccount
+        }
+        await axios.post('https://api.vietqr.io/v2/lookup', data, {
+            headers: {
+                'x-client-id': '4a055d72-d6ea-4e6d-af6a-6ef1695500dc',
+                'x-api-key': '3917cb1f-95f3-44a9-95f2-3ef17bc054af',
+            }
+        }).then(res => {
+            setAccountName(res.data.accountName);
+            console.log(res.data);
+        })
+    }
+    console.log(accountName)
     // checkBankAccount();
     return (
-        <div className='flex justify-center items-center md:h-[700px] h-fit md:min-h-[700px] xl:min-h-0 pt-[100px]'>
+        <div className='flex justify-center items-center md:h-[1000px] h-fit md:min-h-[1000px] xl:min-h-0 pt-[100px]'>
             <div className='max-w-fit'>
-                <Container className="container">
+                <Backdrop
+                    sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                    open={isLoading}
+                >
+                    <CircularProgress color="inherit" />
+                </Backdrop>
+                <Container className="container mb-4">
                     <Typography sx={{ marginBottom: '1rem', fontSize: '40px' }} variant='h4'>Thông tin cơ bản</Typography>
                     <Typography sx={{ marginBottom: '3rem' }}>Đặt tên cho dự án của bạn, tải lên hình ảnh hoặc video và thiết lập chi tiết chiến dịch của bạn.</Typography>
                     <div className="filepond-container">
@@ -129,7 +140,9 @@ function SecondStep() {
                                     value={selectedBank}
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
-                                    label="Chọn">
+                                    label="Chọn"
+                                    onChange={(e) => setSelectedBank(e.target.value)}
+                                >
                                     {banks.map((bank, index) => (
                                         <MenuItem key={index} value={bank.bin}>{bank.name}</MenuItem>
                                     ))}
@@ -140,10 +153,13 @@ function SecondStep() {
                                 type="number"
                                 value={bankAccount}
                                 onChange={(e) => setBankAccount(e.target.value)} />
+                            {/* <TextField value={accountName}/> */}
+                            <button type="button" style={{ zIndex: 1000, marginTop: '2rem' }} onClick={() => checkBankAccount()}>Kiểm tra tài khoản</button>
                         </Grid>
 
                     </Grid>
-                    <button style={{ marginTop: '100px ' }} type="submit" onClick={uploadStoryFiles}>Tiep theo</button>
+                    <button style={{ marginTop: '100px ' }} type="submit" onClick={uploadStoryFiles}>Lưu thông tin</button>
+
                 </Container>
 
             </div>

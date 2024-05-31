@@ -3,6 +3,13 @@ import { useLocation } from 'react-router-dom';
 import projectApiInstance from '../../../utils/apiInstance/projectApiInstance';
 import ProjectPackage from '../../../components/ProjectPakage';
 import Grid from '@mui/material/Grid';
+import './index.css'
+import { Typography } from '@mui/material';
+import TextField from '@mui/material/TextField';
+import { IoMdCloseCircle } from "react-icons/io";
+import Card from '@mui/material/Card';
+import CircularProgress from "@mui/material/CircularProgress";
+import Backdrop from "@mui/material/Backdrop";
 function ThirdStep() {
   const location = useLocation();
   const [packageName, setPackageName] = useState('');
@@ -19,7 +26,7 @@ function ThirdStep() {
   }); // Initialize with required reward item
   const [packages, setPackages] = useState([]);
   const [thirdRequest, setThirdRequest] = useState({});
-
+  const [isLoading,setIsLoading] = useState(false);
   useEffect(() => {
     // Get selected category from location state
     const pastRequest = location.state?.jsonSecondReq;
@@ -73,6 +80,7 @@ function ThirdStep() {
   //create project
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     console.log(packages);
     const jsonThirdReq = {
       ...thirdRequest,
@@ -87,80 +95,124 @@ function ThirdStep() {
         "Content-Type": "application/json"
       }
     }).then(res => {
+      setIsLoading(false);
       console.log(res.data);
     })
   }
+//remove item
+  const removeRewardItem = (index) => {
+    const updatedRewardItems = [...newPackage.rewardItems]; // Create a copy
+    updatedRewardItems.splice(index, 1); // Remove the item at the specified index
+    setNewPackage((prevState) => ({ ...prevState, rewardItems: updatedRewardItems }));
+  };
   return (
     <div className='flex w-full items-center mt-[8rem]'>
       <div className='w-full'>
+      <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={isLoading}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+        <Typography variant="h4" >Thông tin gói</Typography>
         <Grid container>
-          <Grid item xs={5}> 
-            <form onSubmit={createPackage}>
-              <h2>Tạo gói</h2>
-              <input
+          <Grid item xs={5} className="form-package"> 
+            <form onSubmit={createPackage} >
+              <h2 className='mb-4'>Tạo gói</h2>
+              <TextField
                 type="text"
-                placeholder="Package Name"
+                placeholder="Tên gói"
                 value={newPackage.packageName}
                 onChange={(e) => handlePackageInputChange(e)}
                 name="packageName"
+                sx={{marginRight : '2rem', marginBottom:'2rem'}}
+                required
               />
-              <input
+              <TextField
+                type="text"
+                placeholder="Mô tả"
+                value={newPackage.packageDescription}
+                onChange={(e) => handlePackageInputChange(e)}
+                name="packageDescription"
+                required
+              />
+              <TextField
                 type="number"
                 placeholder="Required Amount"
                 value={newPackage.requiredAmount}
                 onChange={(e) => handlePackageInputChange(e)}
                 name="requiredAmount"
+                required
               />
-              <input
+              <TextField
                 type="number"
                 placeholder="Limit Quantity"
                 value={newPackage.limitQuantity}
                 onChange={(e) => handlePackageInputChange(e)}
                 name="limitQuantity"
+                sx={{marginLeft : '2rem', marginBottom:'2rem'}}
+                required
+              
               />
-              <input
+              <TextField
                 type="text"
                 placeholder="Package Type"
                 value={newPackage.packageType}
                 onChange={(e) => handlePackageInputChange(e)}
                 name="packageType"
+                required
+
               />
 
-              <h2>Reward Items</h2>
+              <h2 className='mb-4'>Thông tin phần thưởng</h2>
               {newPackage.rewardItems.map((item, index) => (
-                <div key={index}>
-                  <input
+                <Card key={index} style={{position:'relative', padding:'20px'}}>
+                  <TextField
                     type="text"
-                    placeholder="Name"
+                    placeholder="Tên vật phẩm"
                     value={item.name}
                     onChange={(e) => handleRewardItemInputChange(index, e)}
                     name="name"
+                    sx={{marginRight : '2rem', marginBottom:'2rem'}}
+                required
+                  
                   />
-                  <input
+                  <TextField
                     type="text"
-                    placeholder="Description"
+                    placeholder="Mô tả vật phẩm"
                     value={item.description}
                     onChange={(e) => handleRewardItemInputChange(index, e)}
                     name="description"
+                    sx={{marginRight : '1rem', marginBottom:'2rem'}}
+                required
+                  
                   />
-                  <input
+                  {/* <TextField
                     type="text"
                     placeholder="Image"
                     value={item.imageUrl}
                     onChange={(e) => handleRewardItemInputChange(index, e)}
                     name="imageUrl"
-                  />
-                  <input
+                    sx={{marginRight : '2rem', marginBottom:'2rem'}}
+                  /> */}
+                  <TextField
                     type="number"
                     placeholder="Quantity"
                     value={item.quantity}
                     onChange={(e) => handleRewardItemInputChange(index, e)}
                     name="quantity"
+                    required
+                  
                   />
-                </div>
+                  <IoMdCloseCircle onClick={() => removeRewardItem(index)} style={{position:'absolute' ,right:6,top:6}}/>
+                </Card>
               ))}
-              <button type="button" onClick={() => addRewardItem()}>Create item</button>
-              <button type="submit">Create</button>
+              <div>
+
+              </div>
+              
+              <button type="button" onClick={() => addRewardItem()}>Thêm vật phẩm</button>
+              <button className='mt-4' type="submit">Tạo gói</button>
             </form>
           </Grid>
           <Grid item xs={7}>
@@ -169,32 +221,10 @@ function ThirdStep() {
                 {/* <button type="submit" onClick={() => removePackage(index)}>Remove</button> */}
                 <ProjectPackage pack={pack} closeClick={() => removePackage(index)}/>
               </div>
-              // <div key={index}>
-              //   <div>Name:</div>
-              //   <div>{pack.packageName}</div>
-              //   <div>Type:</div>
-              //   <div>{pack.packageType}</div>
-              //   <div>Require Amount:</div>
-              //   <div>{pack.requiredAmount}</div>
-              //   <div>Limit quantity:</div>
-              //   <div>{pack.limitQuantity}</div>
-              //   <h2>Reward Items</h2>
-              //   {pack.rewardItems.map((item,i) => (
-              //     <div key={i}>
-              //       <div>{item.name}</div>
-              //       <div>{item.imageUrl}</div>
-              //       <div>{item.description}</div>
-              //       <div>{item.quantity}</div>
-              //     </div>
-              //   ))}
-              // </div>
             ))}
           </Grid>
         </Grid>
-
-
-
-        <button type="submit" onClick={handleSubmit}>Create project</button>
+        <button className='mt-4' type="submit" onClick={handleSubmit}>Tạo dự án</button>
       </div>
     </div>
   )
