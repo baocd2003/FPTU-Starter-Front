@@ -10,6 +10,14 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import { IoMdCloseCircle } from "react-icons/io";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Kurumi from '../../assets/samplePrj.png';
+
 function ProjectPackage({ pack, closeClick }) {
     const style = {
         position: 'absolute',
@@ -35,28 +43,12 @@ function ProjectPackage({ pack, closeClick }) {
     const formattedAmount = new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(
         pack.requiredAmount
     )
-    // "packageName": "string",
-    // "requiredAmount": 0,
-    // "limitQuantity": 0,
-    // "packageType": "string",
-    // "projectId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    // "rewardItems": [
-    //   {
-    //     "name": "string",
-    //     "imageUrl": "string",
-    //     "description": "string",
-    //     "quantity": 0
-    //   }
-    // ]
     return (
-        <Card sx={{ display: 'flex', width: { lg: 620, xs: 500 }, height: { lg: 300, xs: 500 }, borderRadius: '20px !important', marginBottom: '3rem' }} >
-            
-
-            
+        <Card sx={{ display: 'flex',justifyContent:'space-between', width: { lg: 620, xs: 500 }, height: { lg: 300, xs: 500 }, borderRadius: '20px !important', marginBottom: '3rem' }} >     
             <CardMedia
                 component="img"
-                sx={{ width: 200, border: '2px solid #FBB03B', padding: '10px', margin: '10px' }}
-                image="http://res.cloudinary.com/diak7ssve/image/upload/v1717062086/lddccbvk6u4wgz3y9csq.jpg"
+                sx={{ width: 250, border: '2px solid #FBB03B', padding: '10px', margin: '10px' }}
+                image={Kurumi}
                 alt="Live from space album cover"
             />
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -68,25 +60,36 @@ function ProjectPackage({ pack, closeClick }) {
                         {formattedAmount}
                     </Typography>
                     <Typography sx={{ fontSize: '16px' }} component="div" className="text-left">
-                        This reward contains the Bloody Business expansion for Scarface 1920, including all the reveals we are presenting during the campaign. You can choose the language version of the expansion.
+                        {pack.packageDescription}
                     </Typography>
-                    <Button onClick={handleOpen}>Items information</Button>
+                    <Button onClick={handleOpen} sx={{color :'#FBB03B'}}>Thông tin vật phẩm</Button>
                     <Modal
                         open={open}
                         onClose={handleClose}
                         aria-labelledby="child-modal-title"
                         aria-describedby="child-modal-description"
+                        sx={{border :'2px solid #FBB03B'}}
                     >
-                        <Box sx={{ ...style, width: 400 }}>
-                           {pack.rewardItems.map((item, i) => (
-                                <div key={i}>
-                                  <div>{item.name}</div>
-                                   <div>{item.imageUrl}</div>
-                                   <div>{item.description}</div>
-                                   <div>{item.quantity}</div>
-                                 </div>
+                        <Box sx={{ ...style, width: 400,border :'2px solid #FBB03B' }}>
+                           <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Tên vật phẩm</TableCell>
+                                        <TableCell>Mô tả vật phẩm</TableCell>
+                                        <TableCell>Số lượng</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                {pack.rewardItems.map((item, i) => (
+                                <TableRow key={i}>
+                                  <TableCell>{item.name}</TableCell>
+                                   <TableCell>{item.description}</TableCell>
+                                   <TableCell>{item.quantity}</TableCell>
+                                 </TableRow>
                                ))}
-                            <Button onClick={handleClose}>Close Child Modal</Button>
+                                </TableBody>
+                           </Table>
+                           
                         </Box>
                     </Modal>
                     
