@@ -1,0 +1,23 @@
+@media (max-width: 1199px) {
+    .emptyProjectImg {
+        width: 80%;
+        height: 80%;
+    }
+
+    .userProjectPageTile {
+        flex-direction: column;
+        gap: 2rem;
+    }
+}
+
+@media (min-width: 1200px) {
+    .emptyProjectImg {
+        width: 20% !important;
+        height: 20% !important;
+    }
+
+    .userProjectPageTile {
+        flex-direction: row !important;
+        justify-content: space-between;
+    }
+}
