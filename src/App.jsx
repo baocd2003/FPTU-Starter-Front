@@ -57,13 +57,13 @@ function App() {
           <Route path="/admin/projects" element={<AdminProjects />} />
         </Route>
         <Route element={<CreateProject />} >
-          <Route path="/create-project" element={<InitStep/>}/>
-          <Route path="/create-project/second" element={<SecondStep/>}/>
-          <Route path="/create-project/third" element={<ThirdStep/>}/>
+          <Route path="/create-project" element={<InitStep />} />
+          <Route path="/create-project/second" element={<SecondStep />} />
+          <Route path="/create-project/third" element={<ThirdStep />} />
         </Route>
         <Route path="/choose-cate" element={<ChooseCategories />} />
         <Route path="/choose-subCates" element={<ChooseSubCates />} />
-        <Route path="/project-detail" element={<POProjectDetail/>}/>
+        <Route path="/project-detail/:projectId" element={<POProjectDetail />} />
 
       </Routes>
     </ThemeProvider>
