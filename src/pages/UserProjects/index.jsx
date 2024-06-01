@@ -60,17 +60,17 @@ function UserProjects() {
             </Backdrop>
             <div className='userProfile'>
                 {isLoading || !user ? (
-                    <div className='w-full flex justify-center mt-10'>
+                    <div className='w-full flex justify-center mt-1 mb-8'>
                         <CircularProgress sx={{ color: '#FBB03B' }} />
                     </div>
                 ) : (
                     <div>
-                        <div className='text-left mt-10'>
-                            <a className='text-[#44494D] font-bold hover:text-[#FBB03B] hover:underline cursor-pointer transition-all duration-300' onClick={() => navigate("/profile")}>Tài khoản</a>
+                        <div className='text-left mt-1 mb-8'>
+                            <a className='text-[#A2A4A6] font-bold hover:text-[#FBB03B] hover:underline cursor-pointer transition-all duration-300' onClick={() => navigate("/profile")}>Tài khoản</a>
                             <a className='text-[#44494D] mx-2'>/</a>
                             <a className='text-[#44494D] font-bold hover:text-[#FBB03B] hover:underline cursor-pointer transition-all duration-300' onClick={() => navigate("/projects")}>Dự án của tôi</a>
                         </div>
-                        <div className='mt-8' style={{ width: '100%', height: 'auto' }}>
+                        <div style={{ width: '100%', height: 'auto' }}>
                             <div className='w-full flex userProjectPageTile'>
                                 <Typography sx={{ fontWeight: 'bold', fontSize: '2.25rem', lineHeight: '2.5rem', textAlign: 'left' }}>
                                     Dự án của <span style={{ color: '#FBB03B' }}>{user.accountName}</span>
@@ -99,7 +99,7 @@ function UserProjects() {
                                     Bắt đầu dự án
                                 </Button>
                             </div>
-                            <div className='mt-8'>
+                            <div className='mt-10'>
                                 <SearchBarProjects setProject={setProject} />
                             </div>
                             <div className='mt-8 w-full'>

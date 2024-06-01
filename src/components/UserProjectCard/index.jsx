@@ -78,8 +78,7 @@ function UserProjectCard({ project, user }) {
 
         return daysRemaining;
     }
-
-
+    
     return (
         <Box
             my={4}
@@ -87,7 +86,7 @@ function UserProjectCard({ project, user }) {
             sx={{ boxShadow: '0 0 5px rgba(0, 0, 0, 0.2)', borderRadius: '10px', height: 'fit-content', width: '100%' }}
         >
             <div style={{ width: '40%', float: 'left' }}>
-                <img src={project.projectThumbnail} alt="Project Thumbnail" style={{ height: '100%', borderTopLeftRadius: '10px', borderBottomLeftRadius: '10px' }} />
+                <img src={project.projectThumbnail} alt="Project Thumbnail" style={{ height: '100%', borderTopLeftRadius: '10px', borderBottomLeftRadius: '10px', objectFit: 'cover' }} />
             </div>
             <div style={{ width: '60%', float: 'right', margin: '24px', textAlign: 'left' }}>
                 <div className='flex justify-between'>
@@ -98,7 +97,6 @@ function UserProjectCard({ project, user }) {
                             {cate.name}
                         </Typography>
                     ))}
-                    {console.log(project)}
                     <div style={{
                         backgroundColor: statusColors[project.projectStatus],
                         color: '#fff',
