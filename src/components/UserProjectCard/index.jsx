@@ -5,6 +5,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
 import React from 'react';
 import './index.css';
+import { useNavigate } from 'react-router-dom';
 
 const projectStatuses = [
     "Đã xóa",
@@ -24,8 +25,16 @@ const statusColors = {
     5: "#FF0000",
 };
 
+
+
 function UserProjectCard({ project, user }) {
     const completePercent = project.projectBalance / project.projectTarget * 100;
+
+    const navigate = useNavigate();
+
+    const handleClickDetail = (project) => {
+        navigate(`/project-detail/${project.id}`);
+    }
 
     //Calculate days remaining
     const calculateRemainingDays = (project) => {
@@ -69,7 +78,7 @@ function UserProjectCard({ project, user }) {
 
         return daysRemaining;
     }
-
+    
     return (
         <Box
             my={4}
@@ -81,10 +90,13 @@ function UserProjectCard({ project, user }) {
             </div>
             <div style={{ width: '60%', float: 'right', margin: '24px', textAlign: 'left' }}>
                 <div className='flex justify-between'>
-                    <Typography gutterBottom color="text.secondary" component="div"
-                        sx={{ textAlign: "left", fontSize: '1rem', color: '#FBB03B', fontWeight: 300 }}>
-                        Trò chơi
-                    </Typography>
+                    {project.categories.map((cate, index) => (
+
+                        <Typography gutterBottom key={index} color="text.secondary" component="div"
+                            sx={{ textAlign: "left", fontSize: '1rem', color: '#FBB03B', fontWeight: 400 }}>
+                            {cate.name}
+                        </Typography>
+                    ))}
                     <div style={{
                         backgroundColor: statusColors[project.projectStatus],
                         color: '#fff',
@@ -97,7 +109,8 @@ function UserProjectCard({ project, user }) {
                     </div>
                 </div>
                 <Typography gutterBottom color="text.secondary" component="div"
-                    sx={{ textAlign: "left", fontSize: '1.25rem', color: '#FBB03B', fontWeight: 600, mt: '-8px' }}>
+                    sx={{ textAlign: "left", fontSize: '1.25rem', color: '#FBB03B', fontWeight: 600, mt: '-8px' }}
+                    onClick={() => handleClickDetail(project)}>
                     {project.projectName}
                 </Typography>
                 <div className='flex flex-row gap-2 items-center'>

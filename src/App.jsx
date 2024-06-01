@@ -19,6 +19,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import UserBookmarkProject from "./pages/UserBookmarkProject";
 import UserProfile from "./pages/UserProfile";
+import POProjectDetail from "./pages/POProjectDetail";
 import UserProjects from "./pages/UserProjects";
 function App() {
   const theme = createTheme({
@@ -63,9 +64,8 @@ function App() {
         </Route>
         <Route path="/choose-cate" element={<ChooseCategories />} />
         <Route path="/choose-subCates" element={<ChooseSubCates />} />
-        <Route>
-          <Route path="/projects" element={<UserProjects />} />
-        </Route>
+        <Route path="/project-detail/:projectId" element={<POProjectDetail />} />
+        <Route path="/projects" element={<UserProjects />} />
 
       </Routes>
     </ThemeProvider>
