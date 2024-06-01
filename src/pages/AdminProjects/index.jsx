@@ -299,7 +299,7 @@ function AdminProjects() {
                     <TableCell>{item.projectOwnerName}</TableCell>
                     <TableCell align="right">{item.projectTarget}</TableCell>
                     <TableCell>
-                      {dayjs(item.createdDate).format("YYYY-MM-DD HH:mm")}
+                      {dayjs(item.createdDate).format("DD/MM/YYYY HH:mm")}
                     </TableCell>
                     <TableCell>{statuses[item.projectStatus]}</TableCell>
                   </TableRow>
@@ -354,15 +354,15 @@ function AdminProjects() {
               <Typography>Mục tiêu: {selectedProject.projectTarget}</Typography>
               <Typography>
                 Ngày tạo:{" "}
-                {dayjs(selectedProject.createdDate).format("YYYY-MM-DD HH:mm")}
+                {dayjs(selectedProject.createdDate).format("DD/MM/YYYY HH:mm")}
               </Typography>
               <Typography>
                 Ngày bắt đầu:{" "}
-                {dayjs(selectedProject.startDate).format("YYYY-MM-DD HH:mm")}
+                {dayjs(selectedProject.startDate).format("DD/MM/YYYY HH:mm")}
               </Typography>
               <Typography>
                 Ngày kết thúc:{" "}
-                {dayjs(selectedProject.endDate).format("YYYY-MM-DD HH:mm")}
+                {dayjs(selectedProject.endDate).format("DD/MM/YYYY HH:mm")}
               </Typography>
               <Typography>Số dư: {selectedProject.projectBalance}</Typography>
               <Typography>
