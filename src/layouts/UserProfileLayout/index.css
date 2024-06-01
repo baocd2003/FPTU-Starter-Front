@@ -2,7 +2,7 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    margin-top: 100px;
+    margin-top: 120px;
 }
 
 .bgImgButton {
@@ -46,6 +46,10 @@
         flex-direction: column;
         gap: 24px;
     }
+
+    .userBriefInfo {
+        margin-top: 16px;
+    }
 }
 
 @media (min-width: 1200px) {
@@ -66,8 +70,8 @@
     }
 
     .briefInfo {
-        margin-left: 56px;
-        padding-top: 120px;
+        margin-left: 32px;
+        padding-top: 72px;
         text-align: left;
         justify-content: space-between;
     }

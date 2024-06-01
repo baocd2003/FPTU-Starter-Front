@@ -14,14 +14,14 @@ import setCanvasPreview from '../../setCanvasPreview';
 import './index.css';
 
 const ASPECT_RATIO = 1;
-const MIN_DIMENSION = 240;
+const MIN_DIMENSION = 180;
 
 const style = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: { lg: '40%', xs: '90%' },
+    width: { lg: '30%', xs: '90%' },
     height: 'fit-content',
     bgcolor: '#FFFFFF',
     boxShadow: 24,
@@ -167,7 +167,7 @@ function UploadAvatarModel(props) {
                             <Avatar
                                 alt="User"
                                 src={avtSrc || ''}
-                                sx={{ width: '240px', height: '240px' }}
+                                sx={{ width: '180px', height: '180px' }}
                             />
                         )}
                     </div>

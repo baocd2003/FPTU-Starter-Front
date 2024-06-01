@@ -11,8 +11,18 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Cookies from 'js-cookie';
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
+import categoryApiInstance from "../../utils/apiInstance/categoryApiInstance";
 import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
 import './index.css';
+
+const filteredStatues = [
+  { label: 'Chờ duyệt', statusIndex: 1 },
+  { label: 'Đang tiến hành', statusIndex: 2 },
+  { label: 'Từ chối', statusIndex: 5 },
+  { label: 'Thành công', statusIndex: 3 },
+  { label: 'Thất bại', statusIndex: 4 },
+  { label: 'Đã xóa', statusIndex: 0 },
+];
 
 const Search = styled("div")(() => ({
   borderRadius: "5px",
@@ -74,6 +84,9 @@ const SearchBarProjects = ({
   const [internalValue, setInternalValue] = useState(value || "");
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const [projectList, setProjectList] = useState([]);
+  const [status, setStatus] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [categoryName, selectCategoryName] = useState("");
   const token = Cookies.get("_auth");
 
   const handleChange = (e) => {
@@ -85,6 +98,7 @@ const SearchBarProjects = ({
 
   useEffect(() => {
     fetchProjects();
+    getCategories();
   }, [token]);
 
   const fetchProjects = async () => {
@@ -103,6 +117,18 @@ const SearchBarProjects = ({
       }
     }
   };
+
+  const getCategories = async () => {
+    try {
+      const response = await categoryApiInstance.get("");
+      if (response.data.result._data != null) {
+        const category = response.data.result._data;
+        setCategories(category);
+      }
+    } catch (error) {
+      console.error("Error fetching category list:", error);
+    }
+  }
 
   const handleCancel = () => {
     setInternalValue("");
@@ -123,6 +149,15 @@ const SearchBarProjects = ({
 
   const handleChangeSelect = (event) => {
     setAge(event.target.value);
+  };
+
+  const handleSearchStatus = (statusIndex) => {
+    setStatus(statusIndex);
+  };
+
+  const handleSearchCategory = (categoryName) => {
+    selectCategoryName(categoryName);
+    console.log(categoryName)
   };
 
   return (
@@ -163,29 +198,39 @@ const SearchBarProjects = ({
           ) : null}
         </Search>
       </Box>
-      <div className="flex gap-2 searchSelection">
+      <div className="flex gap-6 searchSelection">
         <Box
           width={isSmallScreen ? "100%" : "auto"}
         >
           <FormControl
-            sx={{ minWidth: 120 }}
             size="small"
             fullWidth={isSmallScreen}
+            sx={{
+              width: '160px',
+              minWidth: 120
+            }}
           >
             <InputLabel id="select-small-label">Trạng thái</InputLabel>
             <Select
               labelId="select-small-label"
               id="select-small"
-              value={age}
+              defaultValue={0}
               label="Trạng thái"
-              onChange={handleChangeSelect}
+              sx={{ textAlign: 'left' }}
             >
-              <MenuItem value="">
-                <em>None</em>
+              <MenuItem value={0} sx={{ width: '100%', height: '54px' }}>
+                Tất cả
               </MenuItem>
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
+              {filteredStatues.map((item, index) => (
+                <MenuItem
+                  key={index}
+                  sx={{ width: '100%', height: '54px' }}
+                  value={item.value}
+                  onClick={() => handleSearchStatus(item.statusIndex)}
+                >
+                  {item.label}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </Box>
@@ -201,12 +246,11 @@ const SearchBarProjects = ({
             <Select
               labelId="select-small-label-2"
               id="select-small-2"
-              value={age}
+              defaultValue={0}
               label="Mục tiêu"
-              onChange={handleChangeSelect}
             >
-              <MenuItem value="">
-                <em>None</em>
+              <MenuItem value={0} sx={{ width: '100%', height: '54px' }}>
+                Tất cả
               </MenuItem>
               <MenuItem value={10}>Ten</MenuItem>
               <MenuItem value={20}>Twenty</MenuItem>
@@ -226,21 +270,28 @@ const SearchBarProjects = ({
             <Select
               labelId="select-small-label-3"
               id="select-small-3"
-              value={age}
               label="Thể loại"
-              onChange={handleChangeSelect}
+              defaultValue={0}
+              sx={{ textAlign: 'left' }}
             >
-              <MenuItem value="">
-                <em>None</em>
+              <MenuItem value={0} sx={{ width: '100%', height: '54px' }}>
+                Tất cả
               </MenuItem>
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
+              {categories.map((item, index) => (
+                <MenuItem
+                  key={index}
+                  sx={{ width: '100%', height: '54px' }}
+                  value={index + 1}
+                  onClick={() => handleSearchCategory(item.name)}
+                >
+                  {item.name}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </Box>
       </div >
-    </Box>
+    </Box >
   );
 };
 

@@ -52,6 +52,24 @@ function UserProjectCard({ project, user }) {
         return progress;
     }
 
+    const calculateDaysRemaining = (project) => {
+        const today = new Date();
+        const startDate = new Date(project.startDate);
+        const endDate = new Date(project.endDate);
+        if (startDate >= today) {
+            return Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
+        }
+
+        if (endDate <= today) {
+            return 0;
+        }
+
+        const diffInMilliseconds = endDate - today;
+        const daysRemaining = Math.floor(diffInMilliseconds / (1000 * 60 * 60 * 24));
+
+        return daysRemaining;
+    }
+
     return (
         <Box
             my={4}
@@ -59,12 +77,12 @@ function UserProjectCard({ project, user }) {
             sx={{ boxShadow: '0 0 5px rgba(0, 0, 0, 0.2)', borderRadius: '10px', height: 'fit-content', width: '100%' }}
         >
             <div style={{ width: '40%', float: 'left' }}>
-                <img src={project.projectThumbnail} alt="Project Thumbnail" style={{ height: '100%', borderTopLeftRadius: '10px', borderBottomLeftRadius: '10px' }} />
+                <img src={project.projectThumbnail} alt="Project Thumbnail" style={{ height: '100%', borderTopLeftRadius: '10px', borderBottomLeftRadius: '10px', objectFit: 'cover' }} />
             </div>
             <div style={{ width: '60%', float: 'right', margin: '24px', textAlign: 'left' }}>
                 <div className='flex justify-between'>
                     <Typography gutterBottom color="text.secondary" component="div"
-                        sx={{ textAlign: "left", fontSize: '1rem', color: '#FBB03B', fontWeight: 400 }}>
+                        sx={{ textAlign: "left", fontSize: '1rem', color: '#FBB03B', fontWeight: 300 }}>
                         Trò chơi
                     </Typography>
                     <div style={{
@@ -147,7 +165,7 @@ function UserProjectCard({ project, user }) {
                                 }}
                             >
                                 <Typography variant="caption" component="div" style={{ color: '#FBB03B', fontWeight: 600, fontSize: '0.8rem' }}>
-                                    {`${Math.round(calculateRemainingDays(project))}%`}
+                                    {calculateDaysRemaining(project)}
                                 </Typography>
                             </Box>
                         </Box>

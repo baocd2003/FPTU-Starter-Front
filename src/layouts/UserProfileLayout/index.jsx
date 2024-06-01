@@ -230,19 +230,19 @@ function UserProfileLayout() {
             </Backdrop>
             <div className='userProfile'>
                 {isLoading || !user ? (
-                    <div className='w-full flex justify-center mt-10'>
+                    <div className='w-full flex justify-center mt-1 mb-8'>
                         <CircularProgress sx={{ color: '#FBB03B' }} />
                     </div>
                 ) : (
                     <div>
-                        <div className='text-left mt-10'>
+                        <div className='text-left mt-1 mb-8'>
                             <a className='text-[#44494D] font-bold hover:text-[#FBB03B] hover:underline cursor-pointer transition-all duration-300' onClick={() => navigate("/profile")}>Tài khoản</a>
                         </div>
-                        <div className='mt-8' style={{ width: '100%', height: 'auto' }}>
+                        <div style={{ width: '100%', height: 'auto' }}>
                             <div style={{
                                 position: 'relative',
                                 width: '100%',
-                                height: '320px',
+                                height: '240px',
                                 backgroundColor: isBgImage ? 'transparent' : '#E2E2E2',
                                 borderRadius: '16px',
                             }}
@@ -295,26 +295,26 @@ function UserProfileLayout() {
                                 </div>
                             </div>
                         </div>
-                        <div className='avatarProfile mt-[-88px] flex'>
-                            <div className='bg-[white] w-[280px] h-[280px] rounded-full flex justify-center items-center relative'>
+                        <div className='avatarProfile mt-[-48px] flex'>
+                            <div className='relative'>
                                 {isImage ? (
                                     <Avatar
                                         alt="User"
                                         src={user.userAvatarUrl || ''}
-                                        sx={{ width: 240, height: 240, marginLeft: '20px', marginRight: '20px' }}
+                                        sx={{ width: 180, height: 180, marginLeft: '20px', marginRight: '20px', outline: '12px solid white' }}
                                     />
                                 ) : (
                                     <Avatar
                                         alt="User"
                                         src={''}
-                                        sx={{ width: 240, height: 240, marginLeft: '20px', marginRight: '20px' }}
+                                        sx={{ width: 180, height: 180, marginLeft: '20px', marginRight: '20px', outline: '12px solid white' }}
                                     />
                                 )}
                                 <div
                                     style={{
                                         position: 'absolute',
-                                        bottom: 24,
-                                        right: 32
+                                        bottom: 0,
+                                        right: 24
                                     }}
                                 >
                                     <Avatar
@@ -334,9 +334,8 @@ function UserProfileLayout() {
                             </div>
                             <div className='briefInfo flex w-full'>
                                 {user ? (
-                                    <div className='flex flex-col'>
-                                        <h1 className='text-4xl font-semibold'>{user.accountName}</h1>
-                                        <h2 className='font-medium text-xl pt-2'>{user.userName}</h2>
+                                    <div className='flex flex-col userBriefInfo'>
+                                        <h1 className='text-3xl font-semibold'>{user.accountName}</h1>
                                         <h2 className='font-medium text-xl pt-2'>Số dư ví:<span className='text-[#FBB03B] ml-3'>0 VND</span></h2>
                                     </div>
                                 ) : (
