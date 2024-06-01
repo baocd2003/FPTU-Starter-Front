@@ -1,0 +1,14 @@
+.circularProgress svg circle {
+    stroke: #FBB03B;
+}
+
+.progressBarUserProject {
+    background-color: #F0F0F0 !important;
+    margin: 4px 0;
+    border-radius: 10px;
+    height: 10px !important;
+}
+
+.progressBarUserProject span {
+    background-color: #FCAE3D !important;
+}

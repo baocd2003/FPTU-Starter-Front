@@ -236,7 +236,7 @@ function UserProfileLayout() {
                 ) : (
                     <div>
                         <div className='text-left mt-10'>
-                            <a className='text-[#44494D] font-bold hover:text-[#FBB03B] hover:underline cursor-pointer transition-all duration-300'>Tài khoản</a>
+                            <a className='text-[#44494D] font-bold hover:text-[#FBB03B] hover:underline cursor-pointer transition-all duration-300' onClick={() => navigate("/profile")}>Tài khoản</a>
                         </div>
                         <div className='mt-8' style={{ width: '100%', height: 'auto' }}>
                             <div style={{
@@ -346,6 +346,7 @@ function UserProfileLayout() {
                                     <Button
                                         variant="contained"
                                         startIcon={<BallotIcon />}
+                                        onClick={() => navigate("/projects")}
                                         sx={{
                                             color: "#44494D",
                                             backgroundColor: 'white',

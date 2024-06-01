@@ -9,6 +9,10 @@ import UserProfileLayout from "./layouts/UserProfileLayout";
 import AdminProjects from "./pages/AdminProjects";
 import CreateProject from "./pages/CreateProject";
 import ChooseCategories from "./pages/CreateProject/ChooseCategories";
+import ChooseSubCates from "./pages/CreateProject/ChooseSubCates";
+import InitStep from "./pages/CreateProject/InitStep";
+import SecondStep from "./pages/CreateProject/SecondStep";
+import ThirdStep from "./pages/CreateProject/ThirdStep";
 import HomePage from "./pages/HomePage";
 import OTPVerification from "./pages/OTPVerification";
 import SignIn from "./pages/SignIn";
@@ -20,6 +24,7 @@ import SecondStep from "./pages/CreateProject/SecondStep";
 import ThirdStep from "./pages/CreateProject/ThirdStep";
 import ChooseSubCates from "./pages/CreateProject/ChooseSubCates";
 import POProjectDetail from "./pages/POProjectDetail";
+import UserProjects from "./pages/UserProjects";
 function App() {
   const theme = createTheme({
     typography: {
@@ -64,6 +69,7 @@ function App() {
         <Route path="/choose-cate" element={<ChooseCategories />} />
         <Route path="/choose-subCates" element={<ChooseSubCates />} />
         <Route path="/project-detail/:projectId" element={<POProjectDetail />} />
+        <Route path="/projects" element={<UserProjects />} />
 
       </Routes>
     </ThemeProvider>

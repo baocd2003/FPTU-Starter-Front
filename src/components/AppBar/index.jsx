@@ -1,5 +1,4 @@
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import BallotIcon from '@mui/icons-material/Ballot';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -33,7 +32,7 @@ import "./index.css";
 const pages = ['Trang chủ', 'Toàn bộ dự án', 'Về chúng tôi', 'Hỗ trợ'];
 const profileMenu = [
   { label: 'Tài khoản', route: '/profile', icon: <AccountCircleIcon /> },
-  { label: 'Dự án của tôi', route: '/', icon: <BallotIcon /> },
+  { label: 'Dự án của tôi', route: '/projects', icon: <BallotIcon /> },
   { label: 'Đăng xuất', route: 'logout', icon: <LogoutIcon /> }
 ];
 
@@ -287,14 +286,12 @@ function FSUAppBar({ isLogined, refetchData }) {
                   <MenuItem
                     key={menuItem.label}
                     onClick={() => handleProfileMenuClick(menuItem.route)}
-                    sx={{ width: 'fit-content', height: '54px' }}
+                    sx={{ width: '100%', height: '54px' }}
                   >
                     <ListItemIcon sx={{ marginRight: '0.5rem', color: '#44494D' }}>
                       {menuItem.icon}
                     </ListItemIcon>
                     <ListItemText sx={{ width: '15vh', color: '#44494D' }}>{menuItem.label}</ListItemText>
-                    {index === 0 && <ArrowForwardIosIcon sx={{ width: '1.1rem', height: '1.1rem', visibility: 'hidden', color: '#44494D' }} className='menuArrow' />}
-                    {index !== 0 && <ArrowForwardIosIcon sx={{ width: '1.1rem', height: '1.1rem', visibility: 'hidden !important', color: '#44494D' }} className='menuArrow' />}
                   </MenuItem>
                 ))}
               </Menu>
