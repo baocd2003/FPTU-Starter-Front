@@ -19,10 +19,6 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import UserBookmarkProject from "./pages/UserBookmarkProject";
 import UserProfile from "./pages/UserProfile";
-import InitStep from "./pages/CreateProject/InitStep";
-import SecondStep from "./pages/CreateProject/SecondStep";
-import ThirdStep from "./pages/CreateProject/ThirdStep";
-import ChooseSubCates from "./pages/CreateProject/ChooseSubCates";
 import POProjectDetail from "./pages/POProjectDetail";
 import UserProjects from "./pages/UserProjects";
 function App() {

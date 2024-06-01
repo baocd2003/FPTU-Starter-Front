@@ -34,9 +34,10 @@ function POProjectDetail() {
         if (res.data._statusCode === 200) {
           setProject(res.data._data);
           setIsLoading(false);
+          const today = new Date();
           const start = new Date(res.data._data.startDate);
           const end = new Date(res.data._data.endDate);
-          const daysDiff = Math.round((end - start) / (1000 * 60 * 60 * 24));
+          const daysDiff = Math.floor((end - today) / (1000 * 60 * 60 * 24));
           setRemainingDays(daysDiff);
           const imgUrls = res.data._data.images.map((v, i) => v.url)
           setImages(imgUrls)
