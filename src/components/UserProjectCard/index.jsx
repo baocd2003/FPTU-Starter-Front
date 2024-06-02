@@ -4,8 +4,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
 import React from 'react';
-import './index.css';
 import { useNavigate } from 'react-router-dom';
+import './index.css';
 
 const projectStatuses = [
     "Đã xóa",
@@ -78,7 +78,7 @@ function UserProjectCard({ project, user }) {
 
         return daysRemaining;
     }
-    
+
     return (
         <Box
             my={4}
@@ -89,11 +89,10 @@ function UserProjectCard({ project, user }) {
                 <img src={project.projectThumbnail} alt="Project Thumbnail" style={{ height: '100%', borderTopLeftRadius: '10px', borderBottomLeftRadius: '10px', objectFit: 'cover' }} />
             </div>
             <div style={{ width: '60%', float: 'right', margin: '24px', textAlign: 'left' }}>
-                <div className='flex justify-between'>
+                <div className='flex gap-2 projectCategoryStatus'>
                     {project.categories.map((cate, index) => (
-
                         <Typography gutterBottom key={index} color="text.secondary" component="div"
-                            sx={{ textAlign: "left", fontSize: '1rem', color: '#FBB03B', fontWeight: 400 }}>
+                            sx={{ textAlign: "left", fontSize: '1rem', color: '#FBB03B', fontWeight: 600 }}>
                             {cate.name}
                         </Typography>
                     ))}
@@ -103,13 +102,13 @@ function UserProjectCard({ project, user }) {
                         borderRadius: '10px',
                         padding: '0.5rem 1rem',
                         fontWeight: 600,
-                        overflow: 'visible'
+                        width: 'fit-content'
                     }}>
                         {projectStatuses[project.projectStatus]}
                     </div>
                 </div>
                 <Typography gutterBottom color="text.secondary" component="div"
-                    sx={{ textAlign: "left", fontSize: '1.25rem', color: '#FBB03B', fontWeight: 600, mt: '-8px' }}
+                    sx={{ textAlign: "left", fontSize: '1.25rem', color: '#FBB03B', fontWeight: 600, mt: { lg: '-8px', xs: '8px' } }}
                     onClick={() => handleClickDetail(project)}>
                     {project.projectName}
                 </Typography>
@@ -182,7 +181,7 @@ function UserProjectCard({ project, user }) {
                                 </Typography>
                             </Box>
                         </Box>
-                        <h2 className='text-[0.8rem] text-[#FBB03B] font-bold'>Ngày còn lại</h2>
+                        <h2 className='text-[0.8rem] text-[#FBB03B] font-bold text-center'>Ngày còn lại</h2>
                     </div>
                     <div className='flex flex-col items-center'>
                         <Box sx={{ position: 'relative' }}>
@@ -223,7 +222,7 @@ function UserProjectCard({ project, user }) {
                                 </Typography>
                             </Box>
                         </Box>
-                        <h2 className='text-[0.8rem] text-[#FBB03B] font-bold'>Thành công</h2>
+                        <h2 className='text-[0.8rem] text-[#FBB03B] font-bold text-center'>Tiến độ</h2>
                     </div>
                     <div className='flex flex-col items-center'>
                         <Box sx={{ position: 'relative' }}>
@@ -264,7 +263,7 @@ function UserProjectCard({ project, user }) {
                                 </Typography>
                             </Box>
                         </Box>
-                        <h2 className='text-[0.8rem] text-[#FBB03B] font-bold'>Người ủng hộ</h2>
+                        <h2 className='text-[0.8rem] text-[#FBB03B] font-bold text-center'>Người ủng hộ</h2>
                     </div>
                 </div>
             </div>
