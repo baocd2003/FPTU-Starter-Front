@@ -9,7 +9,6 @@ import Select from "@mui/material/Select";
 import { alpha, styled } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Cookies from 'js-cookie';
-import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import categoryApiInstance from "../../utils/apiInstance/categoryApiInstance";
 import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
@@ -22,6 +21,13 @@ const filteredStatues = [
   { label: 'Thành công', statusIndex: 3 },
   { label: 'Thất bại', statusIndex: 4 },
   { label: 'Đã xóa', statusIndex: 0 },
+];
+
+const filteredTarget = [
+  { label: 'Từ 0 - 1 triệu', statusIndex: 1 },
+  { label: 'Từ 1 triệu - 10 triệu', statusIndex: 2 },
+  { label: 'Từ 10 triệu - 100 triệu', statusIndex: 3 },
+  { label: '100 triệu trở lên', statusIndex: 4 },
 ];
 
 const Search = styled("div")(() => ({
@@ -70,41 +76,26 @@ const StyledInputBase = styled(InputBase)(() => ({
   height: "100%",
 }));
 
-const SearchBarProjects = ({
-  value,
-  onChange,
-  placeholder,
-  onCancelResearch,
-  onSearch,
-  className,
-  style,
-  disabled,
-  setProject,
-}) => {
-  const [internalValue, setInternalValue] = useState(value || "");
+const SearchBarProjects = ({ setProject }) => {
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const [projectList, setProjectList] = useState([]);
-  const [status, setStatus] = useState(null);
   const [categories, setCategories] = useState([]);
+
+  const [searchValue, setSearchValue] = useState("");
+  const [status, setStatus] = useState("");
+  const [target, setTarget] = useState("");
   const [categoryName, selectCategoryName] = useState("");
   const token = Cookies.get("_auth");
 
-  const handleChange = (e) => {
-    setInternalValue(e.target.value);
-    if (onChange) {
-      onChange(e.target.value);
-    }
-  };
-
   useEffect(() => {
-    fetchProjects();
+    fetchProjects(searchValue, status, target, categoryName);
     getCategories();
   }, [token]);
 
-  const fetchProjects = async () => {
+  const fetchProjects = async (searchValue, status, target, categoryName) => {
     if (token) {
       try {
-        const response = await projectApiInstance.get("user-project", {
+        const response = await projectApiInstance.get(`user-project?searchName=${searchValue}&projectStatus=${status}&moneyTarget=${target}&categoryName=${categoryName}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (response.data._data != null) {
@@ -131,33 +122,36 @@ const SearchBarProjects = ({
   }
 
   const handleCancel = () => {
-    setInternalValue("");
-    if (onCancelResearch) {
-      onCancelResearch(internalValue);
-    }
+    setSearchValue("");
+    fetchProjects("", status, target, categoryName);
   };
 
   const handleKeyUp = (e) => {
-    if (e.keyCode === 13 || (e.code === "Enter" && onSearch)) {
-      onSearch(internalValue);
+    if (e.keyCode === 13 || (e.code === "Enter")) {
+      handleSearchChange(e);
     } else if (e.keyCode === 27 || e.code === "Escape") {
       handleCancel();
     }
   };
 
-  const [age, setAge] = React.useState("");
-
-  const handleChangeSelect = (event) => {
-    setAge(event.target.value);
+  const handleSearchChange = (e) => {
+    setSearchValue(e.target.value);
+    fetchProjects(e.target.value, status, target, categoryName);
   };
 
   const handleSearchStatus = (statusIndex) => {
     setStatus(statusIndex);
+    fetchProjects(searchValue, statusIndex, target, categoryName);
   };
 
-  const handleSearchCategory = (categoryName) => {
-    selectCategoryName(categoryName);
-    console.log(categoryName)
+  const handleSearchCategory = (newCategoryName) => {
+    selectCategoryName(newCategoryName);
+    fetchProjects(searchValue, status, target, newCategoryName);
+  };
+
+  const handleSearchTarget = (newTarget) => {
+    setTarget(newTarget);
+    fetchProjects(searchValue, status, newTarget, categoryName);
   };
 
   return (
@@ -169,29 +163,27 @@ const SearchBarProjects = ({
       width="100%"
       gap={isSmallScreen ? 0 : 8}
     >
-      <Box flex="1" mb={isSmallScreen ? 2 : 0} width={isSmallScreen ? "100%" : "60%"}>
+      <Box flex="1" mb={isSmallScreen ? 2 : 0} width={isSmallScreen ? "100%" : "50%"}>
         <Search
           key={"SearchBarComponent-root"}
           style={{
-            ...style,
             width: "100%",
             height: "40px",
           }}
-          className={`SearchBarComponent-root ${className ? className : ""}`}
+          className={`SearchBarComponent-root`}
         >
           <SearchIconWrapper>
             <SearchIcon />
           </SearchIconWrapper>
           <StyledInputBase
             inputProps={{
-              onChange: handleChange,
-              value: internalValue,
+              onChange: handleSearchChange,
+              value: searchValue,
             }}
-            placeholder={placeholder || "Bạn đang tìm dự án gì?"}
+            placeholder={"Bạn đang tìm dự án gì?"}
             onKeyUp={handleKeyUp}
-            disabled={disabled}
           />
-          {internalValue ? (
+          {searchValue ? (
             <CloseIconWrapper onClick={handleCancel}>
               <CloseIcon />
             </CloseIconWrapper>
@@ -218,14 +210,16 @@ const SearchBarProjects = ({
               label="Trạng thái"
               sx={{ textAlign: 'left' }}
             >
-              <MenuItem value={0} sx={{ width: '100%', height: '54px' }}>
+              <MenuItem value={0} sx={{ width: '100%', height: '54px' }}
+                onClick={() => handleSearchStatus("")}
+              >
                 Tất cả
               </MenuItem>
               {filteredStatues.map((item, index) => (
                 <MenuItem
                   key={index}
                   sx={{ width: '100%', height: '54px' }}
-                  value={item.value}
+                  value={index + 1}
                   onClick={() => handleSearchStatus(item.statusIndex)}
                 >
                   {item.label}
@@ -238,7 +232,7 @@ const SearchBarProjects = ({
           width={isSmallScreen ? "100%" : "auto"}
         >
           <FormControl
-            sx={{ minWidth: 120 }}
+            sx={{ minWidth: 120, width: '160px' }}
             size="small"
             fullWidth={isSmallScreen}
           >
@@ -248,13 +242,23 @@ const SearchBarProjects = ({
               id="select-small-2"
               defaultValue={0}
               label="Mục tiêu"
+              sx={{ textAlign: 'left' }}
             >
-              <MenuItem value={0} sx={{ width: '100%', height: '54px' }}>
+              <MenuItem value={0}
+                onClick={() => handleSearchTarget("")}
+              >
                 Tất cả
               </MenuItem>
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
+              {filteredTarget.map((item, index) => (
+                <MenuItem
+                  key={index}
+                  sx={{ width: '100%', height: '54px' }}
+                  value={index + 1}
+                  onClick={() => handleSearchTarget(item.statusIndex)}
+                >
+                  {item.label}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </Box>
@@ -274,7 +278,10 @@ const SearchBarProjects = ({
               defaultValue={0}
               sx={{ textAlign: 'left' }}
             >
-              <MenuItem value={0} sx={{ width: '100%', height: '54px' }}>
+              <MenuItem value={0}
+                sx={{ width: '100%', height: '54px' }}
+                onClick={() => handleSearchCategory("")}
+              >
                 Tất cả
               </MenuItem>
               {categories.map((item, index) => (
@@ -293,29 +300,6 @@ const SearchBarProjects = ({
       </div >
     </Box >
   );
-};
-
-SearchBarProjects.propTypes = {
-  // custom top-level class
-  className: PropTypes.string,
-  // changes the default width of component
-  width: PropTypes.node,
-  // changes the default height of component
-  height: PropTypes.node,
-  // override the placeholder
-  placeholder: PropTypes.string,
-  // value of input text field
-  value: PropTypes.string,
-  // fired when input value changes
-  onChange: PropTypes.func,
-  // fired when the search is canceled
-  onCancelResearch: PropTypes.func,
-  // fired when press enter
-  onSearch: PropTypes.func,
-  // override styles of the root element
-  style: PropTypes.object,
-  // disable text field
-  disabled: PropTypes.bool,
 };
 
 export default SearchBarProjects;

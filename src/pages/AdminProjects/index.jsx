@@ -1,11 +1,7 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import Cookies from "js-cookie";
-import dayjs from "dayjs";
-import Swal from "sweetalert2";
-import SearchBarProjects from "../../components/SearchBarProjects";
-import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Modal from "@mui/material/Modal";
+import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -16,10 +12,14 @@ import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Paper from "@mui/material/Paper";
-import Modal from "@mui/material/Modal";
-import Button from "@mui/material/Button";
 import { visuallyHidden } from "@mui/utils";
+import dayjs from "dayjs";
+import Cookies from "js-cookie";
+import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
+import Swal from "sweetalert2";
+import SearchBarProjects from "../../components/SearchBarProjects";
+import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
 
 const statuses = [
   "Đã xóa",
@@ -81,7 +81,7 @@ function EnhancedTableHead(props) {
             align={headCell.numeric ? "right" : "left"}
           >
             {headCell.id !== "projectOwnerName" &&
-            headCell.id !== "projectStatus" ? (
+              headCell.id !== "projectStatus" ? (
               <TableSortLabel
                 active={orderBy === headCell.id}
                 direction={orderBy === headCell.id ? order : "asc"}
@@ -194,6 +194,10 @@ function AdminProjects() {
     setSelectedProject(null);
   };
 
+  const setProject = (projectList) => {
+    console.log("Hihi");
+  }
+
   const handleOnClickReject = async (projectId) => {
     console.log("Rejected project ID:", projectId);
 
@@ -271,7 +275,7 @@ function AdminProjects() {
         <EnhancedTableToolbar projectsCount={projectList.length} />
         <Box sx={{ padding: 2, display: "flex", justifyContent: "center" }}>
           <Box sx={{ width: "100%", maxWidth: "1200px" }}>
-            <SearchBarProjects width="100%" />
+            <SearchBarProjects setProject={setProject} width='100%' />
           </Box>
         </Box>
         <TableContainer sx={{ padding: 4 }}>

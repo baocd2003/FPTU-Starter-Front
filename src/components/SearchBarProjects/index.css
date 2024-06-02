@@ -9,6 +9,6 @@
 @media (min-width: 1200px) {
     .searchSelection {
         justify-content: flex-end !important;
-        width: 40% !important;
+        width: 50% !important;
     }
 }
