@@ -76,7 +76,7 @@ const StyledInputBase = styled(InputBase)(() => ({
   height: "100%",
 }));
 
-const SearchBarProjects = ({ setProject }) => {
+const SearchBarProjects = ({ setProject, searchType }) => {
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const [projectList, setProjectList] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -95,9 +95,20 @@ const SearchBarProjects = ({ setProject }) => {
   const fetchProjects = async (searchValue, status, target, categoryName) => {
     if (token) {
       try {
-        const response = await projectApiInstance.get(`user-project?searchName=${searchValue}&projectStatus=${status}&moneyTarget=${target}&categoryName=${categoryName}`, {
+        const response = await projectApiInstance.get(`user-project?searchType=${searchType}&searchName=${searchValue}&projectStatus=${status}&moneyTarget=${target}&categoryName=${categoryName}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        if (response.data._data != null) {
+          const projects = response.data._data;
+          setProjectList(projects);
+          setProject(projects);
+        }
+      } catch (error) {
+        console.error("Error fetching project list:", error);
+      }
+    } else {
+      try {
+        const response = await projectApiInstance.get(`user-project?searchType=${searchType}&searchName=${searchValue}&projectStatus=${status}&moneyTarget=${target}&categoryName=${categoryName}`);
         if (response.data._data != null) {
           const projects = response.data._data;
           setProjectList(projects);
