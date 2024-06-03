@@ -12,16 +12,3 @@
 .progressBarUserProject span {
     background-color: #FCAE3D !important;
 }
-
-@media (min-width: 1200px) {
-    .projectCategoryStatus {
-        flex-direction: row;
-        justify-content: space-between !important;
-    }
-}
-
-@media (max-width: 1199px) {
-    .projectCategoryStatus {
-        flex-direction: column-reverse;
-    }
-}

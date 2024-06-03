@@ -100,7 +100,7 @@ function UserProjects() {
                                 </Button>
                             </div>
                             <div className='mt-10'>
-                                <SearchBarProjects setProject={setProject} />
+                                <SearchBarProjects setProject={setProject} searchType={"user"} />
                             </div>
                             <div className='mt-8 w-full'>
                                 {projects && projects.length > 0 ? (

@@ -84,15 +84,17 @@ function UserProjectCard({ project, user }) {
         <Box
             my={4}
             display="flex"
-            sx={{ boxShadow: '0 0 5px rgba(0, 0, 0, 0.2)', borderRadius: '10px', height: 'fit-content', width: '100%' }}
+            sx={{
+                boxShadow: '0 0 5px rgba(0, 0, 0, 0.2)', borderRadius: '10px', minHeight: 'fit-content', width: '100%'
+            }}
         >
             <Grid container>
-                <Grid xs={4.5}>
+                <Grid item lg={4.5} xs={12}>
                     <img src={project.projectThumbnail} alt="Project Thumbnail" style={{ height: '100%', borderTopLeftRadius: '10px', borderBottomLeftRadius: '10px', objectFit: 'cover' }} />
                 </Grid>
-                <Grid xs={7.5}>
+                <Grid item lg={7.5} xs={12}>
                     <div style={{ margin: '24px', textAlign: 'left' }}>
-                        <div className='flex gap-2 projectCategoryStatus'>
+                        <div className='flex gap-2 flex-row justify-between mb-2'>
                             {project.categories.map((cate, index) => (
                                 <Typography gutterBottom key={index} color="text.secondary" component="div"
                                     sx={{ textAlign: "left", fontSize: '1rem', color: '#FBB03B', fontWeight: 600 }}>
@@ -144,7 +146,7 @@ function UserProjectCard({ project, user }) {
                                 </Typography>
                             </div>
                         </div>
-                        <div className='flex flex-row justify-center items-center gap-10'>
+                        <div className='flex flex-row justify-between items-center projectProgress'>
                             <div className='flex flex-col items-center'>
                                 <Box sx={{ position: 'relative' }}>
                                     <CircularProgress

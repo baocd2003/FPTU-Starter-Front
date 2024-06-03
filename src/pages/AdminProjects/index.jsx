@@ -275,7 +275,7 @@ function AdminProjects() {
         <EnhancedTableToolbar projectsCount={projectList.length} />
         <Box sx={{ padding: 2, display: "flex", justifyContent: "center" }}>
           <Box sx={{ width: "100%", maxWidth: "1200px" }}>
-            <SearchBarProjects setProject={setProject} width='100%' />
+            <SearchBarProjects setProject={setProject} searchType={"all"} width='100%' />
           </Box>
         </Box>
         <TableContainer sx={{ padding: 4 }}>
