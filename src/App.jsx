@@ -22,6 +22,7 @@ import SignUp from "./pages/SignUp";
 import UserBookmarkProject from "./pages/UserBookmarkProject";
 import UserProfile from "./pages/UserProfile";
 import UserProjects from "./pages/UserProjects";
+import AccountWallet from "./layouts/AccountWallet";
 function App() {
   const theme = createTheme({
     typography: {
@@ -68,6 +69,8 @@ function App() {
 
         <Route path="/project-detail/:projectId" element={<POProjectDetail />} />
         <Route path="/profile/projects" element={<UserProjects />} />
+        <Route path="/projects" element={<UserProjects />} />
+        <Route path="/my-wallet" element={<AccountWallet />} />
 
         <Route path="/all-projects" element={<AllProjects />} />
       </Routes>

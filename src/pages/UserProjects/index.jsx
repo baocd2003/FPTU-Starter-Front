@@ -103,6 +103,7 @@ function UserProjects() {
                                 <SearchBarProjects setProject={setProject} searchType={"user"} />
                             </div>
                             <div className='mt-8 w-full'>
+                                {console.log(projects)}
                                 {projects && projects.length > 0 ? (
                                     <div className='flex w-full'>
                                         <Grid container spacing={'64px'} rowSpacing={{ lg: '16px', xs: '4px' }}>

@@ -1,6 +1,7 @@
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import BallotIcon from '@mui/icons-material/Ballot';
 import LogoutIcon from '@mui/icons-material/Logout';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { AppBar, Avatar, Backdrop, Badge, Box, Button, CircularProgress, Container, Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material';
@@ -24,7 +25,8 @@ const pages = [
 ];
 const profileMenu = [
   { label: 'Tài khoản', route: '/profile', icon: <AccountCircleIcon /> },
-  { label: 'Dự án của tôi', route: '/profile/projects', icon: <BallotIcon /> },
+  { label: 'Ví của tôi', route: '/my-wallet', icon: <AccountBalanceWalletIcon /> },
+  { label: 'Dự án của tôi', route: '/projects', icon: <BallotIcon /> },
   { label: 'Đăng xuất', route: 'logout', icon: <LogoutIcon /> }
 ];
 

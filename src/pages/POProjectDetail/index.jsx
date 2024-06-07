@@ -1,13 +1,15 @@
 import Cookies from "js-cookie";
 import FSUAppBar from "../../components/AppBar";
-import { Grid, Box, Container, Typography, LinearProgress, styled, linearProgressClasses, Button, Stack, Tabs, Tab, Divider, Backdrop, CircularProgress, Chip } from "@mui/material";
+import { Grid, Box, Container, Typography, LinearProgress, styled, linearProgressClasses, Button, Stack, Tabs, Tab, Divider, Backdrop, CircularProgress, Chip, Avatar } from "@mui/material";
 import { tabsClasses } from '@mui/material/Tabs';
 import { TabList, TabContext, TabPanel } from "@mui/lab";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import ProjectImages from "../../components/ProjectImages";
 import ProjectDetailStat from "../../components/ProjectDetailStat";
 import { useParams } from "react-router-dom";
 import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
+import userManagementApiInstance from "../../utils/apiInstance/userManagementApiInstance";
+import { SettingsSuggestSharp } from "@mui/icons-material";
 
 function POProjectDetail() {
   const [project, setProject] = useState(null);
@@ -16,13 +18,7 @@ function POProjectDetail() {
   const [tabValue, setTabValue] = useState("1");
   const [remainingDays, setRemainingDays] = useState(0);
   const [images, setImages] = useState([]);
-  const mockImages = [
-    "https://picsum.photos/id/1018/1000/600/",
-    "https://picsum.photos/id/1018/1000/600/",
-    "https://picsum.photos/id/1018/1000/600/",
-    "https://picsum.photos/id/1018/1000/600/",
-    "https://picsum.photos/id/1018/1000/600/",
-  ];
+  const [projectUser, setProjectUser] = useState(null);
 
   const handleChange = (e, v) => {
     setTabValue(v);
@@ -41,6 +37,9 @@ function POProjectDetail() {
           setRemainingDays(daysDiff);
           const imgUrls = res.data._data.images.map((v, i) => v.url)
           setImages(imgUrls)
+          userManagementApiInstance.get(`/user-profile/${res.data._data.ownerId}`).then((userRes) => {
+            setProjectUser(userRes.data._data);
+          })
         }
       })
       .catch((err) => {
@@ -49,7 +48,16 @@ function POProjectDetail() {
       })
   }, [projectId])
 
-  // console.log(project);
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+
+  };
+
+  // console.log(project, projectUser);
 
   return (
     <>
@@ -63,8 +71,8 @@ function POProjectDetail() {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <div className="mt-[150px]"></div>
-      {project && (
+      <div className="mt-[100px]"></div>
+      {project && projectUser && (
         <Container className="flex flex-row justify-center items-center"
           sx={{
             maxWidth: { lg: "lg", xl: "xl", xs: "xs" },
@@ -82,42 +90,6 @@ function POProjectDetail() {
           <Grid container>
             <Grid item xs={8} >
               <ProjectImages thumbNail={project.projectThumbnail} images={images} />
-              <Box sx={{ width: '100%', typography: 'body1', mt: 5 }}>
-                <Typography
-                  variant="h4"
-                  sx={{
-                    fontWeight: "bold",
-                    py: 5
-                  }}>
-                  Thông tin dự án
-                </Typography>
-                <TabContext value={tabValue}>
-                  <TabList
-                    onChange={handleChange}
-                    // centered
-                    variant="fullWidth"
-                    sx={{
-                      [`& .${tabsClasses.scrollButtons}`]: {
-                        '&.Mui-disabled': { opacity: 0.3 },
-                      },
-                      [`& .MuiTabs-indicator`]: {
-                        backgroundColor: '#FBB03B',
-                      }
-                    }}>
-                    <Tab label="Về chúng mình" sx={{ '&:active': { outline: 'none !important' }, '&:focus': { outline: 'none !important' }, fontWeight: "bold", px: 5, whiteSpace: "nowrap" }} value="1" />
-                    <Tab label="Cập nhật" sx={{ '&:active': { outline: 'none !important' }, '&:focus': { outline: 'none !important' }, fontWeight: "bold", px: 5, whiteSpace: "nowrap" }} value="2" />
-                    <Tab label="Danh sách người ủng hộ" sx={{ '&:active': { outline: 'none !important' }, '&:focus': { outline: 'none !important' }, fontWeight: "bold", px: 5, whiteSpace: "nowrap" }} value="3" />
-                    <Tab label="Đánh giá" sx={{ '&:active': { outline: 'none !important' }, '&:focus': { outline: 'none !important' }, fontWeight: "bold", px: 5, whiteSpace: "nowrap" }} value="4" />
-
-                  </TabList>
-                  <Divider />
-                  <TabPanel value="1">Về chúng mình</TabPanel>
-                  <TabPanel value="2">Cập nhật</TabPanel>
-                  <TabPanel value="3">Danh sách người ủng hộ</TabPanel>
-                  <TabPanel value="4">Đánh giá</TabPanel>
-
-                </TabContext>
-              </Box>
             </Grid>
             <Grid item xs={4} paddingLeft={5}>
               <Box
@@ -134,8 +106,9 @@ function POProjectDetail() {
                     sx={{
                       color: "white",
                       background: "#FCAE3D",
-                      px: 2,
-                      mr: 1
+                      px: 1,
+                      mr: 1,
+                      fontSize: ".9rem"
                     }}
                   />
                 ))}
@@ -147,72 +120,117 @@ function POProjectDetail() {
                     sx={{
                       color: "white",
                       background: "rgba(0, 0, 0, 0.25)",
-                      px: 2,
-                      mr: 1
+                      px: 1,
+                      mr: 1,
+                      fontSize: ".9rem"
                     }}
                   />
                 ))}
               </Box>
+
               <Typography
-                variant="h3"
                 sx={{
                   textAlign: "left",
+                  fontSize: ".9rem",
+                  fontStyle: "italic",
+                  color: "rgba(0, 0, 0, 0.3)",
+                  gap: .8,
                   fontWeight: "bold",
-                  py: 2
+                  mt: 2
                 }}>
-                {project && project.projectName}
+                Diễn ra từ {formatDate(project.startDate)} đến {formatDate(project.endDate)}
               </Typography>
+
+              <Box>
+                <Typography
+                  sx={{
+                    textAlign: "left",
+                    fontWeight: "bold",
+                    fontSize: "2rem"
+                  }}>
+                  {project && project.projectName}
+                </Typography>
+                <Box
+                  sx={{
+                    textAlign: "left",
+                    fontSize: ".9rem",
+                    fontStyle: "italic",
+                    color: "rgba(0, 0, 0, 0.5)",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: .8
+                  }}>
+                  bởi <Avatar sx={{ width: "1.2rem", height: "1.2rem" }} alt="user avatar" src={projectUser.userAvatarUrl} /> {projectUser.accountName}
+                </Box>
+              </Box>
+
               <Typography
                 sx={{
-                  textAlign: "left",
-                  fontSize: 18
+                  textAlign: "right",
+                  fontSize: "1rem",
+                  fontStyle: "italic",
+                  color: "rgba(0, 0, 0, 0.3)",
+                  gap: .8,
+                  fontWeight: "bold",
                 }}>
-                {project && project.projectDescription}
+                {Math.round((project.projectBalance / project.projectTarget) * 100)}%
               </Typography>
-              <BorderLinearProgress variant="determinate" value={Math.round((project.projectBalance / project.projectTarget) * 100)} />
+              <BorderLinearProgress variant="determinate" sx={{ width: "100%", my: 0, py: 1 }} value={Math.round((project.projectBalance / project.projectTarget) * 100)} />
+
               <ProjectDetailStat numb={`${project.projectBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND`} stat={`đã được kêu gọi trên mục tiêu ${project.projectTarget.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND`} />
               <ProjectDetailStat numb={"299"} stat={"người đầu tư"} />
               <ProjectDetailStat numb={remainingDays} stat={"ngày còn lại"} />
-              <Stack spacing={1} direction="row">
-                <Button variant="contained" sx={{
-                  width: "33%", whiteSpace: "nowrap", background: "#FCAE3D", fontWeight: "bold",
-                  "&:hover": {
-                    backgroundColor: "#CF8F32",
-                  },
-                  "&:active": {
-                    outline: "none !important",
-                  },
-                  "&:focus": {
-                    outline: "none !important",
-                  }
-                }}>
-                  Chỉnh sửa
-                </Button>
-                <Button variant="contained" sx={{
-                  width: "33%", whiteSpace: "nowrap", background: "#FCAE3D", fontWeight: "bold",
-                  "&:hover": {
-                    backgroundColor: "#CF8F32",
-                  },
-                  "&:active": {
-                    outline: "none !important",
-                  },
-                  "&:focus": {
-                    outline: "none !important",
-                  }
-                }}>
-                  Danh sách Backer
-                </Button>
-                <Button variant="contained" disabled sx={{ width: "33%", whiteSpace: "nowrap", background: "#FCAE3D", fontWeight: "bold" }}>Rút tiền</Button>
+              <Stack spacing={1} direction="row" sx={{ my: 4 }}>
+                <Button variant="contained" disabled sx={{ width: "100%", whiteSpace: "nowrap", background: "#FCAE3D", fontWeight: "bold", py: 1 }}>Rút tiền</Button>
               </Stack>
             </Grid>
           </Grid>
+
+          <Box sx={{ typography: 'body1', mt: 5, background: "#F0F0F0" }}>
+            {/* <Typography
+              variant="h4"
+              sx={{
+                fontWeight: "bold",
+                py: 5
+              }}>
+              Thông tin dự án
+            </Typography> */}
+            <TabContext value={tabValue}>
+              <TabList
+                onChange={handleChange}
+                // centered
+                // variant="fullWidth"
+                sx={{
+                  [`& .${tabsClasses.scrollButtons}`]: {
+                    '&.Mui-disabled': { opacity: 0.3 },
+                  },
+                  [`& .MuiTabs-indicator`]: {
+                    backgroundColor: '#FBB03B',
+                  }
+                }}>
+                <Tab label="Về chúng mình" sx={{ '&:active': { outline: 'none !important' }, '&:focus': { outline: 'none !important' }, fontWeight: "bold", px: 5, whiteSpace: "nowrap" }} value="1" />
+                <Tab label="Cập nhật" sx={{ '&:active': { outline: 'none !important' }, '&:focus': { outline: 'none !important' }, fontWeight: "bold", px: 5, whiteSpace: "nowrap" }} value="2" />
+                <Tab label="Danh sách người ủng hộ" sx={{ '&:active': { outline: 'none !important' }, '&:focus': { outline: 'none !important' }, fontWeight: "bold", px: 5, whiteSpace: "nowrap" }} value="3" />
+                <Tab label="Đánh giá" sx={{ '&:active': { outline: 'none !important' }, '&:focus': { outline: 'none !important' }, fontWeight: "bold", px: 5, whiteSpace: "nowrap" }} value="4" />
+
+              </TabList>
+              <Divider />
+              <TabPanel value="1">
+                <Typography
+                  sx={{
+                    textAlign: "left",
+                    fontSize: 18
+                  }}>
+                  {project && project.projectDescription}
+                </Typography>
+              </TabPanel>
+              <TabPanel value="2">Cập nhật</TabPanel>
+              <TabPanel value="3">Danh sách người ủng hộ</TabPanel>
+              <TabPanel value="4">Đánh giá</TabPanel>
+            </TabContext>
+          </Box>
         </Container >
-      )
-      }
-
-
-
-
+      )}
     </>
   )
 }
