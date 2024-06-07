@@ -1,6 +1,7 @@
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import BallotIcon from '@mui/icons-material/Ballot';
 import LogoutIcon from '@mui/icons-material/Logout';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { ListItemIcon, ListItemText } from '@mui/material';
@@ -32,6 +33,7 @@ import "./index.css";
 const pages = ['Trang chủ', 'Toàn bộ dự án', 'Về chúng tôi', 'Hỗ trợ'];
 const profileMenu = [
   { label: 'Tài khoản', route: '/profile', icon: <AccountCircleIcon /> },
+  { label: 'Ví của tôi', route: '/my-wallet', icon: <AccountBalanceWalletIcon /> },
   { label: 'Dự án của tôi', route: '/projects', icon: <BallotIcon /> },
   { label: 'Đăng xuất', route: 'logout', icon: <LogoutIcon /> }
 ];
@@ -61,7 +63,7 @@ function FSUAppBar({ isLogined, refetchData }) {
       });
 
       if (response.data != null) {
-        console.log(response.data._data);
+        // console.log(response.data._data);
         setUser(response.data._data);
       }
     } catch (error) {
