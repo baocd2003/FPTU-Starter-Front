@@ -1,27 +1,25 @@
 @import url('https://fonts.googleapis.com/css?family=Poetsen+One&display=swap');
 
-.focusedMenuItem:focus {
-	outline: none !important;
-	color: #FBB03B;
-}
-
-.focusedMenuItem:active {
+/* Focused Menu Item Styles */
+.focusedMenuItem:focus,
+.focusedMenuItem:active,
+.focusedMenuItem:hover {
 	outline: none !important;
 	color: #FBB03B;
 }
 
 .focusedMenuItem:hover {
-	outline: none !important;
-	background-color: white !important;
-	color: #FBB03B;
+	background-color: transparent !important;
 }
 
+/* Login Button Styles */
 .login-button {
 	width: 144px;
 	height: 40px;
 	color: #44494D !important;
 	border: 1px solid #44494D !important;
 	font-weight: 600 !important;
+	background-color: #FFFFFF !important;
 	transition: color 0.3s, border-color 0.3s, background-color 0.3s !important;
 }
 
@@ -35,6 +33,52 @@
 	outline: 0 !important;
 }
 
+/* Menu Item Arrow Visibility */
 .MuiMenuItem-root:hover .menuArrow {
 	visibility: visible;
+}
+
+/* Top State Styles */
+.top {
+	background-color: transparent !important;
+	color: #44494D !important;
+	box-shadow: none;
+	transition: 0.1s !important;
+}
+
+.top .focusedMenuItem {
+	color: #FFFFFF !important;
+}
+
+.top .focusedMenuItem:focus,
+.top .focusedMenuItem:active,
+.top .focusedMenuItem:hover {
+	color: #FBB03B !important;
+	background-color: transparent !important;
+}
+
+.top .notiIcon {
+	color: #FFFFFF;
+}
+
+.top .notiIcon:hover {
+	color: #FBB03B;
+}
+
+/* Scrolled State Styles */
+.scrolled {
+	background-color: rgba(255, 255, 255, 0.8) !important;
+	-webkit-backdrop-filter: blur(20px);
+	backdrop-filter: blur(20px);
+	color: white !important;
+	transition: 0.3s !important;
+	box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12) !important;
+}
+
+.scrolled .focusedMenuItem {
+	color: #44494D !important;
+}
+
+.scrolled .focusedMenuItem:hover {
+	color: #FBB03B !important;
 }
