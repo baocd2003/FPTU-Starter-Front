@@ -319,6 +319,7 @@ const handleGoogleLogin = () => {
     scope: "openid profile email",
     include_granted_scopes: "true",
     state: "somerandomstatevalue",
+    prompt: "consent"
   };
 
   for (var p in params) {
@@ -343,10 +344,10 @@ const checkIfRedirectedFromOAuth = () => {
   }
   if (Object.keys(params).length > 0 && params["state"]) {
     const { setIsLoading } = useOutletContext();
-      setIsLoading(true);
+    setIsLoading(true);
     if (params["state"] == "somerandomstatevalue") {
       localStorage.setItem("oauth2-test-params", JSON.stringify(params));
-      
+
       GetGoogleUser();
     } else {
       console.log("State mismatch. Possible CSRF attack");

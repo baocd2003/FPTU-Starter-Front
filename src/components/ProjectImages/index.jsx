@@ -13,7 +13,10 @@ function ProjectImages({ thumbNail, images }) {
       <Box
         component="img"
         sx={{
-          maxHeight: 400,
+          maxHeight: {
+            xs: "25rem",
+            xl: "28rem"
+          },
           width: "100%",
           borderRadius: 1
         }}
