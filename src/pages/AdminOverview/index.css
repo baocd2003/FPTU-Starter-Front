@@ -1,0 +1,12 @@
+.chart-wrap{
+    overflow: hidden;
+    padding:20px;
+    font-family: 'Inter, sans-serif !important';
+}
+.chart-wrap text{
+    font-family: 'Inter, sans-serif !important';
+}
+.grid-chart{
+    background-color: #FFFFFF;
+    /* margin-right:20px !important; */
+}
