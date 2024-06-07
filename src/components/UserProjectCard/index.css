@@ -12,3 +12,16 @@
 .progressBarUserProject span {
     background-color: #FCAE3D !important;
 }
+
+@media (min-width: 1200px) {
+    .projectImage {
+        border-bottom-left-radius: 10px !important;
+    }
+}
+
+@media (max-width: 1199px) {
+    .projectImage {
+        border-bottom-left-radius: 0px;
+        border-top-right-radius: 10px;
+    }
+}

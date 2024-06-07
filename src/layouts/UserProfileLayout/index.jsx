@@ -345,7 +345,7 @@ function UserProfileLayout() {
                                     <Button
                                         variant="contained"
                                         startIcon={<BallotIcon />}
-                                        onClick={() => navigate("/projects")}
+                                        onClick={() => navigate("/profile/projects")}
                                         sx={{
                                             color: "#44494D",
                                             backgroundColor: 'white',

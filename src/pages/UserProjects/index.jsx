@@ -68,7 +68,7 @@ function UserProjects() {
                         <div className='text-left mt-1 mb-8'>
                             <a className='text-[#A2A4A6] font-bold hover:text-[#FBB03B] hover:underline cursor-pointer transition-all duration-300' onClick={() => navigate("/profile")}>Tài khoản</a>
                             <a className='text-[#44494D] mx-2'>/</a>
-                            <a className='text-[#44494D] font-bold hover:text-[#FBB03B] hover:underline cursor-pointer transition-all duration-300' onClick={() => navigate("/projects")}>Dự án của tôi</a>
+                            <a className='text-[#44494D] font-bold hover:text-[#FBB03B] hover:underline cursor-pointer transition-all duration-300' onClick={() => navigate("/profile/projects")}>Dự án của tôi</a>
                         </div>
                         <div style={{ width: '100%', height: 'auto' }}>
                             <div className='w-full flex userProjectPageTile'>

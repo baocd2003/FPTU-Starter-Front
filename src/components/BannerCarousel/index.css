@@ -1,25 +1,43 @@
-.c-image{
+.c-image {
 	object-fit: cover;
-	height:100vh;
-	width:inherit;
+	height: 100vh;
+	width: inherit;
 }
 
-.c-btn:focus{
+.c-btn:focus {
 	outline: none !important;
 	color: #FBB03B;
 }
 
-.c-btn:hover{
+.c-btn:hover {
 	outline: none !important;
 	background-color: white !important;
 	color: #FBB03B;
 }
 
-.c-btn{
-	background-color:#FCAE3D !important;
-	border-radius:10px !important;
-	padding:10px !important;
+.c-btn {
+	background-color: #FCAE3D !important;
+	border-radius: 10px !important;
+	padding: 10px !important;
 }
-.caroulsel{
-	height:100vh;
+
+.caroulsel {
+	height: 100vh;
+}
+
+.carouselImg {
+	-webkit-filter: grayscale(100%) !important;
+	filter: grayscale(100%) !important;
+}
+
+.overlay {
+	position: absolute !important;
+	width: 100% !important;
+	height: 100% !important;
+	top: 0 !important;
+	left: 0 !important;
+	right: 0 !important;
+	bottom: 0 !important;
+	background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.1)) !important;
+	z-index: 2 !important;
 }

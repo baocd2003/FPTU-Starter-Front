@@ -34,7 +34,7 @@ function StepperHomePage() {
             <TabContext value={value}>
                 {Array.from({ length: tabNums }, (_, i) => (
                     <TabPanel key={i + 1} value={(i + 1).toString()}>
-                        <Container maxWidth="lg" className="my-10">
+                        <Container className="my-10" maxWidth="false">
                             <Box className="mx-15" sx={{
                                 display: 'flex', flexDirection: { xs: 'column', md: 'row' }, flexWrap: 'wrap',
                                 justifyContent: { xs: 'center', md: 'space-between' }, alignItems: 'center'

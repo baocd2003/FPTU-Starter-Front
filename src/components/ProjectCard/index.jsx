@@ -6,14 +6,11 @@ import StepperHomePage from '../StepperHomePage';
 function ProjectCard() {
   return (
     <>
-      <Container maxWidth="lg" className="my-10">
-        <Box className="" sx={{
+      <Container className="my-10" maxWidth="false">
+        <Box sx={{
           display: 'flex', flexDirection: { xs: 'column', md: 'row' }, flexWrap: 'wrap'
           , justifyContent: { xs: 'center', md: 'space-between' }, alignItems: 'center'
         }}>
-          {/* <SingleCard imageLink={Kurumi} title="Kurumi" description="Kurumi1"/>
-        <SingleCard imageLink={Kurumi} title="Kurumi" description="Kurumi2"/>
-        <SingleCard imageLink={Kurumi} title="Kurumi" description="Kurumi3"/> */}
           <StepperHomePage />
         </Box>
       </Container>
