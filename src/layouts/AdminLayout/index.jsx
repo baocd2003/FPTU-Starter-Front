@@ -79,7 +79,7 @@ function AdminLayout() {
   );
 
   return (
-    <Grid container sx={{ height: "100%", overflow: "hidden" }}>
+    <Grid container sx={{ height: "100%", overflow: "hidden" }} spacing={4}>
       <Grid xs={2} item sx={{ height: "100%" }}>
         <Drawer
           variant="permanent"

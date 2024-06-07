@@ -22,6 +22,7 @@ import SignUp from "./pages/SignUp";
 import UserBookmarkProject from "./pages/UserBookmarkProject";
 import UserProfile from "./pages/UserProfile";
 import UserProjects from "./pages/UserProjects";
+import AdminOverview from "./pages/AdminOverview";
 import AccountWallet from "./layouts/AccountWallet";
 function App() {
   const theme = createTheme({
@@ -58,6 +59,7 @@ function App() {
         <Route element={<AdminLayout />}>
           <Route path="/admin" element={<Navigate to="/admin/dashboard" />} />
           <Route path="/admin/projects" element={<AdminProjects />} />
+          <Route path="/admin/dashboard" element={<AdminOverview />} />
         </Route>
         <Route element={<CreateProject />} >
           <Route path="/create-project" element={<InitStep />} />
