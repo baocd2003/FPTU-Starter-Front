@@ -30,9 +30,9 @@ function HomePage() {
 			<FSUAppBar isLogined={checkIsLogin} />
 			<BannerCarousel />
 			<div className="mt-[100px]">
-				<div data-aos="fade-up" className="bg-[#F0F0F0] p-3">
+				<div data-aos="fade-up" className="bg-[#f7f7f9] p-3 pt-12">
 					<Typography component="div">
-						<Typography variant="h1" sx={{ fontSize: '36px', color: '#FCAE3D' }}>
+						<Typography variant="h1" sx={{ fontSize: '36px', color: '#FCAE3D', fontWeight: 600 }}>
 							Các dự án nổi bật
 						</Typography>
 						<Typography variant="body1" sx={{ fontSize: '22px' }}>
