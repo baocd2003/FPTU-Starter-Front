@@ -75,6 +75,7 @@ function AccountWallet() {
         CHECKOUT_URL: url,
         onSuccess: async (event) => {
           console.log("onsuccess", event.orderCode);
+          setIsLoading(true);
           try {
             const payOsTransaction = await getPayOSTransaction(event.orderCode);
             console.log(payOsTransaction.data.data);
@@ -99,6 +100,7 @@ function AccountWallet() {
               icon: "warning"
             });
           }
+          setIsLoading(false);
         },
         onCancel: (event) => {
           // console.log("onCancel", event);
@@ -116,7 +118,7 @@ function AccountWallet() {
 
   return (
     <>
-      {/* <FSUAppBar isLogined={Cookies.get("_auth") !== undefined ? true : false} /> */}
+      <FSUAppBar isLogined={Cookies.get("_auth") !== undefined ? true : false} />
       <Backdrop
         sx={{
           color: '#fff',
@@ -158,7 +160,7 @@ function AccountWallet() {
       </Dialog>
 
       {userWallet && (
-        <Box sx={{ background: "#F0F0F0", minHeight: "100vh" }}>
+        <Box sx={{ background: "#F0F0F0", minHeight: "150vh" }}>
           <Box
             sx={{
               background: "#FBB03B",
@@ -180,19 +182,20 @@ function AccountWallet() {
               width: "40%",
               margin: "auto",
               mt: -15,
+              position: "relative"
             }}
           >
-            {/* <Box sx={{ display: "flex", justifyContent: "flex-start", alignItems: "center", gap: 1, mb: 2 }}>
-              <AccountBalanceWalletIcon sx={{ fontSize: "1.2rem", color: "#FBB03B" }} />
-              <Typography
+            <Box sx={{ display: "flex", justifyContent: "flex-start", alignItems: "center", gap: 1, mb: 2, position: "absolute", top: 20, right: 30 }}>
+              <AccountBalanceWalletIcon sx={{ fontSize: "2.5rem", color: "#FBB03B" }} />
+              {/* <Typography
                 sx={{
                   fontWeight: "bold",
                   color: "#FBB03B",
                   fontSize: ".8rem"
                 }}>
                 Ví tiền của {userWallet.backerId}
-              </Typography>
-            </Box> */}
+              </Typography> */}
+            </Box>
             <Typography
               sx={{
                 textAlign: "left",
@@ -226,7 +229,7 @@ function AccountWallet() {
               }}
             >
               <BottomNavigationAction className="wallet_option" onClick={handleOpenLoadMoneyForm} label="Nạp tiền" icon={<AddBoxOutlinedIcon />} />
-              <BottomNavigationAction className="wallet_option" label="Rút tiền" icon={<GetAppOutlinedIcon />} />
+              <BottomNavigationAction className="wallet_option" disabled label="Rút tiền" icon={<GetAppOutlinedIcon />} />
               <BottomNavigationAction className="wallet_option" disabled label="Liên kết" icon={<AccountBalanceOutlinedIcon />} />
               <BottomNavigationAction className="wallet_option" disabled label="Phương thức" icon={<CreditCardOutlinedIcon />} />
 
@@ -259,7 +262,7 @@ function AccountWallet() {
                         Chuyển khoản
                       </TableCell>
                       <TableCell align="right">{trans.description}</TableCell>
-                      <TableCell align="right">{trans.createdDate}</TableCell>
+                      <TableCell align="right">{trans.createDate}</TableCell>
                       <TableCell align="right">{trans.totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} đ</TableCell>
                       <TableCell align="right">Thành công</TableCell>
                     </TableRow>

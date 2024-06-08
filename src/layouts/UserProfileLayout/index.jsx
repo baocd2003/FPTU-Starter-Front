@@ -239,9 +239,9 @@ function UserProfileLayout() {
                     </div>
                 ) : (
                     <div>
-                        <div className='text-left mt-1 mb-8'>
+                        {/* <div className='text-left mt-1 mb-8'>
                             <a className='text-[#44494D] font-bold hover:text-[#FBB03B] hover:underline cursor-pointer transition-all duration-300' onClick={() => navigate("/profile")}>Tài khoản</a>
-                        </div>
+                        </div> */}
                         <div style={{ width: '100%', height: 'auto' }}>
                             <div style={{
                                 position: 'relative',

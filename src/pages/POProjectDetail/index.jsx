@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
 import FSUAppBar from "../../components/AppBar";
-import { Grid, Box, Container, Typography, LinearProgress, styled, linearProgressClasses, Button, Stack, Tabs, Tab, Divider, Backdrop, CircularProgress, Chip, Avatar } from "@mui/material";
+import { Grid, Box, Container, Typography, LinearProgress, styled, linearProgressClasses, Button, Stack, Tabs, Tab, Divider, Backdrop, CircularProgress, Chip, Avatar, Card, CardMedia, CardContent, CardActions } from "@mui/material";
 import { tabsClasses } from '@mui/material/Tabs';
 import { TabList, TabContext, TabPanel } from "@mui/lab";
 import { Fragment, useEffect, useState } from "react";
@@ -57,7 +57,7 @@ function POProjectDetail() {
 
   };
 
-  // console.log(project, projectUser);
+  console.log(project, projectUser);
 
   return (
     <>
@@ -186,7 +186,7 @@ function POProjectDetail() {
             </Grid>
           </Grid>
 
-          <Box sx={{ typography: 'body1', mt: 5, background: "#F0F0F0" }}>
+          <Box sx={{ typography: 'body1', mt: 5, background: "white", minHeight: "80vh" }}>
             {/* <Typography
               variant="h4"
               sx={{
@@ -208,7 +208,8 @@ function POProjectDetail() {
                     backgroundColor: '#FBB03B',
                   }
                 }}>
-                <Tab label="Về chúng mình" sx={{ '&:active': { outline: 'none !important' }, '&:focus': { outline: 'none !important' }, fontWeight: "bold", px: 5, whiteSpace: "nowrap" }} value="1" />
+                {/* <Tab label="Về chúng mình" sx={{ '&:active': { outline: 'none !important' }, '&:focus': { outline: 'none !important' }, fontWeight: "bold", px: 5, whiteSpace: "nowrap" }} value="1" /> */}
+                <Tab label="Danh sách gói" sx={{ '&:active': { outline: 'none !important' }, '&:focus': { outline: 'none !important' }, fontWeight: "bold", px: 5, whiteSpace: "nowrap" }} value="1" />
                 <Tab label="Cập nhật" sx={{ '&:active': { outline: 'none !important' }, '&:focus': { outline: 'none !important' }, fontWeight: "bold", px: 5, whiteSpace: "nowrap" }} value="2" />
                 <Tab label="Danh sách người ủng hộ" sx={{ '&:active': { outline: 'none !important' }, '&:focus': { outline: 'none !important' }, fontWeight: "bold", px: 5, whiteSpace: "nowrap" }} value="3" />
                 <Tab label="Đánh giá" sx={{ '&:active': { outline: 'none !important' }, '&:focus': { outline: 'none !important' }, fontWeight: "bold", px: 5, whiteSpace: "nowrap" }} value="4" />
@@ -221,7 +222,27 @@ function POProjectDetail() {
                     textAlign: "left",
                     fontSize: 18
                   }}>
-                  {project && project.projectDescription}
+                  {project && project.packageViewResponses.map((value, index) => (
+                    <Card sx={{ maxWidth: 345 }}>
+                      <CardMedia
+                        component="img"
+                        alt="green iguana"
+                        height="140"
+                        image="https://i.ibb.co/K7TGtpK/istockphoto-1409955148-612x612.jpg"
+                      />
+                      <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
+                          {value.packageName}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {value.packageDescription}
+                        </Typography>
+                      </CardContent>
+                      <CardActions>
+                        <Button size="small">Chọn</Button>
+                      </CardActions>
+                    </Card>
+                  ))}
                 </Typography>
               </TabPanel>
               <TabPanel value="2">Cập nhật</TabPanel>

@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
 import Teamwork from "../../assets/Teamwork.png";
 import './index.css';
+import { Typography } from '@mui/material';
 function BannerCarousel() {
   const [existedAuth, setExistedAuth] = useState();
   useEffect(() => {
@@ -37,10 +38,10 @@ function BannerCarousel() {
   }
   return (
     <div className="relative">
-      <Carousel autoPlay transitionTime='3' >
+      {/* <Carousel autoPlay transitionTime='3' >
         <div className='relative'>
           <div className='overlay'></div>
-          <img src={Teamwork} className='carouselImg' />
+          <img src={"https://i.ibb.co/8K7BwCX/sinhvien-fpt-khoinghiep.png"} className='carouselImg' />
         </div>
         <div className='relative'>
           <div className='overlay'></div>
@@ -50,7 +51,23 @@ function BannerCarousel() {
           <div className='overlay'></div>
           <img src={Teamwork} className='carouselImg' />
         </div>
-      </Carousel>
+      </Carousel> */}
+      <div className='relative'>
+        <div className='overlay'></div>
+        <img src={"https://i.ibb.co/8K7BwCX/sinhvien-fpt-khoinghiep.png"} className='bannerImg' />
+        <div className='blurPart'></div>
+        <Typography className="bannerTitle" sx={{
+          position: "absolute", top: "40%", left: "10%", color: "white", fontWeight: "bold",
+          textAlign: "left", zIndex: 2, textTransform: "uppercase",
+          fontSize: "5rem", whiteSpace: "nowrap", letterSpacing: .1,
+          '.MuiTypography-root': {
+            fontFamily: 'Barlow !important',
+          }
+        }}>
+          Vươn tới những vì sao<br /> dự án khởi nghiệp của bạn <br /> sẽ tỏa sáng!
+        </Typography>
+      </div>
+
       <div className="absolute top-[70%] left-[45%]">
         <Button onClick={checkAuth} sx={{ my: 4, color: '#FFF', display: 'block' }} className="c-btn">Bắt đầu dự án</Button>
       </div>

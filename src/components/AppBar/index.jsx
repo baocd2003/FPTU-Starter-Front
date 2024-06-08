@@ -41,12 +41,12 @@ function ElevationScroll(props) {
   const location = useLocation();
 
   React.useEffect(() => {
-    if (location.pathname === '/home') {
+    if (location.pathname === '/home' || location.pathname === "/my-wallet") {
       setLogo(trigger ? logo : HeaderLogo2);
     }
   }, [trigger, location.pathname, setLogo]);
 
-  if (location.pathname !== '/home') {
+  if (location.pathname !== '/home' && location.pathname !== '/my-wallet') {
     return children;
   }
 
@@ -159,12 +159,12 @@ function FSUAppBar({ isLogined, refetchData }) {
         <CircularProgress color="inherit" />
       </Backdrop>
       <ElevationScroll setLogo={setLogoSrc}>
-        <AppBar position="fixed" sx={{ background: '#FFFFFF', height: '100px', justifyContent: 'center !important', display: 'flex' }}>
+        <AppBar position="fixed" sx={{ background: '#FFFFFF', height: '5.5rem', justifyContent: 'center !important', display: 'flex' }}>
           <Container maxWidth={false} sx={{ padding: '0px !important' }}>
             <Toolbar disableGutters={true} sx={{ display: 'flex', justifyContent: 'space-between', mx: { lg: '80px' } }}>
               <div className='flex flex-row'>
                 <Typography variant="h6" noWrap component="a" href="/home" sx={{ mr: 4, display: { xs: 'none', lg: 'flex' }, fontWeight: 700, letterSpacing: '.3rem', color: 'inherit', textDecoration: 'none', alignItems: 'center' }}>
-                  <img src={logoSrc} style={{ width: '100px' }} />
+                  <img src={logoSrc} style={{ width: '6rem' }} />
                 </Typography>
                 <Box sx={{ ml: '16px', flexGrow: 1, display: { xs: 'flex', lg: 'none' }, justifyContent: 'space-between' }}>
                   <IconButton title="Phụ lục" size="large" aria-label="account of current user" aria-controls="menu-appbar" aria-haspopup="true" onClick={handleOpenNavMenu} sx={{ outline: 'none !important' }}>
