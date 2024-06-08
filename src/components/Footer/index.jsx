@@ -6,11 +6,12 @@ import "./index.css";
 function Footer() {
   return (
     <footer className="bg-[#000000] w-full bottom-0 left-0 right-0 h-[350px] mt-32 flex flex-col items-center justify-center">
-      <Container className="flex flex-col content-center h-full"
+      <Container
+        className="flex flex-col content-center h-full"
         sx={{
-          '@media (max-width: 600px)': {
-            paddingLeft: '0.5rem !important',
-            paddingRight: '1rem !important',
+          "@media (max-width: 600px)": {
+            paddingLeft: "0.5rem !important",
+            paddingRight: "1rem !important",
           },
         }}
       >
@@ -24,11 +25,8 @@ function Footer() {
             <Typography variant="body2">
               Công ty Cổ phần FPTU Starter
             </Typography>
-            <Typography
-              variant="body2"
-              className="text-wrap break-all"
-            >
-              theinfinitypodcast.project@gmail.com
+            <Typography variant="body2" className="text-wrap break-all">
+              fptustarter2024@gmail.com
             </Typography>
             <Typography variant="body2">0333 666 999</Typography>
           </Grid>
