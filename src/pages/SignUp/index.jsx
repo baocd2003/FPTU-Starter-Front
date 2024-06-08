@@ -72,7 +72,7 @@ function SignUp() {
     };
     return (
         <>
-            <div className='flex justify-center items-center md:h-screen h-fit md:min-h-[1000px] xl:min-h-0 pt-[100px]'>
+            <div className='flex justify-center items-center md:h-screen h-fit md:min-h-[1000px] xl:min-h-0'>
                 <div className='xl:w-screen/4*3 max-w-fit'>
                     <Container
                         component="main"
