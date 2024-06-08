@@ -2,85 +2,60 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import Cookies from 'js-cookie';
-import { MuiOtpInput } from 'mui-one-time-password-input';
-import React, { useState } from 'react';
-import useSignIn from 'react-auth-kit/hooks/useSignIn';
-import Countdown from 'react-countdown';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Swal from 'sweetalert2';
 import logo from "../../assets/logo.png";
-import userApiInstace from '../../utils/apiInstance/userApiInstace';
+import userManagementApiInstance from '../../utils/apiInstance/userManagementApiInstance';
 import './index.css';
 
-function OTPVerification() {
-    const [otp, setOTP] = useState("");
+function ChangePassword() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const { setIsLoading } = useOutletContext();
-    const location = useLocation();
-
-    const userName = location.state?.userName;
-    const email = location.state?.email;
-
-    const handleChange = (newValue) => {
-        console.log(newValue);
-        setOTP(newValue);
-    };
-
-    const signIn = useSignIn();
+    const [error, setError] = useState("");
     const navigate = useNavigate();
-    const notify = (mess) => {
-        toast.warn(mess, {
-            position: "bottom-left"
-        });
-    }
-    //Countdown
-    const targetTime = Date.now() + 6 * 60 * 1000;
-    const renderer = ({ minutes, seconds }) => {
-        return <span className='text-[#FBB03B] font-bold'>{minutes} phút {seconds} giây</span>;
+
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const emailFromUrl = searchParams.get('email');
+
+    useEffect(() => {
+        if (emailFromUrl) {
+            setEmail(emailFromUrl);
+        }
+    }, [emailFromUrl]);
+
+    const handleSubmit = async (event) => {
+        setIsLoading(true);
+        event.preventDefault();
+        const response = await userManagementApiInstance.post(`update-password?newPassword=${password}&confirmPassword=${confirmPassword}&userEmail=${email}`);
+        console.log(response);
+        if (response.data._isSuccess === true) {
+            setIsLoading(false);
+            Swal.fire({
+                title: "Thành công",
+                text: "Đổi mật khẩu thành công",
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                navigate('/login');
+            });
+        } else {
+            setError("Lỗi xảy ra");
+            setIsLoading(false);
+            return;
+        }
     };
 
     const handleLogin = () => {
         navigate('/login');
-    };
-    const handleSubmit = (event) => {
-        setIsLoading(true);
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        //Save token to cookie
-        userApiInstace.post(`/login-2FA?code=${otp}&userName=${userName}`).then(res => {
-            console.log(res.data);
-            if (res.data._data == null) {
-                notify(`${res.data._message[0]}`);
-            } else {
-                signIn({
-                    auth: {
-                        token: res.data._data.token,
-                        type: 'Bearer'
-                    },
-                    expiresIn: 3600,
-                    tokenType: "Bearer",
-                    authState: { email: email }
-                })
-                Swal.fire({
-                    title: "Thành công",
-                    text: "Xác thực thành công",
-                    icon: "success",
-                    showConfirmButton: false,
-                    timer: 1500
-                }).then(() => {
-                    setTimeout(() => {
-                        if (Cookies.get("_auth") !== undefined) {
-                            navigate("/");
-                        }
-                    }, 0);
-                });
-                console.log(Cookies.get("_auth"));
-                setIsLoading(false);
-            }
-        })
     };
 
     return (
@@ -122,7 +97,7 @@ function OTPVerification() {
                                             textAlign: 'left'
                                         }}
                                     >
-                                        Xác thực tài khoản
+                                        Đặt lại mật khẩu
                                     </Typography>
                                     <Typography
                                         sx={{
@@ -135,7 +110,7 @@ function OTPVerification() {
                                             textAlign: 'left'
                                         }}
                                     >
-                                        Nhập mã OTP đã được gửi đến email để xác thực
+                                        Đặt lại mật khẩu mới cho tài khoản của bạn
                                     </Typography>
                                 </div>
                                 <img
@@ -159,7 +134,7 @@ function OTPVerification() {
                                         textAlign: 'center'
                                     }}
                                 >
-                                    Xác thực tài khoản
+                                    Đặt lại mật khẩu
                                 </Typography>
                                 <Typography
                                     sx={{
@@ -172,31 +147,63 @@ function OTPVerification() {
                                         textAlign: 'center'
                                     }}
                                 >
-                                    Nhập mã OTP đã được gửi đến email để xác thực
+                                    Đặt lại mật khẩu mới cho tài khoản của bạn
                                 </Typography>
                             </div>
                             <Box component="form" onSubmit={handleSubmit} noValidate sx={{
-                                marginTop: '16px',
+                                marginTop: '8px',
                                 marginLeft: 4,
                                 marginRight: 4,
                                 width: '100%'
                             }}>
-                                <div className='my-4'>
-                                    <MuiOtpInput
-                                        length={6}
-                                        name="otp"
-                                        id='otp'
-                                        value={otp}
-                                        onChange={handleChange}
-                                        className='otpBox'
-                                        validateChar={(val) => !isNaN(val)}
-                                    />
-                                </div>
-                                <div className='flex my-6 gap-1 text-sm otpTimer'>
-                                    <h2>Mã OTP của bạn còn hiệu lực trong</h2>
-                                    <Countdown date={targetTime} renderer={renderer} />
-                                </div>
-                                <div className='flex mt-4 flex-row justify-between mb-[40px] verifyLg'>
+                                <TextField
+                                    margin="normal"
+                                    fullWidth
+                                    name="password"
+                                    label="Mật khẩu"
+                                    required
+                                    type="password"
+                                    id="password"
+                                    InputLabelProps={{
+                                        sx: {
+                                            fontSize: '14px',
+                                        },
+                                    }}
+                                    sx={{
+                                        width: '100%',
+                                        '& input': {
+                                            height: '16px',
+                                        },
+                                        fontSize: '10px'
+                                    }}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                                <TextField
+                                    margin="normal"
+                                    fullWidth
+                                    name="confirmPassword"
+                                    label="Xác nhận lại mật khẩu"
+                                    required
+                                    type="password"
+                                    id="confirmPassword"
+                                    InputLabelProps={{
+                                        sx: {
+                                            fontSize: '14px',
+                                        },
+                                    }}
+                                    sx={{
+                                        width: '100%',
+                                        '& input': {
+                                            height: '16px',
+                                        },
+                                        fontSize: '10px'
+                                    }}
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                />
+                                {error && <p className="text-red-400 text-[14px] text-left font-semibold">{error}</p>}
+                                <div className='flex mt-[16px] flex-row justify-between mb-[40px] verifyLg'>
                                     <div className='flex justify-center mt-2 gap-1 text-sm'>
                                         <h2>Đã có tài khoản?</h2>
                                         <a onClick={handleLogin} className='underline text-[#44494D] transition-colors duration-300 hover:text-[#FBB03B] hover:cursor-pointer'>Đăng nhập</a>
@@ -215,7 +222,7 @@ function OTPVerification() {
                                             }}
                                             className='login-btn'
                                         >
-                                            Xác thực
+                                            Xác nhận
                                         </Button>
                                         <ToastContainer />
                                     </div>
@@ -235,7 +242,7 @@ function OTPVerification() {
                                             }}
                                             className='login-btn'
                                         >
-                                            Xác thực
+                                            Xác nhận
                                         </Button>
                                         <ToastContainer />
                                     </div>
@@ -248,9 +255,9 @@ function OTPVerification() {
                         </Box>
                     </Container>
                 </div>
-            </div >
+            </div>
         </>
-    )
+    );
 }
 
-export default OTPVerification
+export default ChangePassword;

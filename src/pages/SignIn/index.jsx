@@ -106,7 +106,7 @@ function SignIn() {
 
   return (
     <>
-      <div className='flex justify-center items-center md:h-screen h-fit md:min-h-[800px] xl:min-h-0 pt-[100px]'>
+      <div className='flex justify-center items-center md:h-screen h-fit md:min-h-[800px] xl:min-h-0'>
         <div className='xl:w-screen/4*3 max-w-fit'>
           <ToastContainer />
           <Container
@@ -248,7 +248,7 @@ function SignIn() {
                   />
                 </div>
                 <div className='flex mt-4 lg:flex-row lg:justify-between flex-col justify-start'>
-                  <a href="#" className='lg:w-1/2 underline text-[rgb(68,73,77)] transition-colors duration-300 hover:text-[#FBB03B] text-sm text-left'>
+                  <a onClick={() => navigate('/forgot-password')} className='lg:w-1/2 underline text-[rgb(68,73,77)] transition-colors duration-300 hover:text-[#FBB03B] text-sm text-left cursor-pointer'>
                     Quên mật khẩu?
                   </a>
                   <div className='lg:w-1/2 lg:mt-0 w-full mt-4'>
