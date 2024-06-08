@@ -12,6 +12,8 @@ import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 import { visuallyHidden } from "@mui/utils";
 import dayjs from "dayjs";
 import Cookies from "js-cookie";
@@ -81,7 +83,7 @@ function EnhancedTableHead(props) {
             align={headCell.numeric ? "right" : "left"}
           >
             {headCell.id !== "projectOwnerName" &&
-              headCell.id !== "projectStatus" ? (
+            headCell.id !== "projectStatus" ? (
               <TableSortLabel
                 active={orderBy === headCell.id}
                 direction={orderBy === headCell.id ? order : "asc"}
@@ -146,6 +148,7 @@ function AdminProjects() {
   const [projectList, setProjectList] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [tabValue, setTabValue] = useState(0);
 
   const token = Cookies.get("_auth");
 
@@ -192,11 +195,17 @@ function AdminProjects() {
   const handleCloseModal = () => {
     setOpenModal(false);
     setSelectedProject(null);
+    setTabValue(0);
+    console.log("Hihi");
   };
 
   const setProject = (projectList) => {
     console.log("Hihi");
-  }
+  };
+
+  const handleChangeTab = (event, newValue) => {
+    setTabValue(newValue);
+  };
 
   const handleOnClickReject = async (projectId) => {
     console.log("Rejected project ID:", projectId);
@@ -275,7 +284,11 @@ function AdminProjects() {
         <EnhancedTableToolbar projectsCount={projectList.length} />
         <Box sx={{ padding: 2, display: "flex", justifyContent: "center" }}>
           <Box sx={{ width: "100%", maxWidth: "1200px" }}>
-            <SearchBarProjects setProject={setProject} searchType={"all"} width='100%' />
+            <SearchBarProjects
+              setProject={setProject}
+              searchType="all"
+              width="100%"
+            />
           </Box>
         </Box>
         <TableContainer sx={{ padding: 4 }}>
@@ -303,7 +316,7 @@ function AdminProjects() {
                     <TableCell>{item.projectOwnerName}</TableCell>
                     <TableCell align="right">{item.projectTarget}</TableCell>
                     <TableCell>
-                      {dayjs(item.createdDate).format("DD/MM/YYYY HH:mm")}
+                      {dayjs(item.createdDate).format("DD-MM-YYYY HH:mm")}
                     </TableCell>
                     <TableCell>{statuses[item.projectStatus]}</TableCell>
                   </TableRow>
@@ -339,12 +352,20 @@ function AdminProjects() {
             padding: 4,
             backgroundColor: "white",
             margin: "auto",
-            marginTop: "10%",
+            marginTop: "5%",
             width: "50%",
             borderRadius: 1,
+            maxHeight: "75vh",
+            overflowY: "auto",
           }}
         >
-          {selectedProject && (
+          <Tabs value={tabValue} onChange={handleChangeTab}>
+            <Tab label="Tổng quan" />
+            <Tab label="Video demo" />
+            <Tab label="Hình ảnh" />
+          </Tabs>
+
+          {tabValue === 0 && selectedProject && (
             <>
               <Typography id="modal-title" variant="h6" component="h2">
                 {selectedProject.projectName}
@@ -358,15 +379,15 @@ function AdminProjects() {
               <Typography>Mục tiêu: {selectedProject.projectTarget}</Typography>
               <Typography>
                 Ngày tạo:{" "}
-                {dayjs(selectedProject.createdDate).format("DD/MM/YYYY HH:mm")}
+                {dayjs(selectedProject.createdDate).format("DD-MM-YYYY HH:mm")}
               </Typography>
               <Typography>
                 Ngày bắt đầu:{" "}
-                {dayjs(selectedProject.startDate).format("DD/MM/YYYY HH:mm")}
+                {dayjs(selectedProject.startDate).format("DD-MM-YYYY HH:mm")}
               </Typography>
               <Typography>
                 Ngày kết thúc:{" "}
-                {dayjs(selectedProject.endDate).format("DD/MM/YYYY HH:mm")}
+                {dayjs(selectedProject.endDate).format("DD-MM-YYYY HH:mm")}
               </Typography>
               <Typography>Số dư: {selectedProject.projectBalance}</Typography>
               <Typography>
@@ -375,59 +396,93 @@ function AdminProjects() {
               <Typography>
                 Trạng thái: {statuses[selectedProject.projectStatus]}
               </Typography>
-
-              {selectedProject.projectStatus === 1 && (
-                <>
-                  <Button
-                    variant="contained"
-                    sx={{
-                      color: "#44494D",
-                      backgroundColor: "white",
-                      mt: { xs: "40px", lg: "32px" },
-                      textTransform: "none !important",
-                      "&:hover": {
-                        backgroundColor: "#DD5746",
-                        color: "white",
-                      },
-                      "&:active": {
-                        outline: "none !important",
-                      },
-                      "&:focus": {
-                        outline: "none !important",
-                      },
-                      fontWeight: "bold",
-                    }}
-                    onClick={() => handleOnClickReject(selectedProject.id)}
-                  >
-                    Từ chối
-                  </Button>
-                  <Button
-                    variant="contained"
-                    sx={{
-                      color: "#44494D",
-                      backgroundColor: "white",
-                      mt: { xs: "40px", lg: "32px" },
-                      ml: { xs: "0px", lg: "32px" },
-                      textTransform: "none !important",
-                      "&:hover": {
-                        backgroundColor: "#368D59",
-                        color: "white",
-                      },
-                      "&:active": {
-                        outline: "none !important",
-                      },
-                      "&:focus": {
-                        outline: "none !important",
-                      },
-                      fontWeight: "bold",
-                    }}
-                    onClick={() => handleOnClickApprove(selectedProject.id)}
-                  >
-                    Duyệt
-                  </Button>
-                </>
-              )}
             </>
+          )}
+
+          {tabValue === 1 && (
+            <Box>
+              <Typography variant="h6" component="h2">
+                Live Demo
+              </Typography>
+              <Box>
+                <video width="100%" controls>
+                  <source
+                    src={selectedProject.projectLiveDemo}
+                    type="video/mp4"
+                  />
+                </video>
+              </Box>
+            </Box>
+          )}
+
+          {tabValue === 2 && (
+            <Box>
+              <Typography variant="h6" component="h2">
+                Images
+              </Typography>
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+                {selectedProject.images?.map((image, index) => (
+                  <Box key={index} sx={{ width: "100px", height: "100px" }}>
+                    <img
+                      src={image}
+                      alt={`Project Image ${index + 1}`}
+                      width="100%"
+                      height="100%"
+                    />
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+          )}
+
+          {selectedProject?.projectStatus === 1 && (
+            <Box sx={{ mt: 2, display: "flex", justifyContent: "center" }}>
+              <Button
+                variant="contained"
+                sx={{
+                  color: "#44494D",
+                  backgroundColor: "white",
+                  textTransform: "none !important",
+                  "&:hover": {
+                    backgroundColor: "#DD5746",
+                    color: "white",
+                  },
+                  "&:active": {
+                    outline: "none !important",
+                  },
+                  "&:focus": {
+                    outline: "none !important",
+                  },
+                  fontWeight: "bold",
+                }}
+                onClick={() => handleOnClickReject(selectedProject.id)}
+              >
+                Từ chối
+              </Button>
+              <Button
+                variant="contained"
+                sx={{
+                  color: "#44494D",
+                  backgroundColor: "white",
+                  ml: 2,
+                  textTransform: "none !important",
+                  "&:hover": {
+                    backgroundColor: "#368D59",
+                    color: "white",
+                  },
+                  "&:active": {
+                    outline: "none !important",
+                  },
+                  "&:focus": {
+                    outline: "none !important",
+                  },
+                  fontWeight: "bold",
+                }}
+                onClick={() => handleOnClickApprove(selectedProject.id)}
+              >
+                Duyệt
+              </Button>
+            </Box>
           )}
         </Box>
       </Modal>
