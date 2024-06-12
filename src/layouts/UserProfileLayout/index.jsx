@@ -1,7 +1,7 @@
 import BallotIcon from '@mui/icons-material/Ballot';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
-import { Button, CircularProgress } from '@mui/material';
+import { Button, CircularProgress, Divider } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
@@ -246,7 +246,7 @@ function UserProfileLayout() {
                             <div style={{
                                 position: 'relative',
                                 width: '100%',
-                                height: '240px',
+                                height: '10rem',
                                 backgroundColor: isBgImage ? 'transparent' : '#E2E2E2',
                                 borderRadius: '16px',
                             }}
@@ -277,8 +277,8 @@ function UserProfileLayout() {
                                         sx={{
                                             color: "#44494D",
                                             backgroundColor: 'white',
-                                            mb: { xs: '40px', lg: '32px' },
-                                            mr: { xs: '0px', lg: '32px' },
+                                            mb: "1rem",
+                                            mr: "1rem",
                                             fontWeight: 'bold',
                                             textTransform: 'none !important',
                                             '&:hover': {
@@ -299,19 +299,19 @@ function UserProfileLayout() {
                                 </div>
                             </div>
                         </div>
-                        <div className='avatarProfile mt-[-48px] flex'>
+                        <div className='avatarProfile mt-[-2rem] flex'>
                             <div className='relative'>
                                 {isImage ? (
                                     <Avatar
                                         alt="User"
                                         src={user.userAvatarUrl || ''}
-                                        sx={{ width: 180, height: 180, marginLeft: '20px', marginRight: '20px', outline: '12px solid white' }}
+                                        sx={{ width: "8rem", height: "8rem", marginLeft: '20px', marginRight: '20px', outline: '.5rem solid white' }}
                                     />
                                 ) : (
                                     <Avatar
                                         alt="User"
                                         src={''}
-                                        sx={{ width: 180, height: 180, marginLeft: '20px', marginRight: '20px', outline: '12px solid white' }}
+                                        sx={{ width: "8rem", height: "8rem", marginLeft: '20px', marginRight: '20px', outline: '.5rem solid white' }}
                                     />
                                 )}
                                 <div
@@ -345,7 +345,7 @@ function UserProfileLayout() {
                                 ) : (
                                     <div>Tải thông tin người dùng...</div>
                                 )}
-                                <div className='flex flex-row justify-center items-center gap-4'>
+                                {/* <div className='flex flex-row justify-center items-center gap-4'>
                                     <Button
                                         variant="contained"
                                         startIcon={<BallotIcon />}
@@ -395,10 +395,11 @@ function UserProfileLayout() {
                                     >
                                         Bắt đầu dự án
                                     </Button>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
-                        <Box sx={{ width: '100%', marginTop: '64px', display: 'flex', justifyContent: 'center' }}>
+                        <Divider sx={{ mt: 8 }} />
+                        <Box sx={{ width: '100%', position: "sticky", top: "10rem" }}>
                             <Tabs
                                 value={tabValue}
                                 onChange={handleChange}
@@ -417,12 +418,14 @@ function UserProfileLayout() {
                                     },
                                 }}
                             >
-                                <Tab label="Thông tin cá nhân" onClick={navigateUserProfile} className='userProfleTab' sx={{ fontWeight: 'bold', fontSize: '16px', width: { lg: '25%', xs: '100%' } }} />
-                                <Tab label="Dự án lưu trữ" onClick={navigateUserBookmarkProject} className='userProfleTab' sx={{ fontWeight: 'bold', width: { lg: '25%', xs: '100%' }, fontSize: '16px' }} />
-                                <Tab label="Dự án yêu thích" disabled className='userProfleTab' sx={{ fontWeight: 'bold', fontSize: '16px', width: { lg: '25%', xs: '100%' } }} />
-                                <Tab label="Ví điện tử" onClick={navigateToWallet} className='userProfleTab' sx={{ fontWeight: 'bold', fontSize: '16px', width: { lg: '25%', xs: '100%' } }} />
+                                <Tab label="Thông tin cá nhân" onClick={navigateUserProfile} className='userProfleTab' sx={{ fontWeight: 'bold', width: { lg: '20%', xs: '100%' } }} />
+                                <Tab label="Dự án của tôi" className='userProfleTab' onClick={() => navigate("/projects")} sx={{ fontWeight: 'bold', width: { lg: '20%', xs: '100%' } }} />
+                                <Tab label="Dự án lưu trữ" onClick={navigateUserBookmarkProject} className='userProfleTab' sx={{ fontWeight: 'bold', width: { lg: '20%', xs: '100%' } }} />
+                                <Tab label="Dự án yêu thích" disabled className='userProfleTab' sx={{ fontWeight: 'bold', width: { lg: '20%', xs: '100%' } }} />
+                                {/* <Tab label="Ví điện tử" onClick={navigateToWallet} className='userProfleTab' sx={{ fontWeight: 'bold', fontSize: '16px', width: { lg: '25%', xs: '100%' } }} /> */}
                             </Tabs>
                         </Box>
+                        <Divider />
                     </div>
                 )}
                 <Outlet />

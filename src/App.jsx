@@ -26,6 +26,12 @@ import SignUp from "./pages/SignUp";
 import UserBookmarkProject from "./pages/UserBookmarkProject";
 import UserProfile from "./pages/UserProfile";
 import UserProjects from "./pages/UserProjects";
+import CreateProjectLayout from "./layouts/CreateProjectLayout";
+import StepOne from "./pages/CreateNewProject/StepOne";
+import StepTwo from "./pages/CreateNewProject/StepTwo";
+import StepThree from "./pages/CreateNewProject/StepThree";
+import StepFour from "./pages/CreateNewProject/StepFour";
+import StepFive from "./pages/CreateNewProject/StepFive";
 function App() {
   const theme = createTheme({
     typography: {
@@ -59,6 +65,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/register" element={<SignUp />} />
           </Route>
+          <Route path="/projects" element={<UserProjects />} />
         </Route>
         <Route element={<AdminLayout />}>
           <Route path="/admin" element={<Navigate to="/admin/dashboard" />} />
@@ -74,9 +81,15 @@ function App() {
         <Route path="/choose-subCates" element={<ChooseSubCates />} />
         <Route path="/project-detail/:projectId" element={<POProjectDetail />} />
         <Route path="/profile/projects" element={<UserProjects />} />
-        <Route path="/projects" element={<UserProjects />} />
         <Route path="/my-wallet" element={<AccountWallet />} />
         <Route path="/all-projects" element={<AllProjects />} />
+        <Route element={<CreateProjectLayout />}>
+          <Route path="init-project/step-one" element={<StepOne />} />
+          <Route path="init-project/step-two" element={<StepTwo />} />
+          <Route path="init-project/step-three" element={<StepThree />} />
+          <Route path="init-project/step-four" element={<StepFour />} />
+          <Route path="init-project/step-five" element={<StepFive />} />
+        </Route>
       </Routes>
     </ThemeProvider>
   );

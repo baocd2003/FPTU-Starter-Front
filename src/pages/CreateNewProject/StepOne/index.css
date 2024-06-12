@@ -1,0 +1,11 @@
+/* .MuiDivider-root::before, .MuiDivider-root::after{
+  border-top: .1rem solid rgba(0, 0, 0, 0.12) !important;
+} */
+
+.MuiGrid-item {
+  margin: 1.8rem 0 !important;
+}
+
+.MuiInputBase-input{
+  /* padding: .8rem .8rem !important; */
+}

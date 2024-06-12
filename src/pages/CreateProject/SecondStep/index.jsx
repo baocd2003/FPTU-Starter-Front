@@ -34,7 +34,7 @@ function SecondStep() {
     const [selectedBank, setSelectedBank] = useState();
     const [bankAccount, setBankAccount] = useState("");
     const [accountName, setAccountName] = useState("");
-    const [isLoading,setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     useEffect(() => {
         const passRequest = location.state?.projectAddRequest;

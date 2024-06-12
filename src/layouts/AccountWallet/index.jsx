@@ -200,7 +200,7 @@ function AccountWallet() {
               sx={{
                 textAlign: "left",
                 fontWeight: "bold",
-                color: "rgba(0, 0, 0, 0.5)",
+                color: "#FBB03B",
                 fontSize: ".8rem"
               }}>
               Số dư

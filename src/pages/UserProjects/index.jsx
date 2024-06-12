@@ -48,7 +48,7 @@ function UserProjects() {
 
     return (
         <div>
-            <FSUAppBar isLogined={!!token} />
+            {/* <FSUAppBar isLogined={!!token} /> */}
             <Backdrop
                 sx={{
                     color: '#fff',
@@ -58,18 +58,18 @@ function UserProjects() {
             >
                 <CircularProgress color="inherit" />
             </Backdrop>
-            <div className='userProfile'>
+            <div className='userProfile mt-[2rem]'>
                 {isLoading || !user ? (
                     <div className='w-full flex justify-center mt-1 mb-8'>
                         <CircularProgress sx={{ color: '#FBB03B' }} />
                     </div>
                 ) : (
                     <div>
-                        <div className='text-left mt-1 mb-8'>
+                        {/* <div className='text-left mt-1 mb-8'>
                             <a className='text-[#A2A4A6] font-bold hover:text-[#FBB03B] hover:underline cursor-pointer transition-all duration-300' onClick={() => navigate("/profile")}>Tài khoản</a>
                             <a className='text-[#44494D] mx-2'>/</a>
                             <a className='text-[#44494D] font-bold hover:text-[#FBB03B] hover:underline cursor-pointer transition-all duration-300' onClick={() => navigate("/profile/projects")}>Dự án của tôi</a>
-                        </div>
+                        </div> */}
                         <div style={{ width: '100%', height: 'auto' }}>
                             <div className='w-full flex userProjectPageTile'>
                                 <Typography sx={{ fontWeight: 'bold', fontSize: '2.25rem', lineHeight: '2.5rem', textAlign: 'left' }}>
@@ -133,7 +133,7 @@ function UserProjects() {
                     </div>
                 )}
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </div>
     )
 }
