@@ -1,3 +1,4 @@
+
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -21,6 +22,7 @@ function HomePage() {
 		Aos.init({ duration: 2000 });
 		const isLogined = Cookies.get('_auth') !== undefined;
 		setCheckIsLogin(isLogined);
+
 	}, []);
 	const navigate = useNavigate();
 	console.log(Cookies.get('_auth'));
