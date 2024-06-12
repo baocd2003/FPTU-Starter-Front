@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
 import FSUAppBar from "../../components/AppBar";
-import { Grid, Box, Container, Typography, LinearProgress, styled, linearProgressClasses, Button, Stack, Tabs, Tab, Divider, Backdrop, CircularProgress, Chip, Avatar, Card, CardMedia, CardContent, CardActions } from "@mui/material";
+import { Grid, Box, Container, Typography, LinearProgress, styled, linearProgressClasses, Button, Stack, Tabs, Tab, Divider, Backdrop, CircularProgress, Chip, Avatar, Card, CardMedia, CardContent, CardActions, Paper, TextField, InputAdornment } from "@mui/material";
 import { tabsClasses } from '@mui/material/Tabs';
 import { TabList, TabContext, TabPanel } from "@mui/lab";
 import { Fragment, useEffect, useState } from "react";
@@ -22,6 +22,22 @@ function POProjectDetail() {
 
   const handleChange = (e, v) => {
     setTabValue(v);
+  }
+
+  const handleDonatePackage = (packageId) => {
+    try {
+      setIsLoading(true)
+      const token = Cookies.get("_auth");
+      projectApiInstance.post("/package-backer-donate", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => console.log(res.data));
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setIsLoading(false);
+    }
+
   }
 
   useEffect(() => {
@@ -57,7 +73,7 @@ function POProjectDetail() {
 
   };
 
-  console.log(project, projectUser);
+  // console.log(project, projectUser);
 
   return (
     <>
@@ -71,187 +87,324 @@ function POProjectDetail() {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <div className="mt-[100px]"></div>
       {project && projectUser && (
-        <Container className="flex flex-row justify-center items-center"
-          sx={{
-            maxWidth: { lg: "lg", xl: "xl", xs: "xs" },
-          }}
-        >
-          <Typography
-            variant="h5"
+        <Box>
+          <Box
             sx={{
-              textAlign: "left",
-              fontWeight: "bold",
-              py: 4
-            }}>
-            Tổng quan
-          </Typography>
-          <Grid container>
-            <Grid item xs={8} >
-              <ProjectImages thumbNail={project.projectThumbnail} images={images} />
-            </Grid>
-            <Grid item xs={4} paddingLeft={5}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "start",
-                }}
-              >
-                {project.categories.map((cate, index) => (
-                  <Chip
-                    key={index}
-                    size="small"
-                    label={cate.name}
-                    sx={{
-                      color: "white",
-                      background: "#FCAE3D",
-                      px: 1,
-                      mr: 1,
-                      fontSize: ".9rem"
-                    }}
-                  />
-                ))}
-                {project.subCategories.map((sub, index) => (
-                  <Chip
-                    key={index}
-                    label={sub.name}
-                    size="small"
-                    sx={{
-                      color: "white",
-                      background: "rgba(0, 0, 0, 0.25)",
-                      px: 1,
-                      mr: 1,
-                      fontSize: ".9rem"
-                    }}
-                  />
-                ))}
-              </Box>
-
-              <Typography
-                sx={{
-                  textAlign: "left",
-                  fontSize: ".9rem",
-                  fontStyle: "italic",
-                  color: "rgba(0, 0, 0, 0.3)",
-                  gap: .8,
-                  fontWeight: "bold",
-                  mt: 2
-                }}>
-                Diễn ra từ {formatDate(project.startDate)} đến {formatDate(project.endDate)}
-              </Typography>
-
-              <Box>
-                <Typography
-                  sx={{
-                    textAlign: "left",
-                    fontWeight: "bold",
-                    fontSize: "2rem"
-                  }}>
-                  {project && project.projectName}
-                </Typography>
-                <Box
-                  sx={{
-                    textAlign: "left",
-                    fontSize: ".9rem",
-                    fontStyle: "italic",
-                    color: "rgba(0, 0, 0, 0.5)",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: .8
-                  }}>
-                  bởi <Avatar sx={{ width: "1.2rem", height: "1.2rem" }} alt="user avatar" src={projectUser.userAvatarUrl} /> {projectUser.accountName}
-                </Box>
-              </Box>
-
-              <Typography
-                sx={{
-                  textAlign: "right",
-                  fontSize: "1rem",
-                  fontStyle: "italic",
-                  color: "rgba(0, 0, 0, 0.3)",
-                  gap: .8,
-                  fontWeight: "bold",
-                }}>
-                {Math.round((project.projectBalance / project.projectTarget) * 100)}%
-              </Typography>
-              <BorderLinearProgress variant="determinate" sx={{ width: "100%", my: 0, py: 1 }} value={Math.round((project.projectBalance / project.projectTarget) * 100)} />
-
-              <ProjectDetailStat numb={`${project.projectBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND`} stat={`đã được kêu gọi trên mục tiêu ${project.projectTarget.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND`} />
-              <ProjectDetailStat numb={"299"} stat={"người đầu tư"} />
-              <ProjectDetailStat numb={remainingDays} stat={"ngày còn lại"} />
-              <Stack spacing={1} direction="row" sx={{ my: 4 }}>
-                <Button variant="contained" disabled sx={{ width: "100%", whiteSpace: "nowrap", background: "#FCAE3D", fontWeight: "bold", py: 1 }}>Rút tiền</Button>
-              </Stack>
-            </Grid>
-          </Grid>
-
-          <Box sx={{ typography: 'body1', mt: 5, background: "white", minHeight: "80vh" }}>
-            {/* <Typography
-              variant="h4"
+              background: "#F0F0F0",
+              pt: "5rem",
+              pb: "3rem"
+            }}
+          >
+            <Container className="flex flex-row justify-center items-center"
               sx={{
-                fontWeight: "bold",
-                py: 5
-              }}>
-              Thông tin dự án
-            </Typography> */}
-            <TabContext value={tabValue}>
-              <TabList
-                onChange={handleChange}
-                // centered
-                // variant="fullWidth"
-                sx={{
-                  [`& .${tabsClasses.scrollButtons}`]: {
-                    '&.Mui-disabled': { opacity: 0.3 },
-                  },
-                  [`& .MuiTabs-indicator`]: {
-                    backgroundColor: '#FBB03B',
-                  }
-                }}>
-                {/* <Tab label="Về chúng mình" sx={{ '&:active': { outline: 'none !important' }, '&:focus': { outline: 'none !important' }, fontWeight: "bold", px: 5, whiteSpace: "nowrap" }} value="1" /> */}
-                <Tab label="Danh sách gói" sx={{ '&:active': { outline: 'none !important' }, '&:focus': { outline: 'none !important' }, fontWeight: "bold", px: 5, whiteSpace: "nowrap" }} value="1" />
-                <Tab label="Cập nhật" sx={{ '&:active': { outline: 'none !important' }, '&:focus': { outline: 'none !important' }, fontWeight: "bold", px: 5, whiteSpace: "nowrap" }} value="2" />
-                <Tab label="Danh sách người ủng hộ" sx={{ '&:active': { outline: 'none !important' }, '&:focus': { outline: 'none !important' }, fontWeight: "bold", px: 5, whiteSpace: "nowrap" }} value="3" />
-                <Tab label="Đánh giá" sx={{ '&:active': { outline: 'none !important' }, '&:focus': { outline: 'none !important' }, fontWeight: "bold", px: 5, whiteSpace: "nowrap" }} value="4" />
+                maxWidth: { lg: "lg", xl: "xl", xs: "xs" },
+              }}
+            >
+              <Grid container>
+                <Grid item xs={8} >
+                  <ProjectImages thumbNail={project.projectThumbnail} images={images} />
+                </Grid>
+                <Grid item xs={4} paddingLeft={5}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "start",
+                    }}
+                  >
+                    {project.categories.map((cate, index) => (
+                      <Chip
+                        key={index}
+                        size="small"
+                        label={cate.name}
+                        sx={{
+                          color: "white",
+                          background: "#FCAE3D",
+                          px: 1,
+                          mr: 1,
+                          fontSize: ".9rem"
+                        }}
+                      />
+                    ))}
+                    {project.subCategories.map((sub, index) => (
+                      <Chip
+                        key={index}
+                        label={sub.name}
+                        size="small"
+                        sx={{
+                          color: "white",
+                          background: "rgba(0, 0, 0, 0.25)",
+                          px: 1,
+                          mr: 1,
+                          fontSize: ".9rem"
+                        }}
+                      />
+                    ))}
+                  </Box>
 
-              </TabList>
-              <Divider />
-              <TabPanel value="1">
-                <Typography
-                  sx={{
-                    textAlign: "left",
-                    fontSize: 18
-                  }}>
-                  {project && project.packageViewResponses.map((value, index) => (
-                    <Card sx={{ maxWidth: 345 }}>
+                  <Typography
+                    sx={{
+                      textAlign: "left",
+                      fontSize: ".9rem",
+                      fontStyle: "italic",
+                      color: "rgba(0, 0, 0, 0.3)",
+                      gap: .8,
+                      fontWeight: "bold",
+                      mt: 2
+                    }}>
+                    Diễn ra từ {formatDate(project.startDate)} đến {formatDate(project.endDate)}
+                  </Typography>
+
+                  <Box>
+                    <Typography
+                      sx={{
+                        textAlign: "left",
+                        fontWeight: "bold",
+                        fontSize: "2rem"
+                      }}>
+                      {project && project.projectName}
+                    </Typography>
+                    <Box
+                      sx={{
+                        textAlign: "left",
+                        fontSize: ".9rem",
+                        fontStyle: "italic",
+                        color: "rgba(0, 0, 0, 0.5)",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: .8
+                      }}>
+                      bởi <Avatar sx={{ width: "1.2rem", height: "1.2rem" }} alt="user avatar" src={projectUser.userAvatarUrl} /> {projectUser.accountName}
+                    </Box>
+                  </Box>
+
+                  <Typography
+                    sx={{
+                      textAlign: "right",
+                      fontSize: "1rem",
+                      fontStyle: "italic",
+                      color: "rgba(0, 0, 0, 0.3)",
+                      gap: .8,
+                      fontWeight: "bold",
+                    }}>
+                    {Math.round((project.projectBalance / project.projectTarget) * 100)}%
+                  </Typography>
+                  <BorderLinearProgress variant="determinate" sx={{ width: "100%", my: 0, py: 1 }} value={Math.round((project.projectBalance / project.projectTarget) * 100)} />
+
+                  <ProjectDetailStat numb={`${project.projectBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND`} stat={`đã được kêu gọi trên mục tiêu ${project.projectTarget.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND`} />
+                  <ProjectDetailStat numb={"299"} stat={"người đầu tư"} />
+                  <ProjectDetailStat numb={remainingDays} stat={"ngày còn lại"} />
+                  <Stack spacing={1} direction="row" sx={{ my: 4 }}>
+                    <Button variant="contained" disabled sx={{ width: "100%", whiteSpace: "nowrap", background: "#FCAE3D", fontWeight: "bold", py: 1 }}>Rút tiền</Button>
+                  </Stack>
+                </Grid>
+              </Grid>
+
+
+            </Container >
+          </Box>
+          <Container className="flex flex-row justify-center items-center"
+            sx={{
+              maxWidth: { lg: "lg", xl: "xl", xs: "xs" },
+              height: "100vh"
+            }}
+          >
+            <Grid container>
+              <Grid item xs={9} sx={{ pr: 10, mt: "0 !important" }}>
+                <TabContext value={tabValue}>
+                  <TabList
+                    onChange={handleChange}
+                    // centered
+                    // variant="fullWidth"
+                    sx={{
+                      background: "white",
+                      [`& .${tabsClasses.scrollButtons}`]: {
+                        '&.Mui-disabled': { opacity: 0.3 },
+                      },
+                      [`& .MuiTabs-indicator`]: {
+                        display: "flex",
+                        justifyContent: "center",
+                        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                      },
+
+                    }}>
+                    <Tab label="Danh sách gói"
+                      sx={{
+                        fontStyle: "normal",
+                        fontWeight: "bold", px: 4, py: 3, whiteSpace: "nowrap",
+                        textTransform: "none", color: "rgba(0, 0, 0, 0.6) !important",
+                        '&:active': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
+                        '&:focus': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
+                      }}
+                      value="1" />
+                    <Tab label="Về chúng mình"
+                      sx={{
+                        fontStyle: "normal",
+                        fontWeight: "bold", px: 4, py: 3, whiteSpace: "nowrap",
+                        textTransform: "none", color: "rgba(0, 0, 0, 0.6) !important",
+                        '&:active': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
+                        '&:focus': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
+                      }}
+                      value="2" />
+                    <Tab label="Cập nhật"
+                      sx={{
+                        fontStyle: "normal",
+                        fontWeight: "bold", px: 4, py: 3, whiteSpace: "nowrap",
+                        textTransform: "none", color: "rgba(0, 0, 0, 0.6) !important",
+                        '&:active': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
+                        '&:focus': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
+                      }}
+                      value="3" />
+                    <Tab label="Danh sách người ủng hộ"
+                      sx={{
+                        fontStyle: "normal",
+                        fontWeight: "bold", px: 4, py: 3, whiteSpace: "nowrap",
+                        textTransform: "none", color: "rgba(0, 0, 0, 0.6) !important",
+                        '&:active': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
+                        '&:focus': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
+                      }}
+                      value="4" />
+                    <Tab label="Đánh giá"
+                      sx={{
+                        fontStyle: "normal",
+                        fontWeight: "bold", px: 4, py: 3, whiteSpace: "nowrap",
+                        textTransform: "none", color: "rgba(0, 0, 0, 0.6) !important",
+                        '&:active': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
+                        '&:focus': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
+                      }}
+                      value="5" />
+
+                  </TabList>
+                  <Divider />
+                  <TabPanel value="1" sx={{ minHeight: "200vh" }}>
+                    <Grid container rowSpacing={0} columnSpacing={2} sx={{}}>
+
+                      <Box sx={{ width: "100%", mb: 3 }}>
+                        <Typography
+                          sx={{ fontSize: "1.8rem", fontWeight: "bold", color: "rgba(0, 0, 0, 0.7)" }}
+                        >Danh sách các gói ủng hộ</Typography>
+                        <Typography
+                          sx={{ fontSize: ".85rem", fontWeight: "bold", color: "rgba(0, 0, 0, 0.5)" }}
+                        >Chọn các gói ủng hộ có sẵn với các phần quà hấp dẫn</Typography>
+                      </Box>
+                      {project && project.packageViewResponses.map((projectPackage, index) => (
+                        <Grid item xs={4} sx={{ my: ".5rem !important" }}>
+                          <Card key={index}>
+                            <CardMedia
+                              component="img"
+                              alt="green iguana"
+                              image="https://i.ibb.co/K7TGtpK/istockphoto-1409955148-612x612.jpg"
+                              sx={{ height: "9rem" }}
+                            />
+                            <CardContent>
+                              <Typography
+                                gutterBottom
+                                sx={{ textAlign: "left", fontSize: "1rem" }}
+                              >
+                                {projectPackage.packageName}
+                              </Typography>
+                              <Typography
+                                gutterBottom
+                                sx={{ fontWeight: "bold", textAlign: "left", fontSize: "1.2rem" }}
+                              >
+                                {projectPackage.requiredAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND
+                              </Typography>
+                              <Typography
+                                gutterBottom
+                                sx={{ textAlign: "left", fontSize: ".8rem" }}
+                              >
+                                {projectPackage.packageDescription}
+                              </Typography>
+                              <Divider gutterBottom />
+                            </CardContent>
+                            <CardActions>
+                              <Button onClick={() => handleDonatePackage(projectPackage.id)} variant="contained">
+                                Chọn
+                              </Button>
+                            </CardActions>
+                          </Card>
+                        </Grid>
+                      ))}
+                    </Grid>
+                    <Divider sx={{ width: "100%", fontWeight: "bold", color: "rgba(0, 0, 0, 0.5)", my: 3 }}>OR</Divider>
+                    <Box sx={{ width: "100%" }}>
+                      <Typography
+                        sx={{ fontSize: "1.8rem", fontWeight: "bold", color: "rgba(0, 0, 0, 0.7)" }}
+                      >Ủng hộ nhanh</Typography>
+                      <Typography
+                        sx={{ fontSize: ".85rem", fontWeight: "bold", color: "rgba(0, 0, 0, 0.5)" }}
+                      >Nhập số tiền bạn muốn ủng hộ trực tiếp cho nhà phát triển dự án</Typography>
+                      <TextField
+                        type="number"
+                        placeholder="Nhập số tiền"
+                        sx={{ width: "50%", my: 2 }}
+                        InputProps={{
+                          endAdornment: <InputAdornment>VND</InputAdornment>,
+                        }}
+                      /> <br />
+                      <Button variant="contained" sx={{ background: "#FCAE3D" }}>Ủng hộ</Button>
+                    </Box>
+                  </TabPanel>
+                  <TabPanel value="2" sx={{ minHeight: "200vh" }}>Về chúng mình</TabPanel>
+                  <TabPanel value="3" sx={{ minHeight: "200vh" }}>Cập nhật</TabPanel>
+                  <TabPanel value="4" sx={{ minHeight: "200vh" }}>Danh sách người ủng hộ</TabPanel>
+                  <TabPanel value="5" sx={{ minHeight: "200vh" }}>Đánh giá</TabPanel>
+                </TabContext>
+              </Grid>
+
+              {/*******************************
+               * Sticky project packages
+               */}
+              <Grid item xs={3} >
+                <Typography textAlign={"left"} sx={{
+                  fontWeight: "bold", fontSize: "1.2rem",
+                  color: "rgba(0, 0, 0, 0.8)", py: 2, px: 1, position: "sticky", top: "4.5rem"
+                }}>Ủng hộ ngay</Typography>
+                <Box sx={{ maxHeight: "80vh", overflowY: "scroll", position: "sticky", top: "7.5rem" }}>
+                  {project && project.packageViewResponses.map((projectPackage, index) => (
+
+                    <Card key={index} sx={{ borderRadius: 0, border: ".1rem solid rgba(0, 0, 0, 0.12)", mt: 3, mx: 1 }}>
                       <CardMedia
                         component="img"
                         alt="green iguana"
-                        height="140"
                         image="https://i.ibb.co/K7TGtpK/istockphoto-1409955148-612x612.jpg"
+                        sx={{ height: "9rem" }}
                       />
                       <CardContent>
-                        <Typography gutterBottom variant="h5" component="div">
-                          {value.packageName}
+                        <Typography
+                          gutterBottom
+                          sx={{ textAlign: "left", fontSize: "1rem" }}
+                        >
+                          {projectPackage.packageName}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {value.packageDescription}
+                        <Typography
+                          gutterBottom
+                          sx={{ fontWeight: "bold", textAlign: "left", fontSize: "1.2rem" }}
+                        >
+                          {projectPackage.requiredAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND
                         </Typography>
+                        <Typography
+                          gutterBottom
+                          sx={{ textAlign: "left", fontSize: ".8rem" }}
+                        >
+                          {projectPackage.packageDescription}
+                        </Typography>
+                        <Divider gutterBottom />
                       </CardContent>
                       <CardActions>
-                        <Button size="small">Chọn</Button>
+                        <Button variant="contained">Chọn</Button>
                       </CardActions>
                     </Card>
                   ))}
-                </Typography>
-              </TabPanel>
-              <TabPanel value="2">Cập nhật</TabPanel>
-              <TabPanel value="3">Danh sách người ủng hộ</TabPanel>
-              <TabPanel value="4">Đánh giá</TabPanel>
-            </TabContext>
-          </Box>
-        </Container >
-      )}
+                </Box>
+              </Grid>
+            </Grid>
+
+          </Container>
+        </Box >
+
+      )
+      }
     </>
   )
 }

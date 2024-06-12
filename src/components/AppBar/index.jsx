@@ -159,10 +159,10 @@ function FSUAppBar({ isLogined, refetchData }) {
         <CircularProgress color="inherit" />
       </Backdrop>
       <ElevationScroll setLogo={setLogoSrc}>
-        <AppBar position="fixed" sx={{ background: '#FFFFFF', height: '5.5rem', justifyContent: 'center !important', display: 'flex' }}>
-          <Container maxWidth={false} sx={{ padding: '0px !important' }}>
+        <AppBar position="fixed" sx={{ background: '#FFFFFF', height: '5rem', justifyContent: 'center !important', display: 'flex' }}>
+          <Container sx={{ padding: '0px !important', maxWidth: { lg: "lg", xl: "xl", xs: "xs" } }}>
             <Toolbar disableGutters={true} sx={{ display: 'flex', justifyContent: 'space-between', mx: { lg: '80px' } }}>
-              <div className='flex flex-row'>
+              <div className='flex flex-row w-full'>
                 <Typography variant="h6" noWrap component="a" href="/home" sx={{ mr: 4, display: { xs: 'none', lg: 'flex' }, fontWeight: 700, letterSpacing: '.3rem', color: 'inherit', textDecoration: 'none', alignItems: 'center' }}>
                   <img src={logoSrc} style={{ width: '6rem' }} />
                 </Typography>
@@ -182,7 +182,7 @@ function FSUAppBar({ isLogined, refetchData }) {
                   <Box sx={{ flexGrow: 1, display: { xs: 'none', lg: 'flex' } }}>
                     {pages.map((page) => (
                       <Button disableRipple={true} key={page.label} onClick={() => handleNavBarMenuClick(page.route)} sx={{
-                        my: 4, color: '#44494D', display: 'block', fontWeight: 600, mr: 4, fontSize: '16px', textTransform: 'none'
+                        my: 4, color: '#44494D', display: 'block', fontWeight: 600, mr: 4, fontSize: '.8rem', textTransform: 'none'
                       }} className='focusedMenuItem'>
                         {page.label}
                       </Button>

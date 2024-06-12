@@ -32,7 +32,7 @@ function ChooseSubCates() {
     //error message
     const notify = (mess) => {
         toast.warn(mess, {
-          position: "bottom-left"
+            position: "bottom-left"
         });
     }
 
@@ -90,7 +90,7 @@ function ChooseSubCates() {
         <div className='home'>
             <FSUAppBar isLogined={Cookies.get('_auth') !== undefined} />
             <div className="mt-[100px]">
-                <ToastContainer/>
+                <ToastContainer />
                 <div className='flex flex-col justify-center items-center md:h-[300px] h-fit md:min-h-[300px] xl:min-h-0 pt-[100px]'>
                     <div className='xl:w-screen/4*3 max-w-fit'>
                         <Container className="w-full flex flex-column justify-center items-center">
@@ -110,8 +110,8 @@ function ChooseSubCates() {
                                     input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
                                     renderValue={(selected) => (
                                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                            {selectedSubCate.map((value,index) => (
-                                                <Chip sx={{zIndex : '10000'}} onDelete={() => handleDelete(value.id,selected)} key={value.id} label={value.name} />
+                                            {selectedSubCate.map((value, index) => (
+                                                <Chip sx={{ zIndex: '10000' }} onDelete={() => handleDelete(value.id, selected)} key={value.id} label={value.name} />
                                             ))}
                                         </Box>
                                     )}
@@ -124,7 +124,7 @@ function ChooseSubCates() {
                         </Container>
                     </div>
                     <Typography className="flex justify-end items-center next-but text-right w-full container p-6 mt-6" >
-                        <span onClick={handleNext} className='flex items-center'>Tiếp <FaLongArrowAltRight /></span> 
+                        <span onClick={handleNext} className='flex items-center'>Tiếp <FaLongArrowAltRight /></span>
                     </Typography>
 
                 </div>

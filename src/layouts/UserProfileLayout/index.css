@@ -1,4 +1,5 @@
 .userProfile {
+    height: 10000px;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -20,6 +21,10 @@
     background-color: white !important;
     border-color: #FBB03B !important;
     color: #FBB03B;
+}
+
+.Mui-selected {
+    font-size: .875rem !important;
 }
 
 @media (min-width: 0px) and (max-width: 1199px) {
@@ -70,8 +75,8 @@
     }
 
     .briefInfo {
-        margin-left: 32px;
-        padding-top: 72px;
+        margin-left: .5rem;
+        padding-top: 3rem;
         text-align: left;
         justify-content: space-between;
     }
