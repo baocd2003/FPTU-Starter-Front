@@ -1,23 +1,39 @@
+import React, { useEffect, useState } from 'react';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Tab from '@mui/material/Tab';
-import * as React from 'react';
 import { GoDot } from 'react-icons/go';
 import Kurumi from '../../assets/samplePrj.png';
 import SingleCard from '../ProjectCard/singleCard';
 import './index.css';
+import projectApiInstance from '../../utils/apiInstance/projectApiInstance';
 
 function StepperHomePage() {
-    const [subA, setSubA] = React.useState([]);
+    const [subA, setSubA] = useState([]);
+    const [projects, setProjects] = useState([]);
+    
+    useEffect(() => {
+        const fetchProjects = async () => {
+            await projectApiInstance.get("/get-process-project").then(res => {
+                console.log(res.data);
+                if(res.data){
+                    if(res.data._isSuccess){
+                        setProjects(res.data._data);
+                    }
+                }
+            })
+        }
+        fetchProjects();
+    },[])
     const totalItem = 9;
     const itemPerPage = 3;
     const tabNums = Math.ceil(totalItem / itemPerPage);
     const a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-    const [value, setValue] = React.useState('1');
+    const [value, setValue] = useState('1');
 
     const handleChange = (event, newValue) => {
         setValue(newValue);

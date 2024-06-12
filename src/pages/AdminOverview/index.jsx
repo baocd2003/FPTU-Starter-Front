@@ -6,15 +6,19 @@ import CardData from '../../components/CardData';
 import Grid from '@mui/material/Grid';
 import './index.css';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import BarChart from '../../components/BarChart';
 import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
 import TableAdmin from '../../components/TableAdmin';
+import BarCountDonate from '../../components/BarCountDonate';
 function AdminOverview() {
     const [data, setData] = useState([]);
     const [projectsCount, setProjectCount] = useState(0);
     const [countData, setCountData] = useState([])
-    const [isLoading,setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [option, setOption] = useState(0);
+    const [donateData, setDonateData] = useState([]);
     useEffect(() => {
         setIsLoading(true);
         const fetchTrans = async () => {
@@ -25,19 +29,29 @@ function AdminOverview() {
                     setData(sortedData);
                 }
             })
-            await projectApiInstance.get("/").then(res => {
-                console.log(res.data);
-                
-                if (res.data) {
-                    const num = res.data._data.length;
-                    setProjectCount(num);
-                    setIsLoading(false);
-                }
-            })
+            // await projectApiInstance.get("/").then(res => {
+            //     console.log(res.data);
+
+            //     if (res.data) {
+            //         const num = res.data._data.length;
+            //         setProjectCount(num);
+            //         setIsLoading(false);
+            //     }
+            // })
             await cateApiInstance.get("/count-subCates").then(res => {
                 console.log(res.data);
                 if (res.data.result._isSuccess) {
                     setCountData(res.data.result._data)
+                    setIsLoading(false);
+                }
+            })
+
+            await projectApiInstance.get("count-donate").then(res => {
+                console.log(res.data)
+                if(res.data){
+                    if(res.data.result._isSuccess){
+                        setDonateData(res.data.result._data);
+                    }
                 }
             })
         }
@@ -54,11 +68,53 @@ function AdminOverview() {
     console.log(subCateNames);
     console.log(subCateProjectsCounts)
     //test sort by date
-    const specifiedDate = new Date("2024-06-07T00:00:00");
 
-    const filteredData = data.filter(item => new Date(item.createdDate) <= specifiedDate);
+    const specifiedDate = new Date(); // Assuming this is the date you want to use for filtering
 
-    console.log(filteredData);
+    // Get the start and end of the current week
+    const getStartOfWeek = (date) => {
+        const start = new Date(date);
+        const day = start.getDay();
+        const diff = start.getDate() - day + (day === 0 ? -6 : 1); // Adjust when day is Sunday
+        return new Date(start.setDate(diff));
+    };
+
+    const getEndOfWeek = (startOfWeek) => {
+        const end = new Date(startOfWeek);
+        return new Date(end.setDate(end.getDate() + 6));
+    };
+    //
+    const startOfWeek = getStartOfWeek(new Date());
+    const endOfWeek = getEndOfWeek(startOfWeek);
+
+    console.log(startOfWeek);
+    console.log(endOfWeek);
+
+    // Get the start and end of the current month
+    const getStartOfMonth = (date) => {
+        const start = new Date(date.getFullYear(), date.getMonth(), 1);
+        return start;
+    };
+
+    const getEndOfMonth = (date) => {
+        const end = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+        return end;
+    };
+
+    const startOfMonth = getStartOfMonth(new Date());
+    const endOfMonth = getEndOfMonth(new Date());
+    // Filter data within this week
+    const weekFilteredData = data.filter(item => {
+        const itemDate = new Date(item.createDate);
+        return itemDate >= startOfWeek && itemDate <= endOfWeek;
+    });
+    // Filter data with this month
+    const monthFilterData = data.filter(item => {
+        const itemDate = new Date(item.createDate);
+        return itemDate >= startOfMonth && itemDate <= endOfMonth;
+    });
+    
+    console.log(weekFilteredData);
     // Transform data
     const transformedData = data.map(item => {
         return {
@@ -66,14 +122,41 @@ function AdminOverview() {
             y: new Date(item.createDate).toLocaleDateString()// Format date as YYYY-MM-DD
         };
     });
+    // Transform week data
+    const transformedWeekData = weekFilteredData.map(item => {
+        return {
+            x: item.totalAmount,
+            y: new Date(item.createDate).toLocaleDateString()// Format date as YYYY-MM-DD
+        };
+    });
+    //Transform month data
+    const transformedMonthData = monthFilterData.map(item => {
+        return {
+            x: item.totalAmount,
+            y: new Date(item.createDate).toLocaleDateString()// Format date as YYYY-MM-DD
+        };
+    });
+    //Transform donate data
+    const transformedDonateData = donateData.map(item => {
+        return {
+            x : item.count,
+            y : item.projectName
+        }
+    })
 
-    console.log(transformedData)
+    console.log(weekFilteredData)
+    console.log(transformedWeekData)
 
+    console.log(donateData)
+
+    // chart data
     const bardata = {
         series: [
             {
                 name: "Transaction Data",
-                data: transformedData.map(item => item.x)
+                data: option == 1 ? transformedWeekData.map(item => item.x) 
+                : option == 2 ? transformedMonthData.map(item => item.x) 
+                : transformedData.map(item => item.x)
             }
         ],
         options: {
@@ -127,7 +210,9 @@ function AdminOverview() {
                 },
             },
             xaxis: {
-                categories: transformedData.map(item => item.y),
+                categories: option == 1 ? transformedWeekData.map(item => item.y) 
+                : option == 2 ? transformedMonthData.map(item => item.y) 
+                : transformedData.map(item => item.y),
                 title: {
                     text: 'Total Amount'
                 }
@@ -157,11 +242,16 @@ function AdminOverview() {
                                     <CardData title={'Số lượng giao dịch'} figure={data.length} kpi={100} />
                                 </Grid>
                             </Grid>
-                            <ReactApexChart className="grid-chart" options={bardata.options} series={bardata.series} type="area" width={600} height={350} />
+                            <Box className='bg-[#FFFFFF]'>
+                                <Button onClick={() => setOption(1)}>This week</Button>
+                                <Button onClick={() => setOption(2)}>This month</Button>
+                                <ReactApexChart className="grid-chart" options={bardata.options} series={bardata.series} type="area" width={600} height={350} />
+                            </Box>
+                            <BarCountDonate data={transformedDonateData}/>
                         </Grid>
                         <Grid item xs={4} >
                             <BarChart data={subCateProjectsCounts} title={subCateNames} />
-                            <TableAdmin data={data}/>
+                            <TableAdmin data={data} />
                         </Grid>
                     </Grid>
                 </Box>
