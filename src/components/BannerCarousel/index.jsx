@@ -1,13 +1,11 @@
+import { Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
-import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
-import Teamwork from "../../assets/Teamwork.png";
 import './index.css';
-import { Typography } from '@mui/material';
 function BannerCarousel() {
   const [existedAuth, setExistedAuth] = useState();
   useEffect(() => {
@@ -59,10 +57,7 @@ function BannerCarousel() {
         <Typography className="bannerTitle" sx={{
           position: "absolute", top: "40%", left: "10%", color: "white", fontWeight: "bold",
           textAlign: "left", zIndex: 2, textTransform: "uppercase",
-          fontSize: "5rem", whiteSpace: "nowrap", letterSpacing: .1,
-          '.MuiTypography-root': {
-            fontFamily: 'Barlow !important',
-          }
+          fontSize: "5rem", whiteSpace: "nowrap", letterSpacing: '2px !important',
         }}>
           Vươn tới những vì sao<br /> dự án khởi nghiệp của bạn <br /> sẽ tỏa sáng!
         </Typography>

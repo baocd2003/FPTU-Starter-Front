@@ -29,9 +29,9 @@ import UserProjects from "./pages/UserProjects";
 function App() {
   const theme = createTheme({
     typography: {
-      fontFamily: ["Inter", "sans-serif"].join(","),
+      fontFamily: ["Barlow", "sans-serif"].join(","),
       allVariants: {
-        fontFamily: "Inter, sans-serif !important",
+        fontFamily: "Barlow, sans-serif !important",
       },
     },
   });
