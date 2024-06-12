@@ -30,18 +30,17 @@ function HomePage() {
 			<FSUAppBar isLogined={checkIsLogin} />
 			<BannerCarousel />
 			<div className="mt-[100px]">
-				<div data-aos="fade-up" className="bg-[#f7f7f9] p-3 pt-12">
+				<div data-aos="fade-up" className="bg-[#f7f7f9] p-3 pt-[4rem]">
 					<Typography component="div">
 						<Typography variant="h1" sx={{ fontSize: '36px', color: '#FCAE3D', fontWeight: 600 }}>
 							Các dự án nổi bật
 						</Typography>
-						<Typography variant="body1" sx={{ fontSize: '22px' }}>
+						<Typography variant="body1" sx={{ fontSize: '24px', pt: '1rem' }}>
 							Những dự án nổi bật tại FPTUStarter
 						</Typography>
 					</Typography>
 					<ProjectCard />
 				</div>
-
 				<div data-aos="fade-up" className="p-3">
 					<Typography component="div">
 						<Typography variant="h1" sx={{ fontSize: '36px', color: '#FCAE3D' }}>
