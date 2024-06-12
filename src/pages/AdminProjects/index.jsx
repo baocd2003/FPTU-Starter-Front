@@ -22,6 +22,7 @@ import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import SearchBarProjects from "../../components/SearchBarProjects";
 import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
+import "./index.css";
 
 const statuses = [
   "Đã xóa",
@@ -30,6 +31,7 @@ const statuses = [
   "Thành công",
   "Thất bại",
   "Từ chối",
+  "Đã duyệt",
 ];
 
 function descendingComparator(a, b, orderBy) {
@@ -360,9 +362,9 @@ function AdminProjects() {
           }}
         >
           <Tabs value={tabValue} onChange={handleChangeTab}>
-            <Tab label="Tổng quan" />
-            <Tab label="Video demo" />
-            <Tab label="Hình ảnh" />
+            <Tab label="Tổng quan" className="tab-project" />
+            <Tab label="Video demo" className="tab-project" />
+            <Tab label="Hình ảnh" className="tab-project" />
           </Tabs>
 
           {tabValue === 0 && selectedProject && (
@@ -401,10 +403,7 @@ function AdminProjects() {
 
           {tabValue === 1 && (
             <Box>
-              <Typography variant="h6" component="h2">
-                Live Demo
-              </Typography>
-              <Box>
+              <Box sx={{ marginTop: "16px" }}>
                 <video width="100%" controls>
                   <source
                     src={selectedProject.projectLiveDemo}
@@ -417,10 +416,14 @@ function AdminProjects() {
 
           {tabValue === 2 && (
             <Box>
-              <Typography variant="h6" component="h2">
-                Images
-              </Typography>
-              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: 2,
+                  marginTop: "16px",
+                }}
+              >
                 {selectedProject.images?.map((image, index) => (
                   <Box key={index} sx={{ width: "100px", height: "100px" }}>
                     <img
@@ -481,6 +484,33 @@ function AdminProjects() {
                 onClick={() => handleOnClickApprove(selectedProject.id)}
               >
                 Duyệt
+              </Button>
+            </Box>
+          )}
+
+          {selectedProject?.projectStatus === 4 && (
+            <Box sx={{ mt: 2, display: "flex", justifyContent: "center" }}>
+              <Button
+                variant="contained"
+                sx={{
+                  color: "#44494D",
+                  backgroundColor: "white",
+                  textTransform: "none !important",
+                  "&:hover": {
+                    backgroundColor: "#FBB03B",
+                    color: "white",
+                  },
+                  "&:active": {
+                    outline: "none !important",
+                  },
+                  "&:focus": {
+                    outline: "none !important",
+                  },
+                  fontWeight: "bold",
+                }}
+                onClick={() => handleOnClickReject(selectedProject.id)}
+              >
+                Hoàn tiền
               </Button>
             </Box>
           )}
