@@ -1,0 +1,19 @@
+.carousel-image{
+    width: 800px !important; /* or any custom size */
+    height: 100%; 
+    object-fit: fill;
+}
+
+.liveContain .liveThumb{
+   visibility: hidden;
+}
+
+.liveContain{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.live-video video{
+    width: 100% !important;
+    height: 500px !important ;
+}
