@@ -285,13 +285,17 @@ function AdminProjects() {
     console.log("Refund project ID:", projectId);
 
     try {
-      const response = await projectApiInstance.post(`refund/${projectId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await transactionApiInstance.post(
+        `refund/${projectId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       console.log(response);
 
-      if (response.data._isSuccess) {
+      if (response.data.result._isSuccess) {
+        console.log(response.data);
         handleCloseModal();
 
         Swal.fire({
@@ -608,32 +612,33 @@ function AdminProjects() {
             </Box>
           )}
 
-          {selectedProject?.projectStatus === 4 && (
-            <Box sx={{ mt: 2, display: "flex", justifyContent: "center" }}>
-              <Button
-                variant="contained"
-                sx={{
-                  color: "#44494D",
-                  backgroundColor: "white",
-                  textTransform: "none !important",
-                  "&:hover": {
-                    backgroundColor: "#FBB03B",
-                    color: "white",
-                  },
-                  "&:active": {
-                    outline: "none !important",
-                  },
-                  "&:focus": {
-                    outline: "none !important",
-                  },
-                  fontWeight: "bold",
-                }}
-                onClick={() => handleOnClicRefund(selectedProject.id)}
-              >
-                Hoàn tiền
-              </Button>
-            </Box>
-          )}
+          {selectedProject?.projectStatus === 4 &&
+            selectedProject?.projectBalance > 0 && (
+              <Box sx={{ mt: 2, display: "flex", justifyContent: "center" }}>
+                <Button
+                  variant="contained"
+                  sx={{
+                    color: "#44494D",
+                    backgroundColor: "white",
+                    textTransform: "none !important",
+                    "&:hover": {
+                      backgroundColor: "#FBB03B",
+                      color: "white",
+                    },
+                    "&:active": {
+                      outline: "none !important",
+                    },
+                    "&:focus": {
+                      outline: "none !important",
+                    },
+                    fontWeight: "bold",
+                  }}
+                  onClick={() => handleOnClicRefund(selectedProject.id)}
+                >
+                  Hoàn tiền
+                </Button>
+              </Box>
+            )}
         </Box>
       </Modal>
     </Box>
