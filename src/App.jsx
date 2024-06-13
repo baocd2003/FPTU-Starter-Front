@@ -35,9 +35,9 @@ import StepFive from "./pages/CreateNewProject/StepFive";
 function App() {
   const theme = createTheme({
     typography: {
-      fontFamily: ["Barlow", "sans-serif"].join(","),
+      fontFamily: ["Inter", "sans-serif"].join(","),
       allVariants: {
-        fontFamily: "Barlow, sans-serif !important",
+        fontFamily: "Inter, sans-serif",
       },
     },
   });

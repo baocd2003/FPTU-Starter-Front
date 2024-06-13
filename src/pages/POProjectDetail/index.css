@@ -1,3 +1,7 @@
 .Mui-selected {
   background-color: "none !important";
 }
+.like-btn:hover{
+  background-color: #fff !important;
+  color:#FCAE3D !important ;
+}
