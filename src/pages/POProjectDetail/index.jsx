@@ -3,7 +3,6 @@ import { Avatar, Backdrop, Box, Button, Card, CardActions, CardContent, CardMedi
 import { tabsClasses } from '@mui/material/Tabs';
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import FSUAppBar from "../../components/AppBar";
 import ProjectDetailStat from "../../components/ProjectDetailStat";
 import ProjectImages from "../../components/ProjectImages";
@@ -25,7 +24,7 @@ function POProjectDetail() {
   const [remainingDays, setRemainingDays] = useState(0);
   const [images, setImages] = useState([]);
   const [projectUser, setProjectUser] = useState(null);
-  const [checkOwner, setCheckOwner] =useState(false);
+  const [checkOwner, setCheckOwner] = useState(false);
   const [checkLike, setCheckLike] = useState([]);
   const navigate = useNavigate();
   //change tab
@@ -34,15 +33,15 @@ function POProjectDetail() {
   }
 
   //like
-  const handleLike = async () =>{
+  const handleLike = async () => {
     const token = Cookies.get("_auth");
-    if(token == undefined || token == null){
+    if (token == undefined || token == null) {
       checkAuth();
-    }else{
-      await interactionApiInstance.post("/like-project",{
-        "projectId" : projectId
-      },{
-        headers : { Authorization: `Bearer ${token}` }
+    } else {
+      await interactionApiInstance.post("/like-project", {
+        "projectId": projectId
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
       }).then(res => {
         console.log(res.data);
         checkUserLike();
@@ -88,8 +87,8 @@ function POProjectDetail() {
   // check user like
   const checkUserLike = () => {
     const token = Cookies.get("_auth");
-    interactionApiInstance.get(`/check-user-like/${projectId}`,{
-      headers : { Authorization: `Bearer ${token}` }
+    interactionApiInstance.get(`/check-user-like/${projectId}`, {
+      headers: { Authorization: `Bearer ${token}` }
     }).then(res => {
       console.log(res.data);
       setCheckLike(res.data.result);
@@ -98,13 +97,13 @@ function POProjectDetail() {
   useEffect(() => {
     //check project owner
     const token = Cookies.get("_auth");
-    
-    if(token == undefined) {
+
+    if (token == undefined) {
       setCheckOwner(false);
-    } else{
-      projectApiInstance.get(`/check-owner?projectId=${projectId}`,{
-        headers : { Authorization: `Bearer ${token}` }
-      }).then(res =>{
+    } else {
+      projectApiInstance.get(`/check-owner?projectId=${projectId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      }).then(res => {
         setCheckOwner(res.data.result._data);
         console.log(res.data);
       })
@@ -134,8 +133,8 @@ function POProjectDetail() {
       });
 
   }, [projectId])
-    console.log(images);
-    console.log(project)
+  console.log(images);
+  console.log(project)
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0');
@@ -175,7 +174,7 @@ function POProjectDetail() {
             >
               <Grid container>
                 <Grid item xs={7}>
-                  <ProjectImages thumbNail={project.projectThumbnail} images={images} liveDemo={project.projectLiveDemo}/>
+                  <ProjectImages thumbNail={project.projectThumbnail} images={images} liveDemo={project.projectLiveDemo} />
                 </Grid>
                 <Grid item xs={5} paddingLeft={5}>
                   <Box
@@ -261,22 +260,25 @@ function POProjectDetail() {
                     }}>
                     {Math.round((project.projectBalance / project.projectTarget) * 100)}%
                   </Typography>
-                  <BorderLinearProgress variant="determinate" sx={{ width: "100%", my: 0, py: 1 }} value={Math.round((project.projectBalance / project.projectTarget) * 100)} />
+                  <BorderLinearProgress variant="determinate" sx={{ width: "100%", my: 0, py: 1 }}
+                    value={project.projectBalance > project.projectTarget ? 100 : Math.round((project.projectBalance / project.projectTarget) * 100)} />
 
                   <ProjectDetailStat numb={`${project.projectBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND`} stat={`đã được kêu gọi trên mục tiêu ${project.projectTarget.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND`} />
                   <ProjectDetailStat numb={"299"} stat={"người đầu tư"} />
                   <ProjectDetailStat numb={remainingDays} stat={"ngày còn lại"} />
                   <Stack spacing={1} direction="row" sx={{ my: 4 }}>
-                  {checkOwner ? 
-                    <Button variant="contained" disabled sx={{ width: "100%", whiteSpace: "nowrap", background: "#FCAE3D", fontWeight: "bold", py: 1 }}>Rút tiền</Button>
-                    : <Button variant="contained" 
-                       sx={{ width: "100%", whiteSpace: "nowrap"
-                        , background: "#FCAE3D", fontWeight: "bold", py: 1 }}
+                    {checkOwner ?
+                      <Button variant="contained" disabled sx={{ width: "100%", whiteSpace: "nowrap", background: "#FCAE3D", fontWeight: "bold", py: 1 }}>Rút tiền</Button>
+                      : <Button variant="contained"
+                        sx={{
+                          width: "100%", whiteSpace: "nowrap"
+                          , background: "#FCAE3D", fontWeight: "bold", py: 1
+                        }}
                         className="like-btn"
                         onClick={handleLike}>
-                          {checkLike.length !== 0 ? 'Đã thích' : 'Thích'}
-                        </Button>
-                  }  
+                        {checkLike.length !== 0 ? 'Đã thích' : 'Thích'}
+                      </Button>
+                    }
                   </Stack>
                 </Grid>
               </Grid>
@@ -430,7 +432,7 @@ function POProjectDetail() {
                   <TabPanel value="3" sx={{ minHeight: "200vh" }}>Cập nhật</TabPanel>
                   <TabPanel value="4" sx={{ minHeight: "200vh" }}>Danh sách người ủng hộ</TabPanel>
                   <TabPanel value="5" sx={{ minHeight: "200vh" }}>
-                    <CommentSection projectId={projectId} token={Cookies.get('_auth')}/>
+                    <CommentSection projectId={projectId} token={Cookies.get('_auth')} />
                   </TabPanel>
                 </TabContext>
               </Grid>
