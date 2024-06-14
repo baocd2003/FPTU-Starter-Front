@@ -20,7 +20,6 @@
 	border: 1px solid #44494D !important;
 	font-weight: 700 !important;
 	background-color: #FFFFFF !important;
-	/* transition: color 0.3s, border-color 0.3s, background-color 0.3s !important; */
 }
 
 .login-button:hover {
@@ -43,18 +42,17 @@
 	background-color: transparent !important;
 	color: #44494D !important;
 	box-shadow: none !important;
-	transition: 0.1s !important;
 }
 
 .top .focusedMenuItem {
-	color: #FFFFFF !important;
+	color: #FFFFFF;
 }
 
 .top .focusedMenuItem:focus,
 .top .focusedMenuItem:active,
 .top .focusedMenuItem:hover {
-	color: #FBB03B !important;
-	background-color: transparent !important;
+	color: #FBB03B;
+	background-color: transparent;
 }
 
 .top .notiIcon {
@@ -65,24 +63,31 @@
 	color: #FBB03B;
 }
 
+.top .slash {
+	color: #FFFFFF !important;
+}
+
 /* Scrolled State Styles */
 .scrolled {
 	background-color: rgba(255, 255, 255, 0.8) !important;
 	-webkit-backdrop-filter: blur(20px);
 	backdrop-filter: blur(20px);
-	color: white !important;
-	/* transition: 0.3s !important; */
-	/* box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12) !important; */
+	color: white;
+	box-shadow: 0px 1px 2px -0.5px rgba(0, 0, 0, 0.09), 0px 0px 0px 0px rgba(0, 0, 0, 0.09), 0px 1px 2px 0px rgba(0, 0, 0, 0.09) !important;
 }
 
 .scrolled .focusedMenuItem {
-	color: #44494D !important;
+	color: #44494D;
 }
 
 .scrolled .focusedMenuItem:hover {
-	color: #FBB03B !important;
+	color: #FBB03B;
 }
 
-header{
-	box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12) !important;
+.scrolled .slash {
+	color: #44494D;
+}
+
+header {
+	box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12) !important;
 }

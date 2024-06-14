@@ -6,11 +6,17 @@ import "./App.css";
 import AccountWallet from "./layouts/AccountWallet";
 import AdminLayout from "./layouts/AdminLayout";
 import AuthenticationLayout from "./layouts/AuthenticationLayout";
+import CreateProjectLayout from "./layouts/CreateProjectLayout";
 import UserProfileLayout from "./layouts/UserProfileLayout";
 import AdminOverview from "./pages/AdminOverview";
 import AdminProjects from "./pages/AdminProjects";
 import AllProjects from "./pages/AllProjects";
 import ChangePassword from "./pages/ChangePassword";
+import StepFive from "./pages/CreateNewProject/StepFive";
+import StepFour from "./pages/CreateNewProject/StepFour";
+import StepOne from "./pages/CreateNewProject/StepOne";
+import StepThree from "./pages/CreateNewProject/StepThree";
+import StepTwo from "./pages/CreateNewProject/StepTwo";
 import CreateProject from "./pages/CreateProject";
 import ChooseCategories from "./pages/CreateProject/ChooseCategories";
 import ChooseSubCates from "./pages/CreateProject/ChooseSubCates";
@@ -26,18 +32,12 @@ import SignUp from "./pages/SignUp";
 import UserBookmarkProject from "./pages/UserBookmarkProject";
 import UserProfile from "./pages/UserProfile";
 import UserProjects from "./pages/UserProjects";
-import CreateProjectLayout from "./layouts/CreateProjectLayout";
-import StepOne from "./pages/CreateNewProject/StepOne";
-import StepTwo from "./pages/CreateNewProject/StepTwo";
-import StepThree from "./pages/CreateNewProject/StepThree";
-import StepFour from "./pages/CreateNewProject/StepFour";
-import StepFive from "./pages/CreateNewProject/StepFive";
 function App() {
   const theme = createTheme({
     typography: {
       fontFamily: ["Inter", "sans-serif"].join(","),
       allVariants: {
-        fontFamily: "Inter, sans-serif",
+        fontFamily: "Inter, sans-serif !important",
       },
     },
   });

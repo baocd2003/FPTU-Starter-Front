@@ -1,11 +1,27 @@
 import Cookies from "js-cookie";
 import FSUAppBar from "../../components/AppBar";
-import { Grid, Box, Container, Typography, LinearProgress, styled, linearProgressClasses, Button, Stack, Tabs, Tab, Divider, Backdrop, CircularProgress, Chip, Avatar, Card, CardMedia, CardContent, CardActions, Paper, TextField, InputAdornment } from "@mui/material";
+import { Grid, Box, Container, Typography, LinearProgress, styled, linearProgressClasses, Button, Stack, Tabs, Tab, Divider, Backdrop, CircularProgress, Chip, Avatar, Card, CardMedia, CardContent, CardActions, Paper, TextField, InputAdornment, Drawer } from "@mui/material";
 import { tabsClasses } from '@mui/material/Tabs';
 import { TabList, TabContext, TabPanel } from "@mui/lab";
 import { Fragment, useEffect, useState, useRef } from "react";
 import ProjectImages from "../../components/ProjectImages";
 import ProjectDetailStat from "../../components/ProjectDetailStat";
+import { useNavigate, useParams } from "react-router-dom";
+import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
+import userManagementApiInstance from "../../utils/apiInstance/userManagementApiInstance";
+import { Close, SettingsSuggestSharp, ArrowBack } from "@mui/icons-material";
+import logo from "../../assets/logo.png";
+import Swal from "sweetalert2";
+
+import { TabContext, TabList, TabPanel } from "@mui/lab";
+import { Avatar, Backdrop, Box, Button, Card, CardActions, CardContent, CardMedia, Chip, CircularProgress, Container, Divider, Grid, InputAdornment, LinearProgress, Stack, Tab, TextField, Typography, linearProgressClasses, styled } from "@mui/material";
+import { tabsClasses } from '@mui/material/Tabs';
+import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import FSUAppBar from "../../components/AppBar";
+import ProjectDetailStat from "../../components/ProjectDetailStat";
+import ProjectImages from "../../components/ProjectImages";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
@@ -14,13 +30,14 @@ import userManagementApiInstance from "../../utils/apiInstance/userManagementApi
 import { SettingsSuggestSharp } from "@mui/icons-material";
 import interactionApiInstance from "../../utils/apiInstance/interactionApiInstance";
 import CommentSection from "../../components/CommentSection.jsx";
-import './index.css';
 import { FaFacebook } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa6";
 import { IoIosMail } from "react-icons/io";
 import { FaTiktok } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa6";
 import BackerList from "../../components/BackerList/index.jsx";
+import './index.css'
+
 function POProjectDetail() {
   const [project, setProject] = useState(null);
   const { projectId } = useParams();
@@ -42,6 +59,14 @@ function POProjectDetail() {
     }
   };
 
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState(null);
+  const navigate = useNavigate();
+  const [freeDonateAmount, setFreeDonateAmount] = useState(5000);
+
+
+  const [checkOwner, setCheckOwner] = useState(false);
+  const [checkLike, setCheckLike] = useState([]);
   //change tab
   const handleChange = (e, v) => {
     setTabValue(v);
@@ -65,19 +90,81 @@ function POProjectDetail() {
   }
 
   //donate
-  const handleDonatePackage = (packageId) => {
+  const handleFreeDonate = () => {
     try {
+      const data = {
+        projectId: project.id,
+        amountDonate: freeDonateAmount
+      }
       setIsLoading(true)
       const token = Cookies.get("_auth");
-      projectApiInstance.post("/package-backer-donate", {
-        headers: { Authorization: `Bearer ${token}` },
+      projectApiInstance.post("/free-backer-donate", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
-        .then((res) => console.log(res.data));
+        .then((res) => {
+          Swal.fire({
+            title: "Bạn đã giao dịch thành công!",
+            text: `Bạn đã ủng hộ nhanh cho của dự án ${project.projectName}`,
+            icon: "success"
+          });
+          // navigate('/my-wallet')
+        });
     } catch (err) {
       console.log(err)
     } finally {
       setIsLoading(false);
     }
+  }
+
+  const confirmDonatePackage = () => {
+    try {
+      const data = {
+        packageId: selectedPackage.id,
+      }
+      setIsLoading(true)
+      const token = Cookies.get("_auth");
+      projectApiInstance.post("/package-backer-donate", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((res) => {
+          Swal.fire({
+            title: "Bạn đã giao dịch thành công!",
+            text: `Bạn đã ủng hộ gói ${selectedPackage.packageName} của dự án ${project.projectName}`,
+            icon: "success"
+          });
+          // navigate('/my-wallet')
+        });
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setIsLoading(false);
+      setOpenDrawer(false);
+    }
+  }
+
+  const handleDonatePackage = (projectPackage) => {
+    setSelectedPackage(projectPackage)
+
+    setOpenDrawer(true)
+
+    // try {
+    //   setIsLoading(true)
+    //   const token = Cookies.get("_auth");
+    //   projectApiInstance.post("/package-backer-donate", { packageId }, {
+    //     headers: {
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   })
+    //     .then((res) => console.log(res.data));
+    // } catch (err) {
+    //   console.log(err)
+    // } finally {
+    //   setIsLoading(false);
+    // }
   }
 
   //check login
@@ -169,12 +256,107 @@ function POProjectDetail() {
 
   };
 
-
-  // console.log(project, projectUser);
-
   return (
     <>
-      <FSUAppBar isLogined={Cookies.get('_auth') !== undefined} />
+      <Drawer
+        anchor="right"
+        open={openDrawer}
+        onClose={() => setOpenDrawer(false)}
+      >
+        <Box
+          sx={{ width: '100vw', position: 'relative' }}
+        >
+          <Close sx={{ cursor: "pointer", position: 'absolute', top: 5, left: 20 }} onClick={() => setOpenDrawer(false)} />
+          <Box sx={{ borderBottom: 1, height: '2.2rem', borderColor: 'rgba(0, 0, 0, 0.2)', display: 'flex', justifyContent: 'center' }}>
+            <img src='https://i.ibb.co/WxTYWkk/star-1.png' />
+          </Box>
+          {selectedPackage && (
+            <Grid container>
+              <Grid item xs={8}
+                sx={{
+                  mt: '0 !important',
+                  p: '2.5rem 5rem 0 12rem'
+                }}
+              >
+                <Typography
+                  sx={{ fontWeight: 'bold', fontSize: '1.5rem', mb: '1rem' }}
+                >Thông tin gói ủng hộ</Typography>
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                  <img src='https://i.ibb.co/K7TGtpK/istockphoto-1409955148-612x612.jpg' className="h-[8rem] rounded-sm" />
+                  <Box sx={{ width: '100%' }}>
+                    <Typography
+                      sx={{ fontSize: '1.2rem', mb: '1rem', }}
+                    >{selectedPackage.packageName}</Typography>
+                    <Typography
+                      sx={{ fontSize: '.88rem', mb: '1rem', textDecoration: 'underline' }}
+                    >Chi tiết</Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+
+                      <Typography
+                        sx={{ fontSize: '1rem' }}
+                      >Số lượng: 1</Typography>
+                      <Typography
+                        sx={{ fontSize: '1rem', mb: '1rem', }}
+                      >{selectedPackage.requiredAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</Typography>
+                    </Box>
+
+                  </Box>
+
+                </Box>
+              </Grid>
+              <Grid item xs={4} sx={{ background: '#F0F0F0', height: '100vh', mt: '0 !important', p: '2.5rem 3rem' }}>
+                <Typography
+                  sx={{ fontWeight: 'bold', fontSize: '1.5rem', mb: '1rem' }}
+                >Thông tin thanh toán</Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                  <Typography
+                    sx={{ fontWeight: 'bold', fontSize: '1.2rem' }}
+                  >Tổng</Typography>
+                  <Typography
+                    sx={{ fontSize: '1.2rem' }}
+                  >{selectedPackage.requiredAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}đ</Typography>
+                </Box>
+
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                  <Typography
+                    sx={{ fontWeight: 'bold', fontSize: '1.2rem' }}
+                  >Vận chuyển</Typography>
+                  <Typography
+                    sx={{ fontSize: '1.2rem' }}
+                  >0 đ</Typography>
+                </Box>
+                <Divider sx={{ my: 2 }} />
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                  <Typography
+                    sx={{ fontWeight: 'bold', fontSize: '1.2rem' }}
+                  >Tổng thanh toán</Typography>
+                  <Typography
+                    sx={{ fontSize: '1.2rem' }}
+                  >{selectedPackage.requiredAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}đ</Typography>
+                </Box>
+
+
+                <Button variant='contained'
+                  disableElevation
+                  onClick={() => confirmDonatePackage()}
+                  sx={{
+                    background: '#FBB03B', fontWeight: 'bold',
+                    textShadow: '.1rem .1rem .5rem rgba(0, 0, 0, 0.1)',
+                    '&:hover': {
+                      background: '#CC9847'
+                    },
+                    '&:focus': {
+                      outline: 'none'
+                    }
+                  }}>Xác nhận</Button>
+
+              </Grid>
+            </Grid>
+          )}
+
+        </Box>
+      </Drawer >
+ <FSUAppBar isLogined={Cookies.get('_auth') !== undefined} />
       <Backdrop
         sx={{
           color: '#fff',
