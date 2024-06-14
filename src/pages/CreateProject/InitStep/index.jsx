@@ -95,7 +95,7 @@ function InitStep() {
             body: thumbnailFormData,
           }
         );
-
+        console.log(liveDemoFormData)
         const thumbnailData = await thumbnailUrl.json();
         const liveDemoUrl = await fetch(
           "https://localhost:7235/api/projects/add-live-demo",

@@ -3,7 +3,7 @@ import FSUAppBar from "../../components/AppBar";
 import { Grid, Box, Container, Typography, LinearProgress, styled, linearProgressClasses, Button, Stack, Tabs, Tab, Divider, Backdrop, CircularProgress, Chip, Avatar, Card, CardMedia, CardContent, CardActions, Paper, TextField, InputAdornment } from "@mui/material";
 import { tabsClasses } from '@mui/material/Tabs';
 import { TabList, TabContext, TabPanel } from "@mui/lab";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState, useRef } from "react";
 import ProjectImages from "../../components/ProjectImages";
 import ProjectDetailStat from "../../components/ProjectDetailStat";
 import { useParams } from "react-router-dom";
@@ -14,7 +14,13 @@ import userManagementApiInstance from "../../utils/apiInstance/userManagementApi
 import { SettingsSuggestSharp } from "@mui/icons-material";
 import interactionApiInstance from "../../utils/apiInstance/interactionApiInstance";
 import CommentSection from "../../components/CommentSection.jsx";
-import './index.css'
+import './index.css';
+import { FaFacebook } from "react-icons/fa";
+import { FaInstagram } from "react-icons/fa6";
+import { IoIosMail } from "react-icons/io";
+import { FaTiktok } from "react-icons/fa";
+import { FaRegHeart } from "react-icons/fa6";
+import BackerList from "../../components/BackerList/index.jsx";
 function POProjectDetail() {
   const [project, setProject] = useState(null);
   const { projectId } = useParams();
@@ -23,24 +29,34 @@ function POProjectDetail() {
   const [remainingDays, setRemainingDays] = useState(0);
   const [images, setImages] = useState([]);
   const [projectUser, setProjectUser] = useState(null);
-  const [checkOwner, setCheckOwner] =useState(false);
+  const [checkOwner, setCheckOwner] = useState(false);
   const [checkLike, setCheckLike] = useState([]);
   const navigate = useNavigate();
+  const [backerList, setBackerList] = useState([]);
+  const containerRef = useRef(null);
+
+  const handleScroll = () => {
+    if (containerRef.current) {
+      setTabValue("1");
+      containerRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   //change tab
   const handleChange = (e, v) => {
     setTabValue(v);
   }
 
   //like
-  const handleLike = async () =>{
+  const handleLike = async () => {
     const token = Cookies.get("_auth");
-    if(token == undefined || token == null){
+    if (token == undefined || token == null) {
       checkAuth();
-    }else{
-      await interactionApiInstance.post("/like-project",{
-        "projectId" : projectId
-      },{
-        headers : { Authorization: `Bearer ${token}` }
+    } else {
+      await interactionApiInstance.post("/like-project", {
+        "projectId": projectId
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
       }).then(res => {
         console.log(res.data);
         checkUserLike();
@@ -70,7 +86,7 @@ function POProjectDetail() {
     if (token == undefined) {
       Swal.fire({
         title: "Cần đăng nhập",
-        text: "Bạn cần có tài khoản để tạo dự án",
+        text: "Bạn cần có tài khoản để tương tác với dự án",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Về trang đăng nhập",
@@ -86,23 +102,33 @@ function POProjectDetail() {
   // check user like
   const checkUserLike = () => {
     const token = Cookies.get("_auth");
-    interactionApiInstance.get(`/check-user-like/${projectId}`,{
-      headers : { Authorization: `Bearer ${token}` }
+    interactionApiInstance.get(`/check-user-like/${projectId}`, {
+      headers: { Authorization: `Bearer ${token}` }
     }).then(res => {
       console.log(res.data);
       setCheckLike(res.data.result);
     })
   }
+  //get backers 
+  const getBackers = () => {
+    projectApiInstance.get(`/get-project-backer?projectId=${projectId}`).then(res => {
+      console.log(res.data);
+      if(res.data){
+        setBackerList(res.data.result._data);
+      }
+    })
+  }
+
   useEffect(() => {
     //check project owner
     const token = Cookies.get("_auth");
-    
-    if(token == undefined) {
+
+    if (token == undefined) {
       setCheckOwner(false);
-    } else{
-      projectApiInstance.get(`/check-owner?projectId=${projectId}`,{
-        headers : { Authorization: `Bearer ${token}` }
-      }).then(res =>{
+    } else {
+      projectApiInstance.get(`/check-owner?projectId=${projectId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      }).then(res => {
         setCheckOwner(res.data.result._data);
         console.log(res.data);
       })
@@ -130,10 +156,10 @@ function POProjectDetail() {
         console.log(err);
         setIsLoading(false);
       });
-
+      getBackers();
   }, [projectId])
-    console.log(images);
-    console.log(project)
+  console.log(images);
+  console.log(project)
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0');
@@ -142,6 +168,7 @@ function POProjectDetail() {
     return `${day}/${month}/${year}`;
 
   };
+
 
   // console.log(project, projectUser);
 
@@ -173,7 +200,7 @@ function POProjectDetail() {
             >
               <Grid container>
                 <Grid item xs={7}>
-                  <ProjectImages thumbNail={project.projectThumbnail} images={images} liveDemo={project.projectLiveDemo}/>
+                  <ProjectImages thumbNail={project.projectThumbnail} images={images} liveDemo={project.projectLiveDemo} />
                 </Grid>
                 <Grid item xs={5} paddingLeft={5}>
                   <Box
@@ -264,22 +291,49 @@ function POProjectDetail() {
                   <ProjectDetailStat numb={`${project.projectBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND`} stat={`đã được kêu gọi trên mục tiêu ${project.projectTarget.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND`} />
                   <ProjectDetailStat numb={"299"} stat={"người đầu tư"} />
                   <ProjectDetailStat numb={remainingDays} stat={"ngày còn lại"} />
-                  <Stack spacing={1} direction="row" sx={{ my: 4 }}>
-                  {checkOwner ? 
-                    <Button variant="contained" disabled sx={{ width: "100%", whiteSpace: "nowrap", background: "#FCAE3D", fontWeight: "bold", py: 1 }}>Rút tiền</Button>
-                    : <Button variant="contained" 
-                       sx={{ width: "100%", whiteSpace: "nowrap"
-                        , background: "#FCAE3D", fontWeight: "bold", py: 1 }}
-                        className="like-btn"
-                        onClick={handleLike}>
-                          {checkLike.length !== 0 ? 'Đã thích' : 'Thích'}
+                  <Stack spacing={1} direction="column" sx={{ my: 4 }}>
+                    {checkOwner ?
+                      <Button variant="contained" disabled sx={{ width: "100%", whiteSpace: "nowrap", background: "#FCAE3D", fontWeight: "bold", py: 1 }}>Rút tiền</Button>
+                      : <>
+                        <Button variant="contained"
+                          sx={{
+                            width: "100%", whiteSpace: "nowrap"
+                            , background: "#FCAE3D", fontWeight: "bold", py: 1
+                          }}
+                          className="like-btn"
+                          onClick={handleScroll}>
+                          Ủng hộ dự án
                         </Button>
-                  }  
+                        <Grid container spacing={2} sx={{ alignItems: 'center' }}>
+                          <Grid item xs={6} sx={{ paddingLeft: '0px !important' }}>
+                            <Button variant="contained"
+                              sx={{
+                                width: "100%", whiteSpace: "nowrap"
+                                , background: checkLike.length !== 0 ? "#FCAE3D" : "#FFF", fontWeight: "bold", py: 1,
+                                color: checkLike.length == 0 ? "#FCAE3D" : "#FFF"
+                              }}
+                              className="like-btn"
+                              onClick={handleLike}
+                              startIcon={<FaRegHeart className="" />}>
+                              {checkLike.length !== 0 ? 'Đã thích' : 'Thích'}
+                            </Button>
+                          </Grid>
+                          <Grid item xs={6}>
+                            <Box className='flex'>
+                              <FaFacebook className="social-link" />
+                              <FaInstagram className="social-link" />
+                              <FaTiktok className="social-link" />
+                              <IoIosMail className="social-link" />
+                            </Box>
+                          </Grid>
+                        </Grid>
+                      </>
+                    }
+
+
                   </Stack>
                 </Grid>
               </Grid>
-
-
             </Container >
           </Box>
           <Container className="flex flex-row justify-center items-center"
@@ -287,6 +341,7 @@ function POProjectDetail() {
               maxWidth: { lg: "lg", xl: "xl", xs: "xs" },
               height: "100vh"
             }}
+            ref={containerRef}
           >
             <Grid container>
               <Grid item xs={9} sx={{ pr: 10, mt: "0 !important" }}>
@@ -356,7 +411,7 @@ function POProjectDetail() {
                   </TabList>
                   <Divider />
                   <TabPanel value="1" sx={{ minHeight: "200vh" }}>
-                    <Grid container rowSpacing={0} columnSpacing={2} sx={{}}>
+                    <Grid container rowSpacing={0} columnSpacing={2}>
 
                       <Box sx={{ width: "100%", mb: 3 }}>
                         <Typography
@@ -426,9 +481,11 @@ function POProjectDetail() {
                   </TabPanel>
                   <TabPanel value="2" sx={{ minHeight: "200vh" }}>Về chúng mình</TabPanel>
                   <TabPanel value="3" sx={{ minHeight: "200vh" }}>Cập nhật</TabPanel>
-                  <TabPanel value="4" sx={{ minHeight: "200vh" }}>Danh sách người ủng hộ</TabPanel>
+                  <TabPanel value="4" sx={{ minHeight: "200vh" }}>
+                    <BackerList data={backerList}/>
+                  </TabPanel>
                   <TabPanel value="5" sx={{ minHeight: "200vh" }}>
-                    <CommentSection projectId={projectId} token={Cookies.get('_auth')}/>
+                    <CommentSection projectId={projectId} token={Cookies.get('_auth')} />
                   </TabPanel>
                 </TabContext>
               </Grid>
