@@ -1,8 +1,20 @@
-.progressBar{
+.progressBar {
     background-color: #F0F0F0 !important;
-    margin : 10px 0;
+    margin: 10px 0;
 }
 
-.progressBar span{
+.progressBar span {
     background-color: #FCAE3D !important;
+}
+
+.project-card:hover,
+.project-card:focus {
+    box-shadow: 0px 0px 4px 4px rgba(0, 0, 0, 0.1) !important;
+    background-color: #FFFFFF;
+}
+
+.project-chip {
+    background-color: #FFFFFF !important;
+    box-shadow: 0px 0px 4px 4px rgba(0, 0, 0, 0.07);
+    bottom: -20px !important;
 }

@@ -5,7 +5,8 @@ import "./index.css";
 
 function Footer() {
   return (
-    <footer className="bg-[#000000] w-full bottom-0 left-0 right-0 h-[350px] mt-32 flex flex-col items-center justify-center">
+    <footer className="bg-[#000000] w-full bottom-0 left-0 right-0 h-[350px] mt-32 flex flex-col items-center justify-center"
+    >
       <Container
         className="flex flex-col content-center h-full"
         sx={{
@@ -22,7 +23,7 @@ function Footer() {
               alt="logo"
               style={{ width: "90px", height: "70px" }}
             />
-            <Typography variant="body2">
+            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
               Công ty Cổ phần FPTU Starter
             </Typography>
             <Typography variant="body2" className="text-wrap break-all">

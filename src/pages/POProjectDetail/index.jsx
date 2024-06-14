@@ -1,11 +1,12 @@
-import Cookies from "js-cookie";
-import FSUAppBar from "../../components/AppBar";
-import { Grid, Box, Container, Typography, LinearProgress, styled, linearProgressClasses, Button, Stack, Tabs, Tab, Divider, Backdrop, CircularProgress, Chip, Avatar, Card, CardMedia, CardContent, CardActions, Paper, TextField, InputAdornment } from "@mui/material";
+import { TabContext, TabList, TabPanel } from "@mui/lab";
+import { Avatar, Backdrop, Box, Button, Card, CardActions, CardContent, CardMedia, Chip, CircularProgress, Container, Divider, Grid, InputAdornment, LinearProgress, Stack, Tab, TextField, Typography, linearProgressClasses, styled } from "@mui/material";
 import { tabsClasses } from '@mui/material/Tabs';
-import { TabList, TabContext, TabPanel } from "@mui/lab";
-import { Fragment, useEffect, useState } from "react";
-import ProjectImages from "../../components/ProjectImages";
+import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import FSUAppBar from "../../components/AppBar";
 import ProjectDetailStat from "../../components/ProjectDetailStat";
+import ProjectImages from "../../components/ProjectImages";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
@@ -15,6 +16,7 @@ import { SettingsSuggestSharp } from "@mui/icons-material";
 import interactionApiInstance from "../../utils/apiInstance/interactionApiInstance";
 import CommentSection from "../../components/CommentSection.jsx";
 import './index.css'
+
 function POProjectDetail() {
   const [project, setProject] = useState(null);
   const { projectId } = useParams();
@@ -53,7 +55,7 @@ function POProjectDetail() {
     try {
       setIsLoading(true)
       const token = Cookies.get("_auth");
-      projectApiInstance.post("/package-backer-donate", {
+      projectApiInstance.post('/package-backer-donate', {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => console.log(res.data));

@@ -1,19 +1,21 @@
-.dotBtn:focus{
+.dotBtn:focus {
     outline: none !important;
-	color: #FBB03B;
+    color: #FBB03B;
     border-color: #FBB03B;
 }
 
-.dotBtn:hover{
+.dotBtn:hover {
     outline: none !important;
-	background-color: #ffffff !important;
-	color: #FBB03B !important;
+    background-color: #ffffff !important;
+    color: #FBB03B !important;
     border-color: #FBB03B
 }
-.Mui-selected{
+
+.Mui-selected {
     color: #FBB03B !important;
-    border:none;
+    border: none;
 }
-.tab .MuiTabs-flexContainer{
+
+.tab .MuiTabs-flexContainer {
     justify-content: center;
 }
