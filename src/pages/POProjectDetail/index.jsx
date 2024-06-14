@@ -60,12 +60,9 @@ function POProjectDetail() {
 
   const [openDrawer, setOpenDrawer] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState(null);
-  const navigate = useNavigate();
   const [freeDonateAmount, setFreeDonateAmount] = useState(5000);
 
 
-  const [checkOwner, setCheckOwner] = useState(false);
-  const [checkLike, setCheckLike] = useState([]);
   //change tab
   const handleChange = (e, v) => {
     setTabValue(v);
