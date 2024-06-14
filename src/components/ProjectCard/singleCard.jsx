@@ -1,54 +1,135 @@
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import PersonIcon from '@mui/icons-material/Person';
+import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
+import Chip from '@mui/material/Chip';
 import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
 import "./index.css";
-function SingleCard({ category, imageLink, title, description, po, amount, progress, daysLeft }) {
-  const formattedAmount = new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(
-    amount
-  )
+
+function SingleCard({ category, imageLink, title, description, po, amount, progress, daysLeft, goal }) {
+  const formattedAmount = new Intl.NumberFormat('vi-VN').format(amount);
+  const formattedGoal = new Intl.NumberFormat('vi-VN').format(goal);
+
   return (
-    <Card sx={{ width: 360, height: 520, borderRadius: '20px !important' }}>
+    <Card sx={{ width: '25rem', height: 'fit-content', padding: '20px', boxShadow: '0', borderRadius: '0.8rem', transition: 'all 0.2s', backgroundColor: 'transparent' }} className='project-card'>
       <CardMedia
-        sx={{ height: 198, width: 400 }}
+        sx={{
+          height: '15rem', width: '22.5rem', borderRadius: '0.4rem', mb: '1.2rem', position: 'relative',
+          '&:hover .image-overlay': {
+            opacity: '0.5 !important',
+          },
+          '&:hover .hover-button': {
+            display: 'block',
+            transition: 'all 0.3s !important',
+          },
+        }}
         image={imageLink}
-        title="Kurumi"
-      />
-      <CardContent sx={{ mx: '4px' }}>
-        <Typography gutterBottom color="text.secondary" component="div"
-          sx={{ textAlign: "left", fontSize: '12px', marginBottom: { md: '10px !important' }, color: '#FBB03B', fontWeight: 600 }}>
-          {category}
-        </Typography>
-        <Typography variant="h5" component="div" sx={{ textAlign: "left", marginBottom: { md: '24px !important' } }}>
+      >
+        <div
+          className="image-overlay"
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'black',
+            opacity: 0,
+            transition: 'opacity 0.3s',
+            borderRadius: '0.4rem',
+          }}
+        ></div>
+        <Button
+          className="hover-button"
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            display: 'none',
+            backgroundColor: '#FFFFFF',
+            width: '40%',
+            boxShadow: '0.4rem',
+            fontSize: '0.9rem',
+            fontWeight: 'bold',
+            py: '0.8rem',
+            color: '#44494D',
+            '&:hover': {
+              backgroundColor: '#DDDDDD',
+            },
+            letterSpacing: '0.5px',
+            textTransform: 'none'
+          }}
+        >
+          Xem dự án
+        </Button>
+        <Button
+          className="hover-button"
+          sx={{
+            position: 'absolute',
+            top: '3%',
+            right: '3%',
+            display: 'none',
+            backgroundColor: '#FFFFFF',
+            boxShadow: '0.4rem',
+            py: '0.6rem',
+            px: '0',
+            color: '#44494D',
+            '&:hover': {
+              backgroundColor: '#DDDDDD',
+            },
+            letterSpacing: '0.5px'
+          }}
+        >
+          <FavoriteIcon sx={{ fontSize: '1.2rem' }} />
+        </Button>
+        <div className='absolute bottom-[-20px] translate-x-[10%]'>
+          <Chip icon={<FavoriteIcon sx={{ color: '#FF6969 !important' }} />} label={20} className='project-chip mr-[0.6rem] select-none !p-[0.2rem]' />
+          <Chip icon={<PersonIcon sx={{ color: '#44494D !important' }} />} label={20} className='project-chip select-none !p-[0.2rem]' />
+        </div>
+      </CardMedia>
+      <CardContent sx={{ px: '0! important', mx: 'auto', paddingBottom: '0 !important' }}>
+        <div className='flex flex-row justify-between items-center mb-[0.8rem]'>
+          <div className='w-fit max-w-[50%]'>
+            <Typography
+              sx={{ textAlign: "left", fontSize: '0.8rem', color: '#FFFFFF', fontWeight: 600, backgroundColor: '#FBB03B', padding: '0.2rem 0.8rem', borderRadius: '0.4rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              {category}
+            </Typography>
+          </div>
+          <div className='w-fit max-w-[50%] flex flex-row justify-end items-center gap-1'>
+            <AccessTimeIcon sx={{ width: '1.1rem', height: '1.1rem', color: '#A7A7A7', fontWeight: 600 }} />
+            <Typography variant='h1' sx={{ fontSize: '0.8rem', color: '#A7A7A7', fontWeight: 600 }}>{daysLeft} ngày còn lại</Typography>
+          </div>
+        </div>
+        <Typography variant="h5" sx={{
+          textAlign: 'left', marginBottom: '0.8rem', fontSize: '1.2rem', display: '-webkit-box', overflow: 'hidden', textOverflow: 'ellipsis', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', lineHeight: '1.5rem', wordWrap: 'break-word', height: '3rem', fontWeight: 600,
+          '&:hover': {
+            textDecoration: 'underline'
+          },
+          transition: 'all 0.2s', cursor: 'pointer'
+        }}>
           {title}
         </Typography>
-        <Typography variant="h6" component="div" sx={{ textAlign: "left", marginBottom: { md: '48px !important' } }}>
-          {description}
+        <Typography variant="h5" sx={{ textAlign: "left", fontSize: '1rem', marginBottom: '1.2rem', color: '#A7A7A7' }}>
+          bởi {po}
         </Typography>
-        <Typography variant="h5" component="div" sx={{ textAlign: "left", fontSize: '12px' }}>
-          <span className="text-[#FBB03B] mr-1">bởi</span>{po}
+        <div className='flex flex-row justify-between items-center mb-[0.4rem]'>
+          <Typography variant="h6" sx={{ textAlign: "left", fontSize: '0.9rem', fontWeight: 'bold' }}>
+            Ủng hộ: {formattedAmount} VND
+          </Typography>
+          <Typography sx={{ textAlign: "left", fontSize: '0.9rem', fontWeight: 'bold' }}>
+            {progress} %
+          </Typography>
+        </div>
+        <LinearProgress className='progressBar' variant="determinate" value={progress} sx={{ borderRadius: '0.4rem', height: '0.4rem', marginBottom: '0.4rem' }} />
+        <Typography variant="h6" sx={{ textAlign: "left", fontSize: '1rem', marginBottom: '0', fontWeight: 'bold' }}>
+          Mục tiêu: {goal} VND
         </Typography>
-        <Typography variant="h5" component="div" sx={{ textAlign: "left", fontSize: '12px' }}>
-          {formattedAmount}<span className="ml-1">đ đã được ủng hộ</span>
-        </Typography>
-        <LinearProgress className='progressBar' variant="determinate" value={progress} />
       </CardContent>
-      <CardActions sx={{ justifyContent: 'space-between', mx: '4px' }}>
-        <Typography variant='div' size="small" sx={{ flexDirection: 'column', margin: '0 10px' }}>
-          <Typography variant='h1' sx={{ color: '#44494D', fontSize: '18px' }}>{daysLeft}</Typography>
-          <Typography variant='h2' sx={{ fontSize: '12px', color: '#FCAE3D' }}>Ngày còn lại</Typography>
-        </Typography>
-        <Typography variant='div' size="small" sx={{ flexDirection: 'column', margin: '0 10px' }}>
-          <Typography variant='h1' sx={{ color: '#44494D', fontSize: '18px' }}>100</Typography>
-          <Typography variant='h2' sx={{ fontSize: '12px', color: '#FCAE3D' }}>Người ủng hộ</Typography>
-        </Typography>
-        <Typography variant='div' size="small" sx={{ flexDirection: 'column', margin: '0 10px' }}>
-          <Typography variant='h1' sx={{ color: '#44494D', fontSize: '18px' }}>{progress}%</Typography>
-          <Typography variant='h2' sx={{ fontSize: '12px', color: '#FCAE3D' }}>Thành công</Typography>
-        </Typography>
-      </CardActions>
     </Card>
   );
 }

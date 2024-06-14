@@ -51,8 +51,10 @@
     "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^6.23.0",
     "react-toastify": "^10.0.5",
+    "react-type-animation": "^3.2.0",
     "react-video-upload-preview": "^1.0.1",
     "sweetalert2": "^11.11.0",
+    "swiper": "^11.1.4",
     "uuid": "^9.0.1",
     "zv": "^0.0.0"
   },

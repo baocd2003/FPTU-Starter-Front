@@ -13,6 +13,24 @@ import { Close, SettingsSuggestSharp, ArrowBack } from "@mui/icons-material";
 import logo from "../../assets/logo.png";
 import Swal from "sweetalert2";
 
+import { TabContext, TabList, TabPanel } from "@mui/lab";
+import { Avatar, Backdrop, Box, Button, Card, CardActions, CardContent, CardMedia, Chip, CircularProgress, Container, Divider, Grid, InputAdornment, LinearProgress, Stack, Tab, TextField, Typography, linearProgressClasses, styled } from "@mui/material";
+import { tabsClasses } from '@mui/material/Tabs';
+import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import FSUAppBar from "../../components/AppBar";
+import ProjectDetailStat from "../../components/ProjectDetailStat";
+import ProjectImages from "../../components/ProjectImages";
+import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2';
+import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
+import userManagementApiInstance from "../../utils/apiInstance/userManagementApiInstance";
+import { SettingsSuggestSharp } from "@mui/icons-material";
+import interactionApiInstance from "../../utils/apiInstance/interactionApiInstance";
+import CommentSection from "../../components/CommentSection.jsx";
+import './index.css'
 
 function POProjectDetail() {
   const [project, setProject] = useState(null);
@@ -28,10 +46,31 @@ function POProjectDetail() {
   const [freeDonateAmount, setFreeDonateAmount] = useState(5000);
 
 
+  const [checkOwner, setCheckOwner] = useState(false);
+  const [checkLike, setCheckLike] = useState([]);
+  //change tab
   const handleChange = (e, v) => {
     setTabValue(v);
   }
 
+  //like
+  const handleLike = async () => {
+    const token = Cookies.get("_auth");
+    if (token == undefined || token == null) {
+      checkAuth();
+    } else {
+      await interactionApiInstance.post("/like-project", {
+        "projectId": projectId
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      }).then(res => {
+        console.log(res.data);
+        checkUserLike();
+      })
+    }
+  }
+
+  //donate
   const handleFreeDonate = () => {
     try {
       const data = {
@@ -109,7 +148,51 @@ function POProjectDetail() {
     // }
   }
 
+  //check login
+  const checkAuth = () => {
+    const token = Cookies.get("_auth");
+    if (token == undefined) {
+      Swal.fire({
+        title: "Cần đăng nhập",
+        text: "Bạn cần có tài khoản để tạo dự án",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Về trang đăng nhập",
+        cancelButtonText: "Ở lại trang"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/login");
+        }
+      })
+    }
+  }
+
+  // check user like
+  const checkUserLike = () => {
+    const token = Cookies.get("_auth");
+    interactionApiInstance.get(`/check-user-like/${projectId}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).then(res => {
+      console.log(res.data);
+      setCheckLike(res.data.result);
+    })
+  }
   useEffect(() => {
+    //check project owner
+    const token = Cookies.get("_auth");
+
+    if (token == undefined) {
+      setCheckOwner(false);
+    } else {
+      projectApiInstance.get(`/check-owner?projectId=${projectId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      }).then(res => {
+        setCheckOwner(res.data.result._data);
+        console.log(res.data);
+      })
+      checkUserLike();
+    }
+    //get project detail
     projectApiInstance.get(`${projectId}`)
       .then((res) => {
         if (res.data._statusCode === 200) {
@@ -130,9 +213,11 @@ function POProjectDetail() {
       .catch((err) => {
         console.log(err);
         setIsLoading(false);
-      })
-  }, [projectId])
+      });
 
+  }, [projectId])
+  console.log(images);
+  console.log(project)
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0');
@@ -270,10 +355,10 @@ function POProjectDetail() {
                 }}
               >
                 <Grid container>
-                  <Grid item xs={8} >
-                    <ProjectImages thumbNail={project.projectThumbnail} images={images} />
+                  <Grid item xs={7}>
+                    <ProjectImages thumbNail={project.projectThumbnail} images={images} liveDemo={project.projectLiveDemo} />
                   </Grid>
-                  <Grid item xs={4} paddingLeft={5}>
+                  <Grid item xs={5} paddingLeft={5}>
                     <Box
                       sx={{
                         display: "flex",
@@ -357,19 +442,54 @@ function POProjectDetail() {
                       }}>
                       {Math.round((project.projectBalance / project.projectTarget) * 100)}%
                     </Typography>
-                    <BorderLinearProgress variant="determinate" sx={{ width: "100%", my: 0, py: 1 }}
-                      value={project.projectBalance > project.projectTarget ? 100 : (Math.round((project.projectBalance / project.projectTarget) * 100))} />
+                    <BorderLinearProgress variant="determinate" sx={{ width: "100%", my: 0, py: 1 }} value={Math.round((project.projectBalance / project.projectTarget) * 100)} />
 
                     <ProjectDetailStat numb={`${project.projectBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND`} stat={`đã được kêu gọi trên mục tiêu ${project.projectTarget.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND`} />
                     <ProjectDetailStat numb={"299"} stat={"người đầu tư"} />
                     <ProjectDetailStat numb={remainingDays} stat={"ngày còn lại"} />
-                    <Stack spacing={1} direction="row" sx={{ my: 4 }}>
-                      <Button variant="contained" disabled sx={{ width: "100%", whiteSpace: "nowrap", background: "#FCAE3D", fontWeight: "bold", py: 1 }}>Rút tiền</Button>
+                    <Stack spacing={1} direction="column" sx={{ my: 4 }}>
+                      {checkOwner ?
+                        <Button variant="contained" disabled sx={{ width: "100%", whiteSpace: "nowrap", background: "#FCAE3D", fontWeight: "bold", py: 1 }}>Rút tiền</Button>
+                        : <>
+                          <Button variant="contained"
+                            sx={{
+                              width: "100%", whiteSpace: "nowrap"
+                              , background: "#FCAE3D", fontWeight: "bold", py: 1
+                            }}
+                            className="like-btn"
+                            onClick={handleScroll}>
+                            Ủng hộ dự án
+                          </Button>
+                          <Grid container spacing={2} sx={{ alignItems: 'center' }}>
+                            <Grid item xs={6} sx={{ paddingLeft: '0px !important' }}>
+                              <Button variant="contained"
+                                sx={{
+                                  width: "100%", whiteSpace: "nowrap"
+                                  , background: checkLike.length !== 0 ? "#FCAE3D" : "#FFF", fontWeight: "bold", py: 1,
+                                  color: checkLike.length == 0 ? "#FCAE3D" : "#FFF"
+                                }}
+                                className="like-btn"
+                                onClick={handleLike}
+                                startIcon={<FaRegHeart className="" />}>
+                                {checkLike.length !== 0 ? 'Đã thích' : 'Thích'}
+                              </Button>
+                            </Grid>
+                            <Grid item xs={6}>
+                              <Box className='flex'>
+                                <FaFacebook className="social-link" />
+                                <FaInstagram className="social-link" />
+                                <FaTiktok className="social-link" />
+                                <IoIosMail className="social-link" />
+                              </Box>
+                            </Grid>
+                          </Grid>
+                        </>
+                      }
+
+
                     </Stack>
                   </Grid>
                 </Grid>
-
-
               </Container >
             </Box>
             <Container className="flex flex-row justify-center items-center"
@@ -377,6 +497,7 @@ function POProjectDetail() {
                 maxWidth: { lg: "lg", xl: "xl", xs: "xs" },
                 height: "100vh"
               }}
+              ref={containerRef}
             >
               <Grid container>
                 <Grid item xs={9} sx={{ pr: 10, mt: "0 !important" }}>
@@ -433,7 +554,7 @@ function POProjectDetail() {
                           '&:focus': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
                         }}
                         value="4" />
-                      <Tab label="Đánh giá"
+                      <Tab label="Bình luận"
                         sx={{
                           fontStyle: "normal",
                           fontWeight: "bold", px: 4, py: 3, whiteSpace: "nowrap",
@@ -487,7 +608,7 @@ function POProjectDetail() {
                                 <Divider gutterBottom />
                               </CardContent>
                               <CardActions>
-                                <Button onClick={() => handleDonatePackage(projectPackage)} variant="contained">
+                                <Button onClick={() => handleDonatePackage(projectPackage.id)} variant="contained">
                                   Chọn
                                 </Button>
                               </CardActions>
@@ -503,27 +624,25 @@ function POProjectDetail() {
                         <Typography
                           sx={{ fontSize: ".85rem", fontWeight: "bold", color: "rgba(0, 0, 0, 0.5)" }}
                         >Nhập số tiền bạn muốn ủng hộ trực tiếp cho nhà phát triển dự án</Typography>
-
                         <TextField
                           type="number"
                           placeholder="Nhập số tiền"
                           sx={{ width: "50%", my: 2 }}
-                          value={freeDonateAmount}
-                          onChange={(e) => setFreeDonateAmount(e.target.value)}
                           InputProps={{
                             endAdornment: <InputAdornment>VND</InputAdornment>,
                           }}
-
                         /> <br />
-                        {project && (
-                          <Button onClick={() => handleFreeDonate()} variant="contained" sx={{ background: "#FCAE3D" }}>Ủng hộ</Button>
-                        )}
+                        <Button variant="contained" sx={{ background: "#FCAE3D" }}>Ủng hộ</Button>
                       </Box>
                     </TabPanel>
                     <TabPanel value="2" sx={{ minHeight: "200vh" }}>Về chúng mình</TabPanel>
                     <TabPanel value="3" sx={{ minHeight: "200vh" }}>Cập nhật</TabPanel>
-                    <TabPanel value="4" sx={{ minHeight: "200vh" }}>Danh sách người ủng hộ</TabPanel>
-                    <TabPanel value="5" sx={{ minHeight: "200vh" }}>Đánh giá</TabPanel>
+                    <TabPanel value="4" sx={{ minHeight: "200vh" }}>
+                      <BackerList />
+                    </TabPanel>
+                    <TabPanel value="5" sx={{ minHeight: "200vh" }}>
+                      <CommentSection projectId={projectId} token={Cookies.get('_auth')} />
+                    </TabPanel>
                   </TabContext>
                 </Grid>
 
@@ -576,6 +695,7 @@ function POProjectDetail() {
               </Grid>
 
             </Container>
+
           </Box >
 
         )

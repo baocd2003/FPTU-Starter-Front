@@ -1,76 +1,77 @@
-import React, { useEffect, useState } from 'react';
-import TabContext from '@mui/lab/TabContext';
-import TabList from '@mui/lab/TabList';
-import TabPanel from '@mui/lab/TabPanel';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Tab from '@mui/material/Tab';
-import { GoDot } from 'react-icons/go';
+import React, { useEffect, useRef } from 'react';
+import 'swiper/css';
+import "swiper/css/effect-fade";
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import { A11y, EffectFade, Navigation, Pagination } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
 import Kurumi from '../../assets/samplePrj.png';
 import SingleCard from '../ProjectCard/singleCard';
+
 import './index.css';
-import projectApiInstance from '../../utils/apiInstance/projectApiInstance';
 
-function StepperHomePage() {
-    const [subA, setSubA] = useState([]);
-    const [projects, setProjects] = useState([]);
-    
+function StepperHomePage({ setSwiperRef, type }) {
+    const swiperRef = useRef(null);
+    const step = 3;
+    const [sortType, setSortType] = React.useState("popular");
+
     useEffect(() => {
-        const fetchProjects = async () => {
-            await projectApiInstance.get("/get-process-project").then(res => {
-                console.log(res.data);
-                if(res.data){
-                    if(res.data._isSuccess){
-                        setProjects(res.data._data);
-                    }
-                }
-            })
+        if (setSwiperRef) {
+            setSwiperRef(swiperRef);
         }
-        fetchProjects();
-    },[])
-    const totalItem = 9;
-    const itemPerPage = 3;
-    const tabNums = Math.ceil(totalItem / itemPerPage);
-    const a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        if (type) {
+            setSortType(type);
+        }
+    }, [setSwiperRef]);
 
-    const [value, setValue] = useState('1');
-
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-        const startIndex = (parseInt(newValue, 10) - 1) * itemPerPage;
-        const endIndex = Math.min(parseInt(newValue, 10) * itemPerPage, a.length);
-        setSubA(a.slice(startIndex, endIndex));
+    const slidePrev = () => {
+        if (swiperRef.current) {
+            const swiper = swiperRef.current.swiper;
+            swiper.slidePrev(step);
+        }
     };
 
-    console.log(subA);
-    console.log(tabNums);
+    const slideNext = () => {
+        if (swiperRef.current) {
+            const swiper = swiperRef.current.swiper;
+            swiper.slideNext(step);
+        }
+    };
 
     return (
-        <Box sx={{ width: '100%', typography: 'body1', display: { xs: 'none', md: 'block' } }}>
-            <TabContext value={value}>
-                {Array.from({ length: tabNums }, (_, i) => (
-                    <TabPanel key={i + 1} value={(i + 1).toString()}>
-                        <Container className="my-10" maxWidth="false">
-                            <Box className="mx-15" sx={{
-                                display: 'flex', flexDirection: { xs: 'column', md: 'row' }, flexWrap: 'wrap',
-                                justifyContent: { xs: 'center', md: 'space-between' }, alignItems: 'center'
-                            }}>
-                                <SingleCard imageLink={Kurumi} progress={50} amount={8000000} po={"paopao"} category="Anime" title="Kurumi" description="Kurumi1" />
-                                <SingleCard imageLink={Kurumi} category="Anime" title="Kurumi" description="Kurumi1" />
-                                <SingleCard imageLink={Kurumi} category="Anime" title="Kurumi" description="Kurumi1" />
-                            </Box>
-                        </Container>
-                    </TabPanel>
-                ))}
-                <Box sx={{ justifyContent: 'center' }}>
-                    <TabList className="tab" sx={{ justifyContent: 'center' }} onChange={handleChange}>
-                        {Array.from({ length: tabNums }, (_, i) => (
-                            <Tab key={i + 1} icon={<GoDot />} value={(i + 1).toString()} className='dotBtn' />
-                        ))}
-                    </TabList>
-                </Box>
-            </TabContext>
-        </Box>
+        <div className="swiper-container">
+            <Swiper
+                spaceBetween={30}
+                slidesPerView={3}
+                slidesPerGroup={3}
+                modules={[Navigation, Pagination, A11y, EffectFade]}
+                className='pt-10 pb-5 px-1'
+                onSwiper={(swiper) => {
+                    swiperRef.current = swiper;
+                }}
+                speed={1000}
+                loop={true}
+            >
+                <SwiperSlide>
+                    <SingleCard imageLink={Kurumi} progress={50} amount={8000000} po={"Anonymous"} category="Anime" title="Hollow Knight: Silk Song 1" description="Kurumi1" daysLeft={12} />
+                </SwiperSlide>
+                <SwiperSlide>
+                    <SingleCard imageLink={Kurumi} progress={50} amount={8000000} po={"Anonymous"} category="Anime" title="Hollow Knight: Silk Song 2" description="Kurumi1" daysLeft={12} />
+                </SwiperSlide>
+                <SwiperSlide>
+                    <SingleCard imageLink={Kurumi} progress={50} amount={8000000} po={"Anonymous"} category="Anime" title="Hollow Knight: Silk Song 3" description="Kurumi1" daysLeft={12} />
+                </SwiperSlide>
+                <SwiperSlide>
+                    <SingleCard imageLink={Kurumi} progress={50} amount={8000000} po={"Anonymous"} category="Anime" title="Hollow Knight: Silk Song 4" description="Kurumi1" daysLeft={12} />
+                </SwiperSlide>
+                <SwiperSlide>
+                    <SingleCard imageLink={Kurumi} progress={50} amount={8000000} po={"Anonymous"} category="Anime" title="Hollow Knight: Silk Song 5" description="Kurumi1" daysLeft={12} />
+                </SwiperSlide>
+                <SwiperSlide>
+                    <SingleCard imageLink={Kurumi} progress={50} amount={8000000} po={"Anonymous"} category="Anime" title="Hollow Knight: Silk Song 6" description="Kurumi1" daysLeft={12} />
+                </SwiperSlide>
+            </Swiper>
+        </div>
     );
 }
 

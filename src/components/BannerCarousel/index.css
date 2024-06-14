@@ -8,19 +8,21 @@
 
 .c-btn:focus {
 	outline: none !important;
-	color: #FBB03B;
+	color: white;
 }
 
 .c-btn:hover {
 	outline: none !important;
-	background-color: white !important;
-	color: #FBB03B;
+	background-color: #FBB03B !important;
+	color: white;
 }
 
 .c-btn {
-	background-color: #FCAE3D !important;
+	background-color: transparent !important;
+	border: 2px solid #FBB03B !important;
 	border-radius: 10px !important;
 	padding: 10px !important;
+	font-family: "Barlow" !important;
 }
 
 .caroulsel {
@@ -33,7 +35,7 @@
 }
 
 
-.bannerImg{
+.bannerImg {
 	filter: grayscale(100%) !important;
 	width: 100%;
 	height: 100vh;
@@ -53,14 +55,14 @@
 	z-index: 2 !important;
 }
 
-.MuiTypography-root{
+.bannerTitle {
 	font-family: "Barlow" !important;
-}
-
-.bannerTitle{
-	font-family: "Barlow" !important;
-  font-weight: 900 !important;
-  font-style: normal;
+	font-weight: 900 !important;
+	font-style: normal;
 	letter-spacing: 1px !important;
 	font-size: 3rem !important;
+}
+
+.carousel .control-dots {
+	bottom: 1.6rem !important;
 }
