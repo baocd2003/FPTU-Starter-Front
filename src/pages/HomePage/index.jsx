@@ -323,7 +323,7 @@ function HomePage() {
 			<div data-aos="fade-up" className="p-3 max-h-fit">
 				<div className='project-section'>
 					<Typography variant="h1" sx={{ fontSize: { lg: '2.4rem', xs: '1.5rem' }, color: '#FBB03B', fontWeight: 600, textAlign: 'center', mb: '5.6rem' }}>
-						{/* <TypeAnimation
+						<TypeAnimation
 							sequence={[
 								// First typo typing
 								'Làm sao để có được dự án crowdfunding thành công?',
@@ -334,7 +334,7 @@ function HomePage() {
 							speed={60}
 							wrapper="span"
 							repeat={Infinity}
-						/> */}
+						/>
 					</Typography>
 					<Grid container spacing={2}>
 						<Grid item xs={3}>

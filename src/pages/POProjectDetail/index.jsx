@@ -82,7 +82,7 @@ function POProjectDetail() {
         },
       })
         .then((res) => {
-          getBackers()
+          getProjectDetail()
           Swal.fire({
             title: "Bạn đã giao dịch thành công!",
             text: `Bạn đã ủng hộ nhanh cho của dự án ${project.projectName}`,
@@ -110,7 +110,7 @@ function POProjectDetail() {
         },
       })
         .then((res) => {
-          getBackers()
+          getProjectDetail()
           Swal.fire({
             title: "Bạn đã giao dịch thành công!",
             text: `Bạn đã ủng hộ gói ${selectedPackage.packageName} của dự án ${project.projectName}`,
@@ -171,22 +171,7 @@ function POProjectDetail() {
     })
   }
 
-  useEffect(() => {
-    //check project owner
-    const token = Cookies.get("_auth");
-
-    if (token == undefined) {
-      setCheckOwner(false);
-    } else {
-      projectApiInstance.get(`/check-owner?projectId=${projectId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      }).then(res => {
-        setCheckOwner(res.data.result._data);
-        console.log(res.data);
-      })
-      checkUserLike();
-    }
-    //get project detail
+  const getProjectDetail = () => {
     projectApiInstance.get(`${projectId}`)
       .then((res) => {
         if (res.data._statusCode === 200) {
@@ -208,6 +193,25 @@ function POProjectDetail() {
         console.log(err);
         setIsLoading(false);
       });
+  }
+
+  useEffect(() => {
+    //check project owner
+    const token = Cookies.get("_auth");
+
+    if (token == undefined) {
+      setCheckOwner(false);
+    } else {
+      projectApiInstance.get(`/check-owner?projectId=${projectId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      }).then(res => {
+        setCheckOwner(res.data.result._data);
+        console.log(res.data);
+      })
+      checkUserLike();
+    }
+    //get project detail
+    getProjectDetail();
     getBackers();
   }, [projectId])
   console.log(images);

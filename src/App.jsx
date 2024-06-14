@@ -37,7 +37,7 @@ function App() {
     typography: {
       fontFamily: ["Inter", "sans-serif"].join(","),
       allVariants: {
-        fontFamily: "Inter, sans-serif !important",
+        fontFamily: "Inter, sans-serif",
       },
     },
   });

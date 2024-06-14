@@ -1,4 +1,4 @@
-import { CircularProgress, Grid } from '@mui/material';
+import { CircularProgress, Grid, Paper } from '@mui/material';
 import Backdrop from '@mui/material/Backdrop';
 import Typography from '@mui/material/Typography';
 import Aos from 'aos';
@@ -9,12 +9,16 @@ import FSUAppBar from '../../components/AppBar';
 import Footer from '../../components/Footer';
 import SingleCard from '../../components/ProjectCard/singleCard';
 import SearchBarProjects from '../../components/SearchBarProjects';
+import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
 import './index.css';
 
 function AllProjects() {
     const [checkIsLogin, setCheckIsLogin] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [projects, setProjects] = useState(null);
+    const [numProject, setNumProject] = useState(0);
+    const [totalProjectMoney, setTotalProjectMoney] = useState(0);
+    const [totalPackage, setTotalPackage] = useState(0);
 
     const setProject = (projectList) => {
         setProjects(projectList);
@@ -24,7 +28,49 @@ function AllProjects() {
         Aos.init({ duration: 2000 });
         const isLogined = Cookies.get('_auth') !== undefined;
         setCheckIsLogin(isLogined);
+        getNumProjects();
+        getTotalProjectMoney();
+        getTotalPackage();
     }, []);
+
+    const getNumProjects = () => {
+        try {
+            projectApiInstance.get(`/admin-count-projects`).then((res) => {
+                if (res.data._statusCode === 200) {
+                    const formattedAmount = new Intl.NumberFormat('vi-VN').format(res.data._data);
+                    setNumProject(res.data._data);
+                }
+            })
+        } catch (error) {
+            console.error("Error fetching project number:", error);
+        }
+    }
+
+    const getTotalProjectMoney = () => {
+        try {
+            projectApiInstance.get(`/admin-count-money-project`).then((res) => {
+                if (res.data._statusCode === 200) {
+                    const formattedAmount = new Intl.NumberFormat('vi-VN').format(res.data._data);
+                    setTotalProjectMoney(formattedAmount);
+                }
+            })
+        } catch (error) {
+            console.error("Error fetching project number:", error);
+        }
+    }
+
+    const getTotalPackage = () => {
+        try {
+            projectApiInstance.get(`/admin-count-package`).then((res) => {
+                if (res.data._statusCode === 200) {
+                    const formattedAmount = new Intl.NumberFormat('vi-VN').format(res.data._data);
+                    setTotalPackage(formattedAmount);
+                }
+            })
+        } catch (error) {
+            console.error("Error fetching project number:", error);
+        }
+    }
 
     const completePercent = (project) => {
         return (project.projectBalance / project.projectTarget * 100).toFixed(2);
@@ -71,30 +117,30 @@ function AllProjects() {
                     </Typography>
                 </div>
                 <div className='absolute bottom-0 flex flex-row gap-10 justify-center w-full translate-y-12'>
-                    <div className='project-stats'>
+                    <Paper elevation={8} className='project-stats'>
                         <Typography variant="h1" sx={{ fontSize: { lg: '2.4rem', xs: '1.5rem' }, color: '#FBB03B', fontWeight: 600, textAlign: 'center', mb: '0.8rem' }}>
-                            120.000
+                            {numProject}
                         </Typography>
                         <Typography variant="h2" sx={{ fontSize: { lg: '1.2rem', xs: '0.8rem' }, color: '#44494D', fontWeight: 600, textAlign: 'center' }}>
                             Dự án
                         </Typography>
-                    </div>
-                    <div className='project-stats w-[30%]'>
+                    </Paper>
+                    <Paper elevation={8} className='project-stats w-[30%]'>
                         <Typography variant="h1" sx={{ fontSize: { lg: '2.4rem', xs: '1.5rem' }, color: '#FBB03B', fontWeight: 600, textAlign: 'center', mb: '0.8rem' }}>
-                            178.000.000 VND
+                            {totalProjectMoney} VND
                         </Typography>
                         <Typography variant="h2" sx={{ fontSize: { lg: '1.2rem', xs: '0.8rem' }, color: '#44494D', fontWeight: 600, textAlign: 'center' }}>
                             Tổng số tiền ủng hộ
                         </Typography>
-                    </div>
-                    <div className='project-stats'>
+                    </Paper>
+                    <Paper elevation={8} className='project-stats'>
                         <Typography variant="h1" sx={{ fontSize: { lg: '2.4rem', xs: '1.5rem' }, color: '#FBB03B', fontWeight: 600, textAlign: 'center', mb: '0.8rem' }}>
-                            320
+                            {totalPackage}
                         </Typography>
                         <Typography variant="h2" sx={{ fontSize: { lg: '1.2rem', xs: '0.8rem' }, color: '#44494D', fontWeight: 600, textAlign: 'center' }}>
                             Số gói được mua
                         </Typography>
-                    </div>
+                    </Paper>
                 </div>
             </div>
             <div className='mx-[5rem] mt-[8rem]'>
