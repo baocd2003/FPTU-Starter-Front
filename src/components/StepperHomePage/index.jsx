@@ -67,9 +67,6 @@ function StepperHomePage({ setSwiperRef, type }) {
                 <SwiperSlide>
                     <SingleCard imageLink={Kurumi} progress={50} amount={8000000} po={"Anonymous"} category="Anime" title="Hollow Knight: Silk Song 5" description="Kurumi1" daysLeft={12} />
                 </SwiperSlide>
-                <SwiperSlide>
-                    <SingleCard imageLink={Kurumi} progress={50} amount={8000000} po={"Anonymous"} category="Anime" title="Hollow Knight: Silk Song 6" description="Kurumi1" daysLeft={12} />
-                </SwiperSlide>
             </Swiper>
         </div>
     );

@@ -1,26 +1,23 @@
-import Cookies from "js-cookie";
-import FSUAppBar from "../../components/AppBar";
-import { Grid, Box, Container, Typography, LinearProgress, styled, linearProgressClasses, Button, Stack, Tabs, Tab, Divider, Backdrop, CircularProgress, Chip, Avatar, Card, CardMedia, CardContent, CardActions, Paper, TextField, InputAdornment, Drawer } from "@mui/material";
+import { Close } from "@mui/icons-material";
+import { TabContext, TabList, TabPanel } from "@mui/lab";
+import { Avatar, Backdrop, Box, Button, Card, CardActions, CardContent, CardMedia, Chip, CircularProgress, Container, Divider, Drawer, Grid, InputAdornment, LinearProgress, Stack, Tab, TextField, Typography, linearProgressClasses, styled } from "@mui/material";
 import { tabsClasses } from '@mui/material/Tabs';
-import { TabList, TabContext, TabPanel } from "@mui/lab";
-import { Fragment, useEffect, useState, useRef } from "react";
-import ProjectImages from "../../components/ProjectImages";
-import ProjectDetailStat from "../../components/ProjectDetailStat";
-import { useNavigate, useParams } from "react-router-dom";
-import userManagementApiInstance from "../../utils/apiInstance/userManagementApiInstance";
-import { Close, SettingsSuggestSharp, ArrowBack } from "@mui/icons-material";
-import logo from "../../assets/logo.png";
-import Swal from "sweetalert2";
-import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
-import interactionApiInstance from "../../utils/apiInstance/interactionApiInstance";
-import CommentSection from "../../components/CommentSection.jsx";
-import { FaFacebook } from "react-icons/fa";
-import { FaInstagram } from "react-icons/fa6";
+import Cookies from "js-cookie";
+import { useEffect, useRef, useState } from "react";
+import { FaFacebook, FaTiktok } from "react-icons/fa";
+import { FaInstagram, FaRegHeart } from "react-icons/fa6";
 import { IoIosMail } from "react-icons/io";
-import { FaTiktok } from "react-icons/fa";
-import { FaRegHeart } from "react-icons/fa6";
+import { useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
+import FSUAppBar from "../../components/AppBar";
 import BackerList from "../../components/BackerList/index.jsx";
-import './index.css'
+import CommentSection from "../../components/CommentSection.jsx";
+import ProjectDetailStat from "../../components/ProjectDetailStat";
+import ProjectImages from "../../components/ProjectImages";
+import interactionApiInstance from "../../utils/apiInstance/interactionApiInstance";
+import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
+import userManagementApiInstance from "../../utils/apiInstance/userManagementApiInstance";
+import './index.css';
 
 function POProjectDetail() {
   const [project, setProject] = useState(null);
@@ -85,6 +82,7 @@ function POProjectDetail() {
         },
       })
         .then((res) => {
+          getBackers()
           Swal.fire({
             title: "Bạn đã giao dịch thành công!",
             text: `Bạn đã ủng hộ nhanh cho của dự án ${project.projectName}`,
@@ -112,6 +110,7 @@ function POProjectDetail() {
         },
       })
         .then((res) => {
+          getBackers()
           Swal.fire({
             title: "Bạn đã giao dịch thành công!",
             text: `Bạn đã ủng hộ gói ${selectedPackage.packageName} của dự án ${project.projectName}`,
@@ -131,21 +130,6 @@ function POProjectDetail() {
     setSelectedPackage(projectPackage)
 
     setOpenDrawer(true)
-
-    // try {
-    //   setIsLoading(true)
-    //   const token = Cookies.get("_auth");
-    //   projectApiInstance.post("/package-backer-donate", { packageId }, {
-    //     headers: {
-    //       Authorization: `Bearer ${token}`,
-    //     },
-    //   })
-    //     .then((res) => console.log(res.data));
-    // } catch (err) {
-    //   console.log(err)
-    // } finally {
-    //   setIsLoading(false);
-    // }
   }
 
   //check login
@@ -180,7 +164,7 @@ function POProjectDetail() {
   //get backers 
   const getBackers = () => {
     projectApiInstance.get(`/get-project-backer?projectId=${projectId}`).then(res => {
-      console.log(res.data);
+      // console.log(res.data);
       if (res.data) {
         setBackerList(res.data.result._data);
       }
@@ -212,7 +196,7 @@ function POProjectDetail() {
           const start = new Date(res.data._data.startDate);
           const end = new Date(res.data._data.endDate);
           const daysDiff = Math.floor((end - today) / (1000 * 60 * 60 * 24));
-          setRemainingDays(daysDiff);
+          setRemainingDays(daysDiff > 0 ? daysDiff : 0);
           const imgUrls = res.data._data.images.map((v, i) => v.url)
           setImages(imgUrls)
           userManagementApiInstance.get(`/user-profile/${res.data._data.ownerId}`).then((userRes) => {
@@ -616,7 +600,7 @@ function POProjectDetail() {
                               <Divider gutterBottom />
                             </CardContent>
                             <CardActions>
-                              <Button onClick={() => handleDonatePackage(projectPackage.id)} variant="contained">
+                              <Button onClick={() => handleDonatePackage(projectPackage)} variant="contained">
                                 Chọn
                               </Button>
                             </CardActions>
@@ -635,12 +619,14 @@ function POProjectDetail() {
                       <TextField
                         type="number"
                         placeholder="Nhập số tiền"
+                        value={freeDonateAmount}
+                        onChange={(e) => setFreeDonateAmount(e.target.value)}
                         sx={{ width: "50%", my: 2 }}
                         InputProps={{
                           endAdornment: <InputAdornment>VND</InputAdornment>,
                         }}
                       /> <br />
-                      <Button variant="contained" sx={{ background: "#FCAE3D" }}>Ủng hộ</Button>
+                      <Button onClick={() => handleFreeDonate()} variant="contained" sx={{ background: "#FCAE3D" }}>Ủng hộ</Button>
                     </Box>
                   </TabPanel>
                   <TabPanel value="2" sx={{ minHeight: "200vh" }}>Về chúng mình</TabPanel>
