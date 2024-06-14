@@ -1,7 +1,19 @@
 .Mui-selected {
   background-color: "none !important";
 }
+
 .like-btn:hover{
   background-color: #fff !important;
   color:#FCAE3D !important ;
+  outline: none !important;
+}
+.like-btn:focus{
+  outline: none !important;
+}
+
+.social-link{
+  font-size: 18px;
+  color: #FCAE3D;
+  margin-left: 20px;
+  cursor: pointer;
 }
