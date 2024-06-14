@@ -220,7 +220,7 @@ function HomePage() {
 								</Button>
 							</div>
 						</div>
-						<ProjectCard setSwiperRef={(ref) => { swiperNewProjectRef.current = ref.current }} type={"popular"} />
+						<ProjectCard setSwiperRef={(ref) => { swiperNewProjectRef.current = ref.current }} type={"new"} />
 						<Button sx={{ px: '2.4rem !important', color: '#44494D', display: 'block', height: '3.2rem', borderRadius: '0.4rem !important', fontSize: '1rem', fontWeight: 600, mx: 'auto', mt: '1.6rem', letterSpacing: '1px', textTransform: 'none' }} className="all-project-btn">
 							Xem toàn bộ dự án
 						</Button>

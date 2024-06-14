@@ -1,0 +1,8 @@
+.project-stats {
+    background-color: white;
+    width: 20%;
+    border-radius: 0.4rem;
+    padding-top: 1.6rem;
+    padding-bottom: 1.6rem;
+    box-shadow: 0px 0px 4px 4px rgba(0, 0, 0, 0.1) !important;
+}

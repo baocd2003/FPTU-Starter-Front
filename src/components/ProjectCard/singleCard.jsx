@@ -8,11 +8,18 @@ import CardMedia from '@mui/material/CardMedia';
 import Chip from '@mui/material/Chip';
 import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
+import { useNavigate } from "react-router-dom";
 import "./index.css";
 
-function SingleCard({ category, imageLink, title, description, po, amount, progress, daysLeft, goal }) {
+function SingleCard({ id, category, imageLink, title, po, amount, progress, daysLeft, goal, likes, backers }) {
   const formattedAmount = new Intl.NumberFormat('vi-VN').format(amount);
   const formattedGoal = new Intl.NumberFormat('vi-VN').format(goal);
+
+  const navigate = useNavigate();
+
+  const handleClickDetail = () => {
+    navigate(`/project-detail/${id}`);
+  }
 
   return (
     <Card sx={{ width: '25rem', height: 'fit-content', padding: '20px', boxShadow: '0', borderRadius: '0.8rem', transition: 'all 0.2s', backgroundColor: 'transparent' }} className='project-card'>
@@ -64,6 +71,7 @@ function SingleCard({ category, imageLink, title, description, po, amount, progr
             letterSpacing: '0.5px',
             textTransform: 'none'
           }}
+          onClick={() => handleClickDetail()}
         >
           Xem dự án
         </Button>
@@ -88,8 +96,8 @@ function SingleCard({ category, imageLink, title, description, po, amount, progr
           <FavoriteIcon sx={{ fontSize: '1.2rem' }} />
         </Button>
         <div className='absolute bottom-[-20px] translate-x-[10%]'>
-          <Chip icon={<FavoriteIcon sx={{ color: '#FF6969 !important' }} />} label={20} className='project-chip mr-[0.6rem] select-none !p-[0.2rem]' />
-          <Chip icon={<PersonIcon sx={{ color: '#44494D !important' }} />} label={20} className='project-chip select-none !p-[0.2rem]' />
+          <Chip icon={<FavoriteIcon sx={{ color: '#FF6969 !important' }} />} label={likes} className='project-chip mr-[0.6rem] select-none !p-[0.2rem]' />
+          <Chip icon={<PersonIcon sx={{ color: '#44494D !important' }} />} label={backers} className='project-chip select-none !p-[0.2rem]' />
         </div>
       </CardMedia>
       <CardContent sx={{ px: '0! important', mx: 'auto', paddingBottom: '0 !important' }}>
@@ -111,7 +119,9 @@ function SingleCard({ category, imageLink, title, description, po, amount, progr
             textDecoration: 'underline'
           },
           transition: 'all 0.2s', cursor: 'pointer'
-        }}>
+        }}
+          onClick={() => handleClickDetail()}
+        >
           {title}
         </Typography>
         <Typography variant="h5" sx={{ textAlign: "left", fontSize: '1rem', marginBottom: '1.2rem', color: '#A7A7A7' }}>
@@ -127,7 +137,7 @@ function SingleCard({ category, imageLink, title, description, po, amount, progr
         </div>
         <LinearProgress className='progressBar' variant="determinate" value={progress} sx={{ borderRadius: '0.4rem', height: '0.4rem', marginBottom: '0.4rem' }} />
         <Typography variant="h6" sx={{ textAlign: "left", fontSize: '1rem', marginBottom: '0', fontWeight: 'bold' }}>
-          Mục tiêu: {goal} VND
+          Mục tiêu: {formattedGoal} VND
         </Typography>
       </CardContent>
     </Card>
