@@ -1,3 +1,18 @@
+import Cookies from "js-cookie";
+import FSUAppBar from "../../components/AppBar";
+import { Grid, Box, Container, Typography, LinearProgress, styled, linearProgressClasses, Button, Stack, Tabs, Tab, Divider, Backdrop, CircularProgress, Chip, Avatar, Card, CardMedia, CardContent, CardActions, Paper, TextField, InputAdornment, Drawer } from "@mui/material";
+import { tabsClasses } from '@mui/material/Tabs';
+import { TabList, TabContext, TabPanel } from "@mui/lab";
+import { Fragment, useEffect, useState, useRef } from "react";
+import ProjectImages from "../../components/ProjectImages";
+import ProjectDetailStat from "../../components/ProjectDetailStat";
+import { useNavigate, useParams } from "react-router-dom";
+import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
+import userManagementApiInstance from "../../utils/apiInstance/userManagementApiInstance";
+import { Close, SettingsSuggestSharp, ArrowBack } from "@mui/icons-material";
+import logo from "../../assets/logo.png";
+import Swal from "sweetalert2";
+
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { Avatar, Backdrop, Box, Button, Card, CardActions, CardContent, CardMedia, Chip, CircularProgress, Container, Divider, Grid, InputAdornment, LinearProgress, Stack, Tab, TextField, Typography, linearProgressClasses, styled } from "@mui/material";
 import { tabsClasses } from '@mui/material/Tabs';
@@ -14,6 +29,12 @@ import userManagementApiInstance from "../../utils/apiInstance/userManagementApi
 import { SettingsSuggestSharp } from "@mui/icons-material";
 import interactionApiInstance from "../../utils/apiInstance/interactionApiInstance";
 import CommentSection from "../../components/CommentSection.jsx";
+import { FaFacebook } from "react-icons/fa";
+import { FaInstagram } from "react-icons/fa6";
+import { IoIosMail } from "react-icons/io";
+import { FaTiktok } from "react-icons/fa";
+import { FaRegHeart } from "react-icons/fa6";
+import BackerList from "../../components/BackerList/index.jsx";
 import './index.css'
 
 function POProjectDetail() {
@@ -27,6 +48,24 @@ function POProjectDetail() {
   const [checkOwner, setCheckOwner] = useState(false);
   const [checkLike, setCheckLike] = useState([]);
   const navigate = useNavigate();
+  const [backerList, setBackerList] = useState([]);
+  const containerRef = useRef(null);
+
+  const handleScroll = () => {
+    if (containerRef.current) {
+      setTabValue("1");
+      containerRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState(null);
+  const navigate = useNavigate();
+  const [freeDonateAmount, setFreeDonateAmount] = useState(5000);
+
+
+  const [checkOwner, setCheckOwner] = useState(false);
+  const [checkLike, setCheckLike] = useState([]);
   //change tab
   const handleChange = (e, v) => {
     setTabValue(v);
@@ -50,19 +89,81 @@ function POProjectDetail() {
   }
 
   //donate
-  const handleDonatePackage = (packageId) => {
+  const handleFreeDonate = () => {
     try {
+      const data = {
+        projectId: project.id,
+        amountDonate: freeDonateAmount
+      }
       setIsLoading(true)
       const token = Cookies.get("_auth");
-      projectApiInstance.post('/package-backer-donate', {
-        headers: { Authorization: `Bearer ${token}` },
+      projectApiInstance.post("/free-backer-donate", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
-        .then((res) => console.log(res.data));
+        .then((res) => {
+          Swal.fire({
+            title: "Bạn đã giao dịch thành công!",
+            text: `Bạn đã ủng hộ nhanh cho của dự án ${project.projectName}`,
+            icon: "success"
+          });
+          // navigate('/my-wallet')
+        });
     } catch (err) {
       console.log(err)
     } finally {
       setIsLoading(false);
     }
+  }
+
+  const confirmDonatePackage = () => {
+    try {
+      const data = {
+        packageId: selectedPackage.id,
+      }
+      setIsLoading(true)
+      const token = Cookies.get("_auth");
+      projectApiInstance.post("/package-backer-donate", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((res) => {
+          Swal.fire({
+            title: "Bạn đã giao dịch thành công!",
+            text: `Bạn đã ủng hộ gói ${selectedPackage.packageName} của dự án ${project.projectName}`,
+            icon: "success"
+          });
+          // navigate('/my-wallet')
+        });
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setIsLoading(false);
+      setOpenDrawer(false);
+    }
+  }
+
+  const handleDonatePackage = (projectPackage) => {
+    setSelectedPackage(projectPackage)
+
+    setOpenDrawer(true)
+
+    // try {
+    //   setIsLoading(true)
+    //   const token = Cookies.get("_auth");
+    //   projectApiInstance.post("/package-backer-donate", { packageId }, {
+    //     headers: {
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   })
+    //     .then((res) => console.log(res.data));
+    // } catch (err) {
+    //   console.log(err)
+    // } finally {
+    //   setIsLoading(false);
+    // }
   }
 
   //check login
@@ -71,7 +172,7 @@ function POProjectDetail() {
     if (token == undefined) {
       Swal.fire({
         title: "Cần đăng nhập",
-        text: "Bạn cần có tài khoản để tạo dự án",
+        text: "Bạn cần có tài khoản để tương tác với dự án",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Về trang đăng nhập",
@@ -94,6 +195,16 @@ function POProjectDetail() {
       setCheckLike(res.data.result);
     })
   }
+  //get backers 
+  const getBackers = () => {
+    projectApiInstance.get(`/get-project-backer?projectId=${projectId}`).then(res => {
+      console.log(res.data);
+      if (res.data) {
+        setBackerList(res.data.result._data);
+      }
+    })
+  }
+
   useEffect(() => {
     //check project owner
     const token = Cookies.get("_auth");
@@ -131,7 +242,7 @@ function POProjectDetail() {
         console.log(err);
         setIsLoading(false);
       });
-
+    getBackers();
   }, [projectId])
   console.log(images);
   console.log(project)
@@ -144,10 +255,106 @@ function POProjectDetail() {
 
   };
 
-  // console.log(project, projectUser);
-
   return (
     <>
+      <Drawer
+        anchor="right"
+        open={openDrawer}
+        onClose={() => setOpenDrawer(false)}
+      >
+        <Box
+          sx={{ width: '100vw', position: 'relative' }}
+        >
+          <Close sx={{ cursor: "pointer", position: 'absolute', top: 5, left: 20 }} onClick={() => setOpenDrawer(false)} />
+          <Box sx={{ borderBottom: 1, height: '2.2rem', borderColor: 'rgba(0, 0, 0, 0.2)', display: 'flex', justifyContent: 'center' }}>
+            <img src='https://i.ibb.co/WxTYWkk/star-1.png' />
+          </Box>
+          {selectedPackage && (
+            <Grid container>
+              <Grid item xs={8}
+                sx={{
+                  mt: '0 !important',
+                  p: '2.5rem 5rem 0 12rem'
+                }}
+              >
+                <Typography
+                  sx={{ fontWeight: 'bold', fontSize: '1.5rem', mb: '1rem' }}
+                >Thông tin gói ủng hộ</Typography>
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                  <img src='https://i.ibb.co/K7TGtpK/istockphoto-1409955148-612x612.jpg' className="h-[8rem] rounded-sm" />
+                  <Box sx={{ width: '100%' }}>
+                    <Typography
+                      sx={{ fontSize: '1.2rem', mb: '1rem', }}
+                    >{selectedPackage.packageName}</Typography>
+                    <Typography
+                      sx={{ fontSize: '.88rem', mb: '1rem', textDecoration: 'underline' }}
+                    >Chi tiết</Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+
+                      <Typography
+                        sx={{ fontSize: '1rem' }}
+                      >Số lượng: 1</Typography>
+                      <Typography
+                        sx={{ fontSize: '1rem', mb: '1rem', }}
+                      >{selectedPackage.requiredAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</Typography>
+                    </Box>
+
+                  </Box>
+
+                </Box>
+              </Grid>
+              <Grid item xs={4} sx={{ background: '#F0F0F0', height: '100vh', mt: '0 !important', p: '2.5rem 3rem' }}>
+                <Typography
+                  sx={{ fontWeight: 'bold', fontSize: '1.5rem', mb: '1rem' }}
+                >Thông tin thanh toán</Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                  <Typography
+                    sx={{ fontWeight: 'bold', fontSize: '1.2rem' }}
+                  >Tổng</Typography>
+                  <Typography
+                    sx={{ fontSize: '1.2rem' }}
+                  >{selectedPackage.requiredAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}đ</Typography>
+                </Box>
+
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                  <Typography
+                    sx={{ fontWeight: 'bold', fontSize: '1.2rem' }}
+                  >Vận chuyển</Typography>
+                  <Typography
+                    sx={{ fontSize: '1.2rem' }}
+                  >0 đ</Typography>
+                </Box>
+                <Divider sx={{ my: 2 }} />
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                  <Typography
+                    sx={{ fontWeight: 'bold', fontSize: '1.2rem' }}
+                  >Tổng thanh toán</Typography>
+                  <Typography
+                    sx={{ fontSize: '1.2rem' }}
+                  >{selectedPackage.requiredAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}đ</Typography>
+                </Box>
+
+
+                <Button variant='contained'
+                  disableElevation
+                  onClick={() => confirmDonatePackage()}
+                  sx={{
+                    background: '#FBB03B', fontWeight: 'bold',
+                    textShadow: '.1rem .1rem .5rem rgba(0, 0, 0, 0.1)',
+                    '&:hover': {
+                      background: '#CC9847'
+                    },
+                    '&:focus': {
+                      outline: 'none'
+                    }
+                  }}>Xác nhận</Button>
+
+              </Grid>
+            </Grid>
+          )}
+
+        </Box>
+      </Drawer >
       <FSUAppBar isLogined={Cookies.get('_auth') !== undefined} />
       <Backdrop
         sx={{
@@ -266,24 +473,49 @@ function POProjectDetail() {
                   <ProjectDetailStat numb={`${project.projectBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND`} stat={`đã được kêu gọi trên mục tiêu ${project.projectTarget.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND`} />
                   <ProjectDetailStat numb={"299"} stat={"người đầu tư"} />
                   <ProjectDetailStat numb={remainingDays} stat={"ngày còn lại"} />
-                  <Stack spacing={1} direction="row" sx={{ my: 4 }}>
+                  <Stack spacing={1} direction="column" sx={{ my: 4 }}>
                     {checkOwner ?
                       <Button variant="contained" disabled sx={{ width: "100%", whiteSpace: "nowrap", background: "#FCAE3D", fontWeight: "bold", py: 1 }}>Rút tiền</Button>
-                      : <Button variant="contained"
-                        sx={{
-                          width: "100%", whiteSpace: "nowrap"
-                          , background: "#FCAE3D", fontWeight: "bold", py: 1
-                        }}
-                        className="like-btn"
-                        onClick={handleLike}>
-                        {checkLike.length !== 0 ? 'Đã thích' : 'Thích'}
-                      </Button>
+                      : <>
+                        <Button variant="contained"
+                          sx={{
+                            width: "100%", whiteSpace: "nowrap"
+                            , background: "#FCAE3D", fontWeight: "bold", py: 1
+                          }}
+                          className="like-btn"
+                          onClick={handleScroll}>
+                          Ủng hộ dự án
+                        </Button>
+                        <Grid container spacing={2} sx={{ alignItems: 'center' }}>
+                          <Grid item xs={6} sx={{ paddingLeft: '0px !important' }}>
+                            <Button variant="contained"
+                              sx={{
+                                width: "100%", whiteSpace: "nowrap"
+                                , background: checkLike.length !== 0 ? "#FCAE3D" : "#FFF", fontWeight: "bold", py: 1,
+                                color: checkLike.length == 0 ? "#FCAE3D" : "#FFF"
+                              }}
+                              className="like-btn"
+                              onClick={handleLike}
+                              startIcon={<FaRegHeart className="" />}>
+                              {checkLike.length !== 0 ? 'Đã thích' : 'Thích'}
+                            </Button>
+                          </Grid>
+                          <Grid item xs={6}>
+                            <Box className='flex'>
+                              <FaFacebook className="social-link" />
+                              <FaInstagram className="social-link" />
+                              <FaTiktok className="social-link" />
+                              <IoIosMail className="social-link" />
+                            </Box>
+                          </Grid>
+                        </Grid>
+                      </>
                     }
+
+
                   </Stack>
                 </Grid>
               </Grid>
-
-
             </Container >
           </Box>
           <Container className="flex flex-row justify-center items-center"
@@ -291,6 +523,7 @@ function POProjectDetail() {
               maxWidth: { lg: "lg", xl: "xl", xs: "xs" },
               height: "100vh"
             }}
+            ref={containerRef}
           >
             <Grid container>
               <Grid item xs={9} sx={{ pr: 10, mt: "0 !important" }}>
@@ -360,7 +593,7 @@ function POProjectDetail() {
                   </TabList>
                   <Divider />
                   <TabPanel value="1" sx={{ minHeight: "200vh" }}>
-                    <Grid container rowSpacing={0} columnSpacing={2} sx={{}}>
+                    <Grid container rowSpacing={0} columnSpacing={2}>
 
                       <Box sx={{ width: "100%", mb: 3 }}>
                         <Typography
@@ -430,7 +663,9 @@ function POProjectDetail() {
                   </TabPanel>
                   <TabPanel value="2" sx={{ minHeight: "200vh" }}>Về chúng mình</TabPanel>
                   <TabPanel value="3" sx={{ minHeight: "200vh" }}>Cập nhật</TabPanel>
-                  <TabPanel value="4" sx={{ minHeight: "200vh" }}>Danh sách người ủng hộ</TabPanel>
+                  <TabPanel value="4" sx={{ minHeight: "200vh" }}>
+                    <BackerList data={backerList} />
+                  </TabPanel>
                   <TabPanel value="5" sx={{ minHeight: "200vh" }}>
                     <CommentSection projectId={projectId} token={Cookies.get('_auth')} />
                   </TabPanel>

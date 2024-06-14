@@ -52,9 +52,10 @@ function SecondStep() {
             storyFiles.map((sFile, index) => {
                 storyFormData.append("storyFiles", sFile.file);
             })
+            console.log(storyFiles[0].file);
             const pData = await projectApiInstance.post("/add-story", storyFormData)
             const imageUrls = pData.data;
-
+            console.log(storyFormData);
             console.log(imageUrls);
 
             // Update images state asynchronously within the function
