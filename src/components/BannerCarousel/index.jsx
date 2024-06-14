@@ -1,8 +1,7 @@
-import { Typography } from '@mui/material';
-import Button from '@mui/material/Button';
+import { Button, Typography } from '@mui/material';
 import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
-import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { Carousel } from "react-responsive-carousel";
 import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
 import './index.css';
@@ -34,38 +33,57 @@ function BannerCarousel() {
       })
     }
   }
-  return (
-    <div className="relative">
-      {/* <Carousel autoPlay transitionTime='3' >
-        <div className='relative'>
-          <div className='overlay'></div>
-          <img src={"https://i.ibb.co/8K7BwCX/sinhvien-fpt-khoinghiep.png"} className='carouselImg' />
-        </div>
-        <div className='relative'>
-          <div className='overlay'></div>
-          <img src={Teamwork} className='carouselImg' />
-        </div>
-        <div className='relative'>
-          <div className='overlay'></div>
-          <img src={Teamwork} className='carouselImg' />
-        </div>
-      </Carousel> */}
-      <div className='relative'>
-        <div className='overlay'></div>
-        <img src={"https://i.ibb.co/8K7BwCX/sinhvien-fpt-khoinghiep.png"} className='bannerImg' />
-        <div className='blurPart'></div>
-        <Typography className="bannerTitle" sx={{
-          position: "absolute", top: "40%", left: "10%", color: "white", fontWeight: "bold",
-          textAlign: "left", zIndex: 2, textTransform: "uppercase",
-          fontSize: "5rem", whiteSpace: "nowrap", letterSpacing: '2px !important',
-        }}>
-          Vươn tới những vì sao<br /> dự án khởi nghiệp của bạn <br /> sẽ tỏa sáng!
-        </Typography>
-      </div>
 
-      <div className="absolute top-[70%] left-[45%]">
-        <Button onClick={checkAuth} sx={{ my: 4, color: '#FFF', display: 'block' }} className="c-btn">Bắt đầu dự án</Button>
-      </div>
+  return (
+    <div>
+      <Carousel autoPlay={true} showThumbs={false} infiniteLoop showArrows={false} showStatus={false}
+        transitionTime={1000}
+        animationHandler="slide"
+        interval={5000}
+      >
+        <div className='relative'>
+          <div className='overlay'></div>
+          <img src={"https://i.ibb.co/8K7BwCX/sinhvien-fpt-khoinghiep.png"} className='bannerImg' />
+          <Typography className="bannerTitle" sx={{
+            position: "absolute", top: "40%", left: "10%", color: "white", fontWeight: "bold",
+            textAlign: "left", zIndex: 2, textTransform: "uppercase", userSelect: 'none',
+            fontSize: "5rem", whiteSpace: "nowrap", letterSpacing: '2px !important',
+          }}>
+            Vươn tới những <span className='text-[#FBB03B]'>vì sao</span><br /> dự án khởi nghiệp của bạn <br /> sẽ <span className='text-[#FBB03B]'>tỏa sáng!</span>
+          </Typography>
+          <div className="absolute top-[70%] left-[10%]" style={{ zIndex: 2 }}>
+            <Button onClick={checkAuth} sx={{ my: 4, color: '#FFF', display: 'block', width: '16rem', height: '4rem', borderRadius: '0.4rem !important', fontSize: '1rem', fontWeight: 900, letterSpacing: '1px !important', }} className="c-btn">Hiện thực hóa giấc mơ</Button>
+          </div>
+        </div>
+        <div className='relative'>
+          <div className='overlay'></div>
+          <img src={"https://i.ibb.co/w4DyqHq/banner-Carousel2.jpg"} className='bannerImg' />
+          <Typography className="bannerTitle" sx={{
+            position: "absolute", top: "40%", right: "10%", color: "white", fontWeight: "bold",
+            textAlign: "right", zIndex: 2, textTransform: "uppercase", userSelect: 'none',
+            fontSize: "5rem", whiteSpace: "nowrap", letterSpacing: '2px !important',
+          }}>
+            Hợp tác để <span className='text-[#FBB03B]'>thành công</span><br /> Cùng nhau vượt qua <br /> mọi <span className='text-[#FBB03B]'>thử thách</span>
+          </Typography>
+          <div className="absolute top-[70%] right-[10%]" style={{ zIndex: 2 }}>
+            <Button onClick={checkAuth} sx={{ my: 4, color: '#FFF', display: 'block', width: '12rem', height: '4rem', borderRadius: '0.4rem !important', fontSize: '1rem', fontWeight: 900, letterSpacing: '1px !important', }} className="c-btn">Bắt đầu dự án</Button>
+          </div>
+        </div>
+        <div className='relative'>
+          <div className='overlay'></div>
+          <img src={"https://i.ibb.co/5WL9LHB/Banner-Carousel3.jpg"} className='bannerImg' />
+          <Typography className="bannerTitle" sx={{
+            position: "absolute", top: "40%", left: '10%', color: "white", fontWeight: "bold",
+            textAlign: "left", zIndex: 2, textTransform: "uppercase", userSelect: 'none',
+            fontSize: "5rem", whiteSpace: "nowrap", letterSpacing: '2px !important',
+          }}>
+            Kêu gọi <span className='text-[#FBB03B]'>thành công</span><br /> Biến mọi ước mơ <br /> trở thành <span className='text-[#FBB03B]'>Hiện thực!</span>
+          </Typography>
+          <div className="absolute top-[70%] left-[10%]" style={{ zIndex: 2 }}>
+            <Button onClick={checkAuth} sx={{ my: 4, color: '#FFF', display: 'block', width: '12rem', height: '4rem', borderRadius: '0.4rem !important', fontSize: '1rem', fontWeight: 900, letterSpacing: '1px !important', }} className="c-btn">Bắt đầu dự án</Button>
+          </div>
+        </div>
+      </Carousel>
     </div>
   )
 }
