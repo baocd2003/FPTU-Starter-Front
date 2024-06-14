@@ -3,8 +3,10 @@ import { useState } from "react";
 import FSUAppBar from "../../components/AppBar";
 import Cookies from 'js-cookie';
 import "./index.css"
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import { useTransition, animated } from "@react-spring/web";
 
 const steps = [
   {
@@ -32,7 +34,6 @@ const steps = [
 
 const stepStyle = (active, completed) => ({
   backgroundColor: active ? "white" : completed ? "#FCAE3D" : "rgba(0, 0, 0, 0.1)",
-  // color: active ? "white" : completed ? "#FCAE3D" : "rgba(0, 0, 0, 0.1)",
   "& .MuiStepLabel-iconContainer svg": { color: active ? "#FCAE3D" : completed ? "white" : "rgba(0, 0, 0, 0.2)" },
   "& .MuiStepLabel-label": { color: active ? "#FCAE3D" : completed ? "white" : "rgba(0, 0, 0, 0.3)" },
   "& .MuiStepContent-root": { color: active ? "rgba(0, 0, 0, 0.5)" : completed ? "white" : "rgba(0, 0, 0, 0.1)" },
@@ -40,20 +41,15 @@ const stepStyle = (active, completed) => ({
 
 
 const CreateProjectLayout = () => {
-  const [activeStep, setActiveStep] = useState(0);
+  const activeStep = useSelector((state) => state.projectStep.activeStep);
 
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
+  const location = useLocation();
 
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
-  };
-
+  const transitions = useTransition(location, {
+    from: { opacity: 0, },
+    enter: { opacity: 1, },
+    leave: { opacity: 0, },
+  });
 
   return (
     <>
@@ -74,44 +70,24 @@ const CreateProjectLayout = () => {
                       <StepContent>
                         <Typography sx={{ fontSize: ".9rem", textAlign: "left", pb: 2 }}>{step.description}</Typography>
                         <Box sx={{ mb: 2 }}>
-                          <div>
-                            <Button
-                              variant="contained"
-                              onClick={handleNext}
-                              sx={{ mt: 1, mr: 1 }}
-                            >
-                              {index === steps.length - 1 ? 'Finish' : 'Continue'}
-                            </Button>
-                            <Button
-                              disabled={index === 0}
-                              onClick={handleBack}
-                              sx={{ mt: 1, mr: 1 }}
-                            >
-                              Back
-                            </Button>
-                          </div>
                         </Box>
                       </StepContent>
                     </Step>
                   ))}
                 </Stepper>
-                {activeStep === steps.length && (
-                  <Paper square elevation={0} sx={{ p: 3 }}>
-                    <Typography>All steps completed - you&apos;re finished</Typography>
-                    <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
-                      Reset
-                    </Button>
-                  </Paper>
-                )}
               </Box>
             </Grid>
             <Grid item xs={9.5} sx={{ pl: "2rem" }}>
-              <Box sx={{ width: "100%", mt: "-1rem" }}>
+              <Box sx={{ width: "100%", minHeight: '100vh' }}>
+                {/* {transitions((style, item) => (
+                  <animated.div style={style}>
+                    <Outlet />
+                  </animated.div>
+                ))} */}
                 <Outlet />
               </Box>
             </Grid>
           </Grid>
-
         </Container>
 
       </Box >
