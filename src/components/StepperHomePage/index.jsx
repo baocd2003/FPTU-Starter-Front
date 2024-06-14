@@ -83,6 +83,7 @@ function StepperHomePage({ setSwiperRef, type }) {
 
     return (
         <div className="swiper-container">
+
             {projects && projects.length > 0 ? (
                 <Swiper
                     spaceBetween={30}
@@ -116,6 +117,7 @@ function StepperHomePage({ setSwiperRef, type }) {
             ) : <div>
                 Không có dự án nào cả
             </div>}
+
         </div>
     );
 }
