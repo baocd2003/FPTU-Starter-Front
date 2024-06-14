@@ -9,6 +9,7 @@ import FSUAppBar from '../../components/AppBar';
 import Footer from '../../components/Footer';
 import SingleCard from '../../components/ProjectCard/singleCard';
 import SearchBarProjects from '../../components/SearchBarProjects';
+import './index.css';
 
 function AllProjects() {
     const [checkIsLogin, setCheckIsLogin] = useState(false);
@@ -26,7 +27,7 @@ function AllProjects() {
     }, []);
 
     const completePercent = (project) => {
-        return project.projectBalance / project.projectTarget * 100;
+        return (project.projectBalance / project.projectTarget * 100).toFixed(2);
     }
 
     const calculateDaysRemaining = (project) => {
@@ -49,7 +50,7 @@ function AllProjects() {
 
 
     return (
-        <div>
+        <div className='mt-[5.2rem]'>
             <FSUAppBar isLogined={checkIsLogin} />
             <Backdrop
                 sx={{
@@ -60,38 +61,66 @@ function AllProjects() {
             >
                 <CircularProgress color="inherit" />
             </Backdrop>
-            <div className='userProfile'>
-                <div className='text-left mt-1 mb-8'>
-                    <a className='text-[#44494D] font-bold hover:text-[#FBB03B] hover:underline cursor-pointer transition-all duration-300' onClick={() => navigate("/all-projects")}>Toàn bộ dự án</a>
-                </div>
-                <Typography component="div">
-                    <Typography variant="h1" sx={{ fontSize: '36px', color: '#FCAE3D', fontWeight: 600 }}>
+            <div className='hp-question h-[40vh] flex my-auto relative'>
+                <div className='ml-[5rem] mt-[5rem]'>
+                    <Typography variant="h1" sx={{ fontSize: { lg: '2.4rem', xs: '1.5rem' }, color: 'white', fontWeight: 600, textAlign: 'left' }}>
                         Toàn bộ dự án
                     </Typography>
-                    <Typography variant="body1" sx={{ fontSize: '20px', mt: '1rem' }}>
+                    <Typography variant="body1" sx={{ fontSize: '1.2rem', mt: '1rem', textAlign: 'left', color: 'white', fontWeight: 600 }}>
                         Toàn bộ dự án đang và đã được quyên góp trên FPTU Starter
                     </Typography>
-                </Typography>
-                <div className='mt-10'>
+                </div>
+                <div className='absolute bottom-0 flex flex-row gap-10 justify-center w-full translate-y-12'>
+                    <div className='project-stats'>
+                        <Typography variant="h1" sx={{ fontSize: { lg: '2.4rem', xs: '1.5rem' }, color: '#FBB03B', fontWeight: 600, textAlign: 'center', mb: '0.8rem' }}>
+                            120.000
+                        </Typography>
+                        <Typography variant="h2" sx={{ fontSize: { lg: '1.2rem', xs: '0.8rem' }, color: '#44494D', fontWeight: 600, textAlign: 'center' }}>
+                            Dự án
+                        </Typography>
+                    </div>
+                    <div className='project-stats w-[30%]'>
+                        <Typography variant="h1" sx={{ fontSize: { lg: '2.4rem', xs: '1.5rem' }, color: '#FBB03B', fontWeight: 600, textAlign: 'center', mb: '0.8rem' }}>
+                            178.000.000 VND
+                        </Typography>
+                        <Typography variant="h2" sx={{ fontSize: { lg: '1.2rem', xs: '0.8rem' }, color: '#44494D', fontWeight: 600, textAlign: 'center' }}>
+                            Tổng số tiền ủng hộ
+                        </Typography>
+                    </div>
+                    <div className='project-stats'>
+                        <Typography variant="h1" sx={{ fontSize: { lg: '2.4rem', xs: '1.5rem' }, color: '#FBB03B', fontWeight: 600, textAlign: 'center', mb: '0.8rem' }}>
+                            320
+                        </Typography>
+                        <Typography variant="h2" sx={{ fontSize: { lg: '1.2rem', xs: '0.8rem' }, color: '#44494D', fontWeight: 600, textAlign: 'center' }}>
+                            Số gói được mua
+                        </Typography>
+                    </div>
+                </div>
+            </div>
+            <div className='mx-[5rem] mt-[8rem]'>
+                <div className='my-10'>
                     <SearchBarProjects setProject={setProject} searchType={"all"} />
                 </div>
-                <div className='mt-8 w-full'>
-                    <div className='mt-8 w-full'>
+                <div className='w-full'>
+                    <div className='w-full'>
                         {projects && projects.length > 0 ? (
                             <div className='flex w-full'>
-                                <Grid container spacing={'64px'} rowSpacing={{ lg: '16px', xs: '4px' }}>
+                                <Grid container spacing={'30px'} rowSpacing={{ lg: '16px', xs: '4px' }}>
                                     {projects.map((item, index) => (
                                         <Grid item xs={6} lg={4} key={item.id}>
                                             <div className='flex justify-center'>
-                                                <SingleCard imageLink={item.projectThumbnail}
-                                                    category={item.categories[0].name}
-                                                    title={item.projectName}
-                                                    description={item.projectDescription}
+                                                <SingleCard
+                                                    id={item.id}
+                                                    imageLink={item.projectThumbnail}
                                                     progress={completePercent(item)}
                                                     amount={item.projectBalance}
                                                     po={item.projectOwnerName}
+                                                    category={item.categories[0].name}
+                                                    title={item.projectName}
                                                     daysLeft={calculateDaysRemaining(item)}
-                                                />
+                                                    goal={item.projectTarget}
+                                                    likes={item.likes}
+                                                    backers={item.backers} />
                                             </div>
                                         </Grid>
                                     ))}

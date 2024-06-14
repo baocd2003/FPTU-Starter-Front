@@ -5,7 +5,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { A11y, EffectFade, Navigation, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import Kurumi from '../../assets/samplePrj.png';
+import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
 import SingleCard from '../ProjectCard/singleCard';
 
 import './index.css';
@@ -14,6 +14,49 @@ function StepperHomePage({ setSwiperRef, type }) {
     const swiperRef = useRef(null);
     const step = 3;
     const [sortType, setSortType] = React.useState("popular");
+    const [projects, setProjects] = React.useState(null);
+
+    const completePercent = (project) => {
+        return (project.projectBalance / project.projectTarget * 100).toFixed(2);
+    }
+
+    const calculateDaysRemaining = (project) => {
+        const today = new Date();
+        const startDate = new Date(project.startDate);
+        const endDate = new Date(project.endDate);
+        if (startDate >= today) {
+            return Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
+        }
+
+        if (endDate <= today) {
+            return 0;
+        }
+
+        const diffInMilliseconds = endDate - today;
+        const daysRemaining = Math.floor(diffInMilliseconds / (1000 * 60 * 60 * 24));
+
+        return daysRemaining;
+    }
+
+    useEffect(() => {
+        try {
+            if (sortType == 'popular') {
+                projectApiInstance.get(`/get-process-project?itemPerPage=9&currentPage=1`).then((res) => {
+                    if (res.data._statusCode === 200) {
+                        setProjects(res.data._data);
+                    }
+                })
+            } else {
+                projectApiInstance.get(`/get-process-project?itemPerPage=9&currentPage=1`).then((res) => {
+                    if (res.data._statusCode === 200) {
+                        setProjects(res.data._data);
+                    }
+                })
+            }
+        } catch (error) {
+            console.error("Error fetching project list:", error);
+        }
+    }, []);
 
     useEffect(() => {
         if (setSwiperRef) {
@@ -22,7 +65,7 @@ function StepperHomePage({ setSwiperRef, type }) {
         if (type) {
             setSortType(type);
         }
-    }, [setSwiperRef]);
+    }, [setSwiperRef, type]);
 
     const slidePrev = () => {
         if (swiperRef.current) {
@@ -40,37 +83,39 @@ function StepperHomePage({ setSwiperRef, type }) {
 
     return (
         <div className="swiper-container">
-            <Swiper
-                spaceBetween={30}
-                slidesPerView={3}
-                slidesPerGroup={3}
-                modules={[Navigation, Pagination, A11y, EffectFade]}
-                className='pt-10 pb-5 px-1'
-                onSwiper={(swiper) => {
-                    swiperRef.current = swiper;
-                }}
-                speed={1000}
-                loop={true}
-            >
-                <SwiperSlide>
-                    <SingleCard imageLink={Kurumi} progress={50} amount={8000000} po={"Anonymous"} category="Anime" title="Hollow Knight: Silk Song 1" description="Kurumi1" daysLeft={12} />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <SingleCard imageLink={Kurumi} progress={50} amount={8000000} po={"Anonymous"} category="Anime" title="Hollow Knight: Silk Song 2" description="Kurumi1" daysLeft={12} />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <SingleCard imageLink={Kurumi} progress={50} amount={8000000} po={"Anonymous"} category="Anime" title="Hollow Knight: Silk Song 3" description="Kurumi1" daysLeft={12} />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <SingleCard imageLink={Kurumi} progress={50} amount={8000000} po={"Anonymous"} category="Anime" title="Hollow Knight: Silk Song 4" description="Kurumi1" daysLeft={12} />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <SingleCard imageLink={Kurumi} progress={50} amount={8000000} po={"Anonymous"} category="Anime" title="Hollow Knight: Silk Song 5" description="Kurumi1" daysLeft={12} />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <SingleCard imageLink={Kurumi} progress={50} amount={8000000} po={"Anonymous"} category="Anime" title="Hollow Knight: Silk Song 6" description="Kurumi1" daysLeft={12} />
-                </SwiperSlide>
-            </Swiper>
+            {projects && projects.length > 0 ? (
+                <Swiper
+                    spaceBetween={30}
+                    slidesPerView={3}
+                    slidesPerGroup={3}
+                    modules={[Navigation, Pagination, A11y, EffectFade]}
+                    className='pt-10 pb-5 px-1'
+                    onSwiper={(swiper) => {
+                        swiperRef.current = swiper;
+                    }}
+                    speed={1000}
+                    loop={true}
+                >
+                    {projects.map((item, index) => (
+                        <SwiperSlide key={index}>
+                            <SingleCard
+                                id={item.id}
+                                imageLink={item.projectThumbnail}
+                                progress={completePercent(item)}
+                                amount={item.projectBalance}
+                                po={item.projectOwnerName}
+                                category={item.categories[0].name}
+                                title={item.projectName}
+                                daysLeft={calculateDaysRemaining(item)}
+                                goal={item.projectTarget}
+                                likes={item.likes}
+                                backers={item.backers} />
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
+            ) : <div>
+                Không có dự án nào cả
+            </div>}
         </div>
     );
 }
