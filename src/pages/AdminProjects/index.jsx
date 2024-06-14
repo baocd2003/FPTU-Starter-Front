@@ -14,6 +14,11 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
+import ImageList from "@mui/material/ImageList";
+import ImageListItem from "@mui/material/ImageListItem";
+import Grid from "@mui/material/Grid";
+import ZoomInIcon from "@mui/icons-material/ZoomIn";
+import IconButton from "@mui/material/IconButton";
 import { visuallyHidden } from "@mui/utils";
 import dayjs from "dayjs";
 import Cookies from "js-cookie";
@@ -22,6 +27,8 @@ import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import SearchBarProjects from "../../components/SearchBarProjects";
 import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
+import transactionApiInstance from "../../utils/apiInstance/transactionApiInstance";
+import "./index.css";
 
 const statuses = [
   "Đã xóa",
@@ -30,6 +37,7 @@ const statuses = [
   "Thành công",
   "Thất bại",
   "Từ chối",
+  "Đã duyệt",
 ];
 
 function descendingComparator(a, b, orderBy) {
@@ -64,7 +72,7 @@ const headCells = [
   { id: "projectName", numeric: false, label: "Tên" },
   { id: "projectOwnerName", numeric: false, label: "Chủ dự án" },
   { id: "projectTarget", numeric: true, label: "Mục tiêu" },
-  { id: "startDate", numeric: false, label: "Ngày tạo" },
+  { id: "createdDate", numeric: false, label: "Ngày tạo" },
   { id: "projectStatus", numeric: false, label: "Trạng thái" },
 ];
 
@@ -149,6 +157,7 @@ function AdminProjects() {
   const [openModal, setOpenModal] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [tabValue, setTabValue] = useState(0);
+  const [open, setOpen] = useState(false);
 
   const token = Cookies.get("_auth");
 
@@ -196,11 +205,14 @@ function AdminProjects() {
     setOpenModal(false);
     setSelectedProject(null);
     setTabValue(0);
-    console.log("Hihi");
+    // console.log("Hihi");
   };
 
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   const setProject = (projectList) => {
-    console.log("Hihi");
+    // console.log("Hihi");
   };
 
   const handleChangeTab = (event, newValue) => {
@@ -257,6 +269,38 @@ function AdminProjects() {
         Swal.fire({
           title: "Thành công",
           text: "Cập nhật thành công",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+
+        fetchProjects();
+      }
+    } catch (error) {
+      console.error("Error updating project:", error);
+    }
+  };
+
+  const handleOnClicRefund = async (projectId) => {
+    console.log("Refund project ID:", projectId);
+
+    try {
+      const response = await transactionApiInstance.post(
+        `refund/${projectId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      console.log(response);
+
+      if (response.data.result._isSuccess) {
+        console.log(response.data);
+        handleCloseModal();
+
+        Swal.fire({
+          title: "Thành công",
+          text: "Hoàn tiền thành công",
           icon: "success",
           showConfirmButton: false,
           timer: 1500,
@@ -360,51 +404,137 @@ function AdminProjects() {
           }}
         >
           <Tabs value={tabValue} onChange={handleChangeTab}>
-            <Tab label="Tổng quan" />
-            <Tab label="Video demo" />
-            <Tab label="Hình ảnh" />
+            <Tab label="Tổng quan" className="tab-project" />
+            <Tab label="Video demo" className="tab-project" />
+            <Tab label="Hình ảnh" className="tab-project" />
           </Tabs>
 
           {tabValue === 0 && selectedProject && (
-            <>
-              <Typography id="modal-title" variant="h6" component="h2">
-                {selectedProject.projectName}
-              </Typography>
-              <Typography id="modal-description" sx={{ mt: 2 }}>
-                Miêu tả: {selectedProject.projectDescription}
-              </Typography>
-              <Typography>
-                Chủ dự án: {selectedProject.projectOwnerName}
-              </Typography>
-              <Typography>Mục tiêu: {selectedProject.projectTarget}</Typography>
-              <Typography>
-                Ngày tạo:{" "}
-                {dayjs(selectedProject.createdDate).format("DD-MM-YYYY HH:mm")}
-              </Typography>
-              <Typography>
-                Ngày bắt đầu:{" "}
-                {dayjs(selectedProject.startDate).format("DD-MM-YYYY HH:mm")}
-              </Typography>
-              <Typography>
-                Ngày kết thúc:{" "}
-                {dayjs(selectedProject.endDate).format("DD-MM-YYYY HH:mm")}
-              </Typography>
-              <Typography>Số dư: {selectedProject.projectBalance}</Typography>
-              <Typography>
-                Tài khoản ngân hàng: {selectedProject.projectBankAccount}
-              </Typography>
-              <Typography>
-                Trạng thái: {statuses[selectedProject.projectStatus]}
-              </Typography>
-            </>
+            <Box>
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={4} sx={{ mt: "16px !important" }}>
+                  <Box
+                    sx={{
+                      width: "100%",
+                      height: 0,
+                      paddingBottom: "100%", // This creates a square box.
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      backgroundImage: `url(${selectedProject.projectThumbnail})`,
+                      position: "relative",
+                      cursor: "pointer",
+                      "&:hover .zoomIcon": {
+                        display: "flex",
+                      },
+                    }}
+                    onClick={handleOpen}
+                  >
+                    <IconButton
+                      className="zoomIcon"
+                      sx={{
+                        display: "none",
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        color: "white",
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        "&:hover": {
+                          backgroundColor: "rgba(0, 0, 0, 0.7)",
+                        },
+                      }}
+                    >
+                      <ZoomInIcon fontSize="large" />
+                    </IconButton>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} md={8} sx={{ mt: "16px !important" }}>
+                  <Box
+                    sx={{
+                      marginBottom: 1,
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography variant="h6" component="h2">
+                      {selectedProject.projectName}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography sx={{ mt: 1 }}>
+                      Miêu tả: {selectedProject.projectDescription}
+                    </Typography>
+                    <Typography>
+                      Chủ dự án: {selectedProject.projectOwnerName}
+                    </Typography>
+                    <Typography>
+                      Mục tiêu: {selectedProject.projectTarget}
+                    </Typography>
+                    <Typography>
+                      Ngày tạo:{" "}
+                      {dayjs(selectedProject.createdDate).format(
+                        "DD-MM-YYYY HH:mm"
+                      )}
+                    </Typography>
+                    <Typography>
+                      Ngày bắt đầu:{" "}
+                      {dayjs(selectedProject.startDate).format(
+                        "DD-MM-YYYY HH:mm"
+                      )}
+                    </Typography>
+                    <Typography>
+                      Ngày kết thúc:{" "}
+                      {dayjs(selectedProject.endDate).format(
+                        "DD-MM-YYYY HH:mm"
+                      )}
+                    </Typography>
+                    <Typography>
+                      Số dư: {selectedProject.projectBalance}
+                    </Typography>
+                    <Typography>
+                      Tài khoản ngân hàng: {selectedProject.projectBankAccount}
+                    </Typography>
+                    <Typography>
+                      Trạng thái: {statuses[selectedProject.projectStatus]}
+                    </Typography>
+                  </Box>
+                </Grid>
+              </Grid>
+
+              <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-title"
+                aria-describedby="modal-description"
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Box
+                  sx={{
+                    backgroundColor: "white",
+                    boxShadow: 24,
+                    maxWidth: "90%",
+                    maxHeight: "90%",
+                    overflow: "auto",
+                  }}
+                >
+                  <img
+                    src={selectedProject.projectThumbnail}
+                    alt="Project Full Size"
+                    style={{ width: "100%", height: "auto" }}
+                  />
+                </Box>
+              </Modal>
+            </Box>
           )}
 
           {tabValue === 1 && (
             <Box>
-              <Typography variant="h6" component="h2">
-                Live Demo
-              </Typography>
-              <Box>
+              <Box sx={{ marginTop: "16px" }}>
                 <video width="100%" controls>
                   <source
                     src={selectedProject.projectLiveDemo}
@@ -417,21 +547,18 @@ function AdminProjects() {
 
           {tabValue === 2 && (
             <Box>
-              <Typography variant="h6" component="h2">
-                Images
-              </Typography>
-              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+              <ImageList variant="masonry" cols={3} gap={8} sx={{ mt: "16px" }}>
                 {selectedProject.images?.map((image, index) => (
-                  <Box key={index} sx={{ width: "100px", height: "100px" }}>
+                  <ImageListItem key={index}>
                     <img
-                      src={image}
-                      alt={`Project Image ${index + 1}`}
-                      width="100%"
-                      height="100%"
+                      srcSet={`${image.url}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                      src={`${image.url}?w=248&fit=crop&auto=format`}
+                      alt={image.url}
+                      loading="lazy"
                     />
-                  </Box>
+                  </ImageListItem>
                 ))}
-              </Box>
+              </ImageList>
             </Box>
           )}
 
@@ -484,6 +611,34 @@ function AdminProjects() {
               </Button>
             </Box>
           )}
+
+          {selectedProject?.projectStatus === 4 &&
+            selectedProject?.projectBalance > 0 && (
+              <Box sx={{ mt: 2, display: "flex", justifyContent: "center" }}>
+                <Button
+                  variant="contained"
+                  sx={{
+                    color: "#44494D",
+                    backgroundColor: "white",
+                    textTransform: "none !important",
+                    "&:hover": {
+                      backgroundColor: "#FBB03B",
+                      color: "white",
+                    },
+                    "&:active": {
+                      outline: "none !important",
+                    },
+                    "&:focus": {
+                      outline: "none !important",
+                    },
+                    fontWeight: "bold",
+                  }}
+                  onClick={() => handleOnClicRefund(selectedProject.id)}
+                >
+                  Hoàn tiền
+                </Button>
+              </Box>
+            )}
         </Box>
       </Modal>
     </Box>
