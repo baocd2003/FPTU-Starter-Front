@@ -43,6 +43,14 @@ const stepStyle = (active, completed) => ({
 const CreateProjectLayout = () => {
   const activeStep = useSelector((state) => state.projectStep.activeStep);
 
+  const [thumbnailFile, setThumbnailFile] = useState([])
+  const [liveDemoFile, setLiveDemoFile] = useState([]);
+  const [images, setImages] = useState([]);
+
+  // console.log('thumbnailFile', thumbnailFile)
+  // console.log('liveDemoFile', liveDemoFile)
+  // console.log('images', thumbnailFile)
+
   const location = useLocation();
 
   const transitions = useTransition(location, {
@@ -58,7 +66,7 @@ const CreateProjectLayout = () => {
         <Container sx={{ maxWidth: { xs: "xs", lg: "lg", xl: "xl" } }}>
           <Grid container sx={{ minHeight: "100vh", pt: "7rem" }}>
             <Grid item xs={2.5}>
-              <Box sx={{ position: "sticky", top: "9rem", }}>
+              <Box sx={{ position: "sticky", top: "3rem", }}>
                 <Stepper activeStep={activeStep} orientation="vertical">
                   {steps.map((step, index) => (
                     <Step component={Paper} elevation={5} key={step.label} sx={stepStyle(index === activeStep, activeStep > index)}>
@@ -84,12 +92,11 @@ const CreateProjectLayout = () => {
                     <Outlet />
                   </animated.div>
                 ))} */}
-                <Outlet />
+                <Outlet context={{ thumbnailFile, setThumbnailFile, liveDemoFile, setLiveDemoFile, images, setImages }} />
               </Box>
             </Grid>
           </Grid>
         </Container>
-
       </Box >
     </>
 

@@ -1,22 +1,19 @@
 import { useDispatch } from "react-redux";
 import { setStepThree } from "../../../redux/projectStepSlice";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { Box, Button, Divider, Grid, Paper, TextField, Typography } from "@mui/material";
-import { useForm } from "react-hook-form";
 import { FilePond, registerPlugin } from "react-filepond";
 import { setFormData } from "../../../redux/projectFormSlice";
 import ReactPlayer from "react-player";
+import { ToastContainer, toast } from "react-toastify";
 
 
 const StepThree = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const { register, handleSubmit } = useForm()
 
-  const [thumbnailFile, setThumbnailFile] = useState([])
-  const [liveDemoFile, setLiveDemoFile] = useState([]);
-  const [images, setImages] = useState([]);
+  const { thumbnailFile, setThumbnailFile, liveDemoFile, setLiveDemoFile, images, setImages } = useOutletContext();
 
 
   useEffect(() => {
@@ -31,15 +28,26 @@ const StepThree = () => {
     pr: 3
   })
 
+  const notify = (mess) => {
+    toast.warn(mess, {
+      position: "bottom-left"
+    });
+  }
+
   const onSubmit = () => {
-    dispatch(setFormData({
-      step: 'StepThreeData', data: {
-        ProjectThumbnail: thumbnailFile[0].file,
-        ProjectLiveDemo: liveDemoFile[0].file,
-        Images: images
-      }
-    }))
-    // navigate('/init-project/step-four')
+    // dispatch(setFormData({
+    //   step: 'StepThreeData', data: {
+    //     ProjectThumbnail: thumbnailFile[0].file,
+    //     ProjectLiveDemo: liveDemoFile[0].file,
+    //     Images: images
+    //   }
+    // }))
+    if (liveDemoFile.length > 0 && thumbnailFile.length > 0 && images.length > 0) {
+      navigate('/init-project/step-four')
+    }
+    else {
+      notify("Hãy chọn ảnh nền dự án và video mô tả dự án của bạn");
+    }
   }
 
   return (
@@ -49,14 +57,14 @@ const StepThree = () => {
         elevation={5}
         sx={{
           width: "100%",
-          pb: 3
+          pb: 3,
+          overflow: 'hidden'
         }}
       >
+        <ToastContainer />
         <Typography sx={{
           fontSize: "2rem", fontWeight: "bold", py: 2, px: 6, mb: 5, color: "white",
           background: "#FBB03B",
-          backgroundImage:
-            'linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(255, 255, 255, 0.1))',
           textShadow: ".12rem .12rem .3rem rgba(0, 0, 0, 0.5)"
         }}
         >Hình ảnh, video dự án</Typography>
@@ -193,7 +201,6 @@ const StepThree = () => {
               disableElevation
               sx={{
                 background: '#FBB03B', fontWeight: 'bold',
-                textShadow: '.1rem .1rem .5rem rgba(0, 0, 0, 0.3)',
                 '&:hover': {
                   background: '#CC9847'
                 },
