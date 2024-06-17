@@ -137,13 +137,13 @@ function FSUAppBar({ isLogined, refetchData }) {
         <CircularProgress color="inherit" />
       </Backdrop>
       <AppBar position='absolute' className={classHeader} sx={{ background: '#FFFFFF', height: '5.2rem', justifyContent: 'center !important', display: 'flex' }}>
-        <Container maxWidth="false" sx={{ padding: '0px !important' }}>
-          <Toolbar disableGutters={true} sx={{ display: 'flex', justifyContent: 'space-between', mx: { lg: '5rem' } }}>
+        <Container maxWidth="false">
+          <Toolbar disableGutters={true} sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <div className='flex flex-row w-full h-[5rem]'>
-              <Typography variant="h6" noWrap component="a" onClick={() => navigate("/home")} sx={{ mr: 4, display: { xs: 'none', lg: 'flex' }, fontWeight: 700, letterSpacing: '.3rem', color: 'inherit', textDecoration: 'none', alignItems: 'center', cursor: 'pointer' }}>
+              <Typography variant="h6" noWrap component="a" onClick={() => navigate("/home")} sx={{ mr: 4, display: { xs: 'none', lg: 'flex' }, fontWeight: 700, letterSpacing: '.3rem', color: 'inherit', textDecoration: 'none', alignItems: 'center', cursor: 'pointer', ml: '6rem' }}>
                 <img src={logoSrc} style={{ width: '6rem', height: '6rem' }} />
               </Typography>
-              <Box sx={{ ml: '16px', flexGrow: 1, display: { xs: 'flex', lg: 'none' }, justifyContent: 'space-between', height: '5rem' }}>
+              <Box sx={{ flexGrow: 1, display: { xs: 'flex', lg: 'none' }, justifyContent: 'space-between', height: '5rem' }}>
                 <IconButton className='notiIcon' title="Phụ lục" size="large" aria-label="account of current user" aria-controls="menu-appbar" aria-haspopup="true" onClick={handleOpenNavMenu} sx={{ outline: 'none !important' }}>
                   <MenuIcon />
                 </IconButton>
@@ -168,7 +168,7 @@ function FSUAppBar({ isLogined, refetchData }) {
               </Box>
             </div>
             {isLogined && user ?
-              <Box sx={{ maxWidth: '100%', mr: { xs: '16px', display: 'flex', alignItems: 'center' } }}>
+              <Box sx={{ maxWidth: '100%', mr: { xs: '16px', lg: '6rem' }, display: 'flex', alignItems: 'center' }}>
                 <Badge badgeContent={0} max={99} showZero sx={{ marginRight: '32px', "& .MuiBadge-badge": { backgroundColor: '#FBB03B !important' } }}>
                   <NotificationsIcon className='notiIcon' fontSize='large' sx={{ color: '#44494D', cursor: 'pointer', transition: 'color 0.3s', '&:hover': { color: '#FBB03B' } }} />
                 </Badge>
@@ -192,7 +192,7 @@ function FSUAppBar({ isLogined, refetchData }) {
                 </Menu>
               </Box>
               :
-              <div className='flex flex-row'>
+              <div className='flex flex-row login-register'>
                 <Typography variant="h6" noWrap onClick={handleClick} component="a" sx={{ textDecoration: 'none', fontSize: '1rem', cursor: 'pointer', fontWeight: 600, transition: 'all 0.3s' }} className='focusedMenuItem'>
                   Đăng nhập
                 </Typography>

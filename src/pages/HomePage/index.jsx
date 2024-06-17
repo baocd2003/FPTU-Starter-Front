@@ -18,7 +18,6 @@ import { FaHandsHelping } from "react-icons/fa";
 import { IoIosSettings } from "react-icons/io";
 import { RiPieChart2Fill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-import { TypeAnimation } from 'react-type-animation';
 import FSUAppBar from '../../components/AppBar';
 import BannerCarousel from '../../components/BannerCarousel';
 import Footer from '../../components/Footer';
@@ -102,7 +101,7 @@ function HomePage() {
 				<div data-aos="fade-up">
 					<div className='project-section'>
 						<div className='flex flex-row justify-between'>
-							<Typography variant="h1" sx={{ fontSize: { lg: '2.4rem', xs: '1.5rem' }, color: 'white', fontWeight: 600, textAlign: 'left', marginLeft: '20px' }}>
+							<Typography variant="h1" sx={{ fontSize: { lg: '2.4rem', xs: '1.5rem' }, color: 'white', fontWeight: 600, textAlign: 'left', marginLeft: '20px', textShadow: '.12rem .12rem .3rem rgba(0, 0, 0, 0.5)' }}>
 								Các dự án nổi bật
 							</Typography>
 							<div className='mr-[20px]'>
@@ -167,7 +166,7 @@ function HomePage() {
 				<div data-aos="fade-up">
 					<div className='project-section'>
 						<div className='flex flex-row justify-between'>
-							<Typography variant="h1" sx={{ fontSize: { lg: '2.4rem', xs: '1.5rem' }, color: 'white', fontWeight: 600, textAlign: 'left', marginLeft: '20px' }}>
+							<Typography variant="h1" sx={{ fontSize: { lg: '2.4rem', xs: '1.5rem' }, color: 'white', fontWeight: 600, textAlign: 'left', marginLeft: '20px', textShadow: '.12rem .12rem .3rem rgba(0, 0, 0, 0.5)' }}>
 								Các dự án mới nhất
 							</Typography>
 							<div className='mr-[20px]'>
@@ -233,13 +232,13 @@ function HomePage() {
 						<Grid container>
 							<Grid item lg={6} xs={12}>
 								<Box sx={{ mx: '20px' }}>
-									<Typography variant="h3" sx={{ fontSize: { lg: '1.2rem', xs: '0.8rem' }, color: 'white', fontWeight: 400, textAlign: 'justify', mr: '40px', lineHeight: '2.4rem', mb: '1.2rem' }}>
-										<CircleIcon sx={{ width: '0.8rem !important', mr: '0.6rem' }}></CircleIcon>Chuyên mục thường gặp
+									<Typography variant="h3" sx={{ fontSize: { lg: '1.2rem', xs: '0.8rem' }, color: 'white', fontWeight: 600, textAlign: 'justify', mr: '40px', lineHeight: '2.4rem', mb: '1.2rem' }}>
+										<CircleIcon sx={{ width: '0.8rem !important', mr: '0.5rem' }}></CircleIcon>Chuyên mục thường gặp
 									</Typography>
-									<Typography variant="h1" sx={{ fontSize: { lg: '2.4rem', xs: '1.5rem' }, color: 'white', fontWeight: 600, textAlign: 'left', lineHeight: '4rem', mb: '1.6rem' }}>
+									<Typography variant="h1" sx={{ fontSize: { lg: '2.4rem', xs: '1.5rem' }, color: 'white', fontWeight: 600, textAlign: 'left', lineHeight: '4rem', mb: '1.6rem', textShadow: '.12rem .12rem .3rem rgba(0, 0, 0, 0.5)' }}>
 										Làm thế nào chúng tôi có thể giúp bạn?
 									</Typography>
-									<Typography variant="h3" sx={{ fontSize: { lg: '1.2rem', xs: '0.8rem' }, color: 'white', fontWeight: 400, textAlign: 'justify', mr: '40px', lineHeight: '2.4rem', mb: '3.2rem' }}>
+									<Typography variant="h3" sx={{ fontSize: { lg: '1.2rem', xs: '0.8rem' }, color: 'white', fontWeight: 600, textAlign: 'justify', mr: '40px', lineHeight: '2.4rem', mb: '2.4rem' }}>
 										Chúng tôi rất vui được giải đáp những thắc mắc phổ biến mà quý khách có thể gặp phải khi sử dụng dịch vụ của chúng tôi
 									</Typography>
 								</Box>
@@ -249,7 +248,7 @@ function HomePage() {
 							</Grid>
 							<Grid item lg={6} xs={12}>
 								<Box sx={{ px: '20px' }}>
-									<Accordion sx={{ mb: '1.6rem', borderRadius: '0.4rem' }}>
+									<Accordion sx={{ mb: '2.4rem', borderRadius: '0.4rem' }}>
 										<AccordionSummary
 											expandIcon={<AddIcon />}
 											aria-controls="panel1-content"
@@ -262,7 +261,7 @@ function HomePage() {
 											Chỉ cần đăng nhập vào là bắt đầu tạo dự án được rồi bạn nhé, rất đơn giản bạn nhỉ?
 										</AccordionDetails>
 									</Accordion>
-									<Accordion sx={{ mb: '1.6rem', borderRadius: '0.4rem' }}>
+									<Accordion sx={{ mb: '2.4rem', borderRadius: '0.4rem', outline: 'none !important' }}>
 										<AccordionSummary
 											expandIcon={<AddIcon />}
 											aria-controls="panel1-content"
@@ -275,7 +274,7 @@ function HomePage() {
 											Bạn có thể đóng góp bằng cách vào trang dự án, chọn mức đóng góp và theo hướng dẫn để hoàn thành thanh toán.
 										</AccordionDetails>
 									</Accordion>
-									<Accordion sx={{ mb: '1.6rem', borderRadius: '0.4rem' }}>
+									<Accordion sx={{ mb: '2.4rem', borderRadius: '0.4rem' }}>
 										<AccordionSummary
 											expandIcon={<AddIcon />}
 											aria-controls="panel1-content"
@@ -288,7 +287,7 @@ function HomePage() {
 											Bạn có thể theo dõi tiến độ của dự án qua trang thông tin chi tiết dự án, bao gồm số tiền đã được huy động và tiến độ hoàn thành các mốc quan trọng.
 										</AccordionDetails>
 									</Accordion>
-									<Accordion sx={{ mb: '1.6rem', borderRadius: '0.4rem' }}>
+									<Accordion sx={{ mb: '2.4rem', borderRadius: '0.4rem' }}>
 										<AccordionSummary
 											expandIcon={<AddIcon />}
 											aria-controls="panel1-content"
@@ -322,54 +321,46 @@ function HomePage() {
 			</div>
 			<div data-aos="fade-up" className="p-3 max-h-fit">
 				<div className='project-section'>
-					<Typography variant="h1" sx={{ fontSize: { lg: '2.4rem', xs: '1.5rem' }, color: '#FBB03B', fontWeight: 600, textAlign: 'center', mb: '5.6rem' }}>
-						<TypeAnimation
-							sequence={[
-								// First typo typing
-								'Làm sao để có được dự án crowdfunding thành công?',
-								2000,
-								'Một vài bí kíp nho nhỏ để tạo được một dự án kêu gọi thành công',
-								2000,
-							]}
-							speed={60}
-							wrapper="span"
-							repeat={Infinity}
-						/>
+					<Typography variant="h1" sx={{ fontSize: { lg: '2.4rem', xs: '1.5rem' }, color: '#FBB03B', fontWeight: 600, textAlign: 'center', mb: '1.6rem' }}>
+						Làm sao để có được dự án crowdfunding thành công?
 					</Typography>
-					<Grid container spacing={2}>
-						<Grid item xs={3}>
+					<Typography variant="h3" sx={{ fontSize: { lg: '1.2rem', xs: '0.8rem' }, color: '#44494D', fontWeight: 600, textAlign: 'center', mb: '5.6rem' }}>
+						Một vài bí kíp nho nhỏ để tạo được một dự án kêu gọi thành công
+					</Typography>
+					<Grid container rowSpacing={4}>
+						<Grid item xs={12} lg={6}>
 							<Typography component="div" sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
 								<FaHandsHelping style={{ color: '#FCAE3D', fontSize: '50px' }} />
-								<Typography variant="h1" sx={{ fontSize: '1.2rem', my: 2, fontWeight: 'bold' }}>Chi tiết về chi tiêu</Typography>
-								<Typography variant="body2" sx={{ fontSize: '0.8rem' }}>Thông tin cụ thể về cách sử dụng nguồn vốn</Typography>
+								<Typography variant="h1" sx={{ fontSize: '1.2rem', my: 2, fontWeight: 'bold', color: '#44494D' }}>Chi tiết về chi tiêu</Typography>
+								<Typography variant="body2" sx={{ fontSize: '0.8rem', textAlign: 'center', color: '#44494D' }}>Thông tin cụ thể về cách sử dụng nguồn vốn</Typography>
 							</Typography>
 						</Grid>
-						<Grid item xs={3}>
+						<Grid item xs={12} lg={6}>
 							<Typography component="div" sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
 								<RiPieChart2Fill style={{ color: '#FCAE3D', fontSize: '50px' }} />
-								<Typography component="h1" sx={{ fontSize: '1.2rem', my: 2, fontWeight: 'bold' }}>Hợp tác và Hỗ trợ</Typography>
-								<Typography component="span" sx={{ fontSize: '0.8rem' }}>Hãy xem những người ủng hộ như những đối tác tiềm năng của bạn</Typography>
+								<Typography component="h1" sx={{ fontSize: '1.2rem', my: 2, fontWeight: 'bold', color: '#44494D' }}>Hợp tác và Hỗ trợ</Typography>
+								<Typography component="span" sx={{ fontSize: '0.8rem', textAlign: 'center', color: '#44494D' }}>Hãy xem những người ủng hộ như những đối tác tiềm năng của bạn</Typography>
 							</Typography>
 						</Grid>
-						<Grid item xs={3}>
+						<Grid item xs={12} lg={6}>
 							<Typography component="div" sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
 								<IoIosSettings style={{ color: '#FCAE3D', fontSize: '50px' }} />
-								<Typography component="h1" sx={{ fontSize: '1.2rem', my: 2, fontWeight: 'bold' }}>Tập trung sản xuất</Typography>
-								<Typography component="span" sx={{ fontSize: '0.8rem' }}>Dành hết thời gian cho đứa con tinh thần của mình</Typography>
+								<Typography component="h1" sx={{ fontSize: '1.2rem', my: 2, fontWeight: 'bold', color: '#44494D' }}>Tập trung sản xuất</Typography>
+								<Typography component="span" sx={{ fontSize: '0.8rem', textAlign: 'center', color: '#44494D' }}>Dành hết thời gian cho đứa con tinh thần của mình</Typography>
 							</Typography>
 						</Grid>
-						<Grid item xs={3}>
+						<Grid item xs={12} lg={6}>
 							<Typography component="div" sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
 								<FaHandsHelping style={{ color: '#FCAE3D', fontSize: '50px' }} />
-								<Typography component="h1" sx={{ fontSize: '1.2rem', my: 2, fontWeight: 'bold' }}>Bàn giao đúng hạn</Typography>
-								<Typography component="span" sx={{ fontSize: '0.8rem' }}>Đúng hạn giúp bạn tăng uy tín và nhận được sự tin tưởng</Typography>
+								<Typography component="h1" sx={{ fontSize: '1.2rem', my: 2, fontWeight: 'bold', color: '#44494D' }}>Bàn giao đúng hạn</Typography>
+								<Typography component="span" sx={{ fontSize: '0.8rem', textAlign: 'center', color: '#44494D' }}>Đúng hạn giúp bạn tăng uy tín và nhận được sự tin tưởng</Typography>
 							</Typography>
 						</Grid>
 					</Grid>
 				</div>
 			</div>
 			<Footer />
-		</div>
+		</div >
 	);
 }
 

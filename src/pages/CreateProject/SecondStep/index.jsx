@@ -1,28 +1,27 @@
-import React, { useState, useEffect } from 'react'
-import { useLocation } from 'react-router-dom';
+import { Typography } from '@mui/material';
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
+import Container from '@mui/material/Container';
+import FormControl from '@mui/material/FormControl';
+import Grid from '@mui/material/Grid';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import TextField from '@mui/material/TextField';
+import axios from 'axios';
 import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
 import 'filepond/dist/filepond.min.css';
+import React, { useEffect, useState } from 'react';
 import { FilePond, registerPlugin } from 'react-filepond';
-import Container from '@mui/material/Container';
-import { Typography } from '@mui/material';
-import './index.css';
-import Grid from '@mui/material/Grid';
-import axios from 'axios';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from 'react-router-dom';
 import projectApiInstance from '../../../utils/apiInstance/projectApiInstance';
+import './index.css';
 registerPlugin(
     FilePondPluginImageExifOrientation,
     FilePondPluginImagePreview
 );
-import TextField from '@mui/material/TextField';
-import CircularProgress from "@mui/material/CircularProgress";
-import Backdrop from "@mui/material/Backdrop";
 function SecondStep() {
     const location = useLocation();
     const [secondRequest, setSecondRequest] = useState({});

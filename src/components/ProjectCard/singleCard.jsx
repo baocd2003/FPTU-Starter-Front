@@ -22,10 +22,10 @@ function SingleCard({ id, category, imageLink, title, po, amount, progress, days
   }
 
   return (
-    <Card sx={{ width: '25rem', height: 'fit-content', padding: '20px', boxShadow: '0', borderRadius: '0.8rem', transition: 'all 0.2s', backgroundColor: 'transparent' }} className='project-card'>
+    <Card sx={{ width: '18rem', height: 'fit-content', padding: '20px', boxShadow: '0', borderRadius: '0.8rem', transition: 'all 0.2s', backgroundColor: 'transparent' }} className='project-card'>
       <CardMedia
         sx={{
-          height: '15rem', width: '22.5rem', borderRadius: '0.4rem', mb: '1.2rem', position: 'relative',
+          height: '12rem', width: '15.5rem', borderRadius: '0.4rem', mb: '1.2rem', position: 'relative', mx: 'auto',
           '&:hover .image-overlay': {
             opacity: '0.5 !important',
           },
@@ -59,11 +59,11 @@ function SingleCard({ id, category, imageLink, title, po, amount, progress, days
             transform: 'translate(-50%, -50%)',
             display: 'none',
             backgroundColor: '#FFFFFF',
-            width: '40%',
+            width: '50%',
             boxShadow: '0.4rem',
             fontSize: '0.9rem',
             fontWeight: 'bold',
-            py: '0.8rem',
+            py: '0.6rem',
             color: '#44494D',
             '&:hover': {
               backgroundColor: '#DDDDDD',
@@ -84,16 +84,17 @@ function SingleCard({ id, category, imageLink, title, po, amount, progress, days
             display: 'none',
             backgroundColor: '#FFFFFF',
             boxShadow: '0.4rem',
-            py: '0.6rem',
-            px: '0',
+            py: '0.3rem',
+            px: '1rem',
             color: '#44494D',
+            minWidth: '0',
             '&:hover': {
               backgroundColor: '#DDDDDD',
             },
             letterSpacing: '0.5px'
           }}
         >
-          <FavoriteIcon sx={{ fontSize: '1.2rem' }} />
+          <FavoriteIcon sx={{ fontSize: '1rem' }} />
         </Button>
         <div className='absolute bottom-[-20px] translate-x-[10%]'>
           <Chip icon={<FavoriteIcon sx={{ color: '#FF6969 !important' }} />} label={likes} className='project-chip mr-[0.6rem] select-none !p-[0.2rem]' />
@@ -110,7 +111,7 @@ function SingleCard({ id, category, imageLink, title, po, amount, progress, days
           </div>
           <div className='w-fit max-w-[50%] flex flex-row justify-end items-center gap-1'>
             <AccessTimeIcon sx={{ width: '1.1rem', height: '1.1rem', color: '#A7A7A7', fontWeight: 600 }} />
-            <Typography variant='h1' sx={{ fontSize: '0.8rem', color: '#A7A7A7', fontWeight: 600 }}>{daysLeft} ngày còn lại</Typography>
+            <Typography variant='h1' sx={{ fontSize: '0.8rem', color: '#A7A7A7', fontWeight: 600 }}>{daysLeft} ngày</Typography>
           </div>
         </div>
         <Typography variant="h5" sx={{
@@ -124,10 +125,10 @@ function SingleCard({ id, category, imageLink, title, po, amount, progress, days
         >
           {title}
         </Typography>
-        <Typography variant="h5" sx={{ textAlign: "left", fontSize: '1rem', marginBottom: '1.2rem', color: '#A7A7A7' }}>
+        <Typography variant="h5" sx={{ textAlign: "left", fontSize: '1rem', marginBottom: '0.8rem', color: '#A7A7A7' }}>
           bởi {po}
         </Typography>
-        <div className='flex flex-row justify-between items-center mb-[0.4rem]'>
+        <div className='flex flex-row justify-between items-center mb-[0.2rem]'>
           <Typography variant="h6" sx={{ textAlign: "left", fontSize: '0.9rem', fontWeight: 'bold' }}>
             Ủng hộ: {formattedAmount} VND
           </Typography>
