@@ -1,0 +1,43 @@
+.otpBox {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    .MuiOtpInput-TextField:focus {
+        border-color: #FBB30B;
+    }
+}
+
+@media (min-width: 0px) and (max-width: 1199px) {
+    .otpTimer {
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .otpBox {
+        .MuiOtpInput-TextField {
+            width: 20% !important;
+        }
+    }
+
+    .verifyLg {
+        display: none !important;
+    }
+}
+
+@media (min-width: 1200px) {
+    .otpTimer {
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    .otpBox {
+        .MuiOtpInput-TextField {
+            width: 10% !important;
+        }
+    }
+
+    .verifyMd {
+        display: none !important;
+    }
+}

@@ -1,0 +1,16 @@
+@media (min-width: 1200px) {
+    .modelBtn {
+        flex-direction: row;
+    }
+}
+
+@media (max-width: 1199px) {
+    .modelBtn {
+        flex-direction: column;
+    }
+
+    .addImg {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}

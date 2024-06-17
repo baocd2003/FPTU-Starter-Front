@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css?family=Poetsen+One&display=swap');
+
+/* Focused Menu Item Styles */
+.focusedMenuItem:focus,
+.focusedMenuItem:active,
+.focusedMenuItem:hover {
+	outline: none !important;
+	color: #FBB03B;
+}
+
+.focusedMenuItem:hover {
+	background-color: transparent !important;
+}
+
+/* Login Button Styles */
+.login-button {
+	width: 144px;
+	height: 40px;
+	color: #44494D !important;
+	border: 1px solid #44494D !important;
+	font-weight: 700 !important;
+	background-color: #FFFFFF !important;
+}
+
+.login-button:hover {
+	color: #FFFFFF !important;
+	border-color: #FBB03B !important;
+	background-color: #FBB03B !important;
+}
+
+.login-button:focus {
+	outline: 0 !important;
+}
+
+/* Menu Item Arrow Visibility */
+.MuiMenuItem-root:hover .menuArrow {
+	visibility: visible;
+}
+
+/* Top State Styles */
+.top {
+	background-color: transparent !important;
+	color: #44494D !important;
+	box-shadow: none !important;
+}
+
+.top .focusedMenuItem {
+	color: #FFFFFF;
+}
+
+.top .focusedMenuItem:focus,
+.top .focusedMenuItem:active,
+.top .focusedMenuItem:hover {
+	color: #FBB03B;
+	background-color: transparent;
+}
+
+.top .notiIcon {
+	color: #FFFFFF;
+}
+
+.top .notiIcon:hover {
+	color: #FBB03B;
+}
+
+.top .slash {
+	color: #FFFFFF !important;
+}
+
+/* Scrolled State Styles */
+.scrolled {
+	background-color: rgba(255, 255, 255, 0.8) !important;
+	-webkit-backdrop-filter: blur(20px);
+	backdrop-filter: blur(20px);
+	color: white;
+	box-shadow: 0px 1px 2px -0.5px rgba(0, 0, 0, 0.09), 0px 0px 0px 0px rgba(0, 0, 0, 0.09), 0px 1px 2px 0px rgba(0, 0, 0, 0.09) !important;
+}
+
+.scrolled .focusedMenuItem {
+	color: #44494D;
+}
+
+.scrolled .focusedMenuItem:hover {
+	color: #FBB03B;
+}
+
+.scrolled .slash {
+	color: #44494D;
+}
+
+header {
+	box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12) !important;
+}

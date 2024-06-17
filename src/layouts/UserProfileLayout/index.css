@@ -1,0 +1,83 @@
+.userProfile {
+    height: 10000px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin-top: 120px;
+}
+
+.bgImgButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: none;
+    height: fit-content;
+    background-color: inherit;
+}
+
+.userProfleTab:hover,
+.userProfleTab:focus {
+    outline: none !important;
+    background-color: white !important;
+    border-color: #FBB03B !important;
+    color: #FBB03B;
+}
+
+.Mui-selected {
+    font-size: .875rem !important;
+}
+
+@media (min-width: 0px) and (max-width: 1199px) {
+    .userProfile {
+        margin-left: 32px;
+        margin-right: 32px;
+    }
+
+    .backgroundImg {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .avatarProfile {
+        margin: auto;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .briefInfo {
+        justify-content: center;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .userBriefInfo {
+        margin-top: 16px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .userProfile {
+        margin-left: 80px !important;
+        margin-right: 80px !important;
+    }
+
+    .backgroundImg {
+        display: flex !important;
+        justify-content: end !important;
+        align-items: end !important;
+    }
+
+    .avatarProfile {
+        margin-left: 64px !important;
+        flex-direction: row !important;
+    }
+
+    .briefInfo {
+        margin-left: .5rem;
+        padding-top: 3rem;
+        text-align: left;
+        justify-content: space-between;
+    }
+}

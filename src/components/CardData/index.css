@@ -1,0 +1,28 @@
+.cardBox{
+  background-color: #FBB03B;
+  border-radius: 12px;
+  color: #FFFFFF
+}
+.circle {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-top: 15px;
+  }
+  .circle h1 {
+    font-size: 30px;
+    font-weight: 500;
+    color: #f7f7f7;
+  }
+ .title {
+    text-align: right;
+  }
+.circle p {
+    color: #989eb3;
+    margin-top: 10px;
+    font-size: 17px;
+  }
+  .light .circle h1,
+  .light .circle p {
+    color: #000;
+  }

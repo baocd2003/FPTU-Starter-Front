@@ -1,0 +1,50 @@
+.wallet_option {
+  border: .12rem solid #FBB03B !important;
+  padding: 0 !important;
+  border-radius: .3rem !important;
+  height: 4.5rem;
+  color: rgba(0, 0, 0, 0.5) !important;
+  font-weight: bold;
+  transition: ease-in-out .1s !important;
+}
+
+.wallet_option:hover {
+  background-color: #FBB03B !important;
+  color: white !important;
+}
+
+.wallet_option:hover span{
+  color: white !important;
+}
+
+.wallet_option:focus{
+  outline: none !important;
+  transform: none !important;
+  translate: none !important;
+}
+
+.wallet_option:focus span, .wallet_option:active span{
+  color: rgba(0, 0, 0, 0.5) !important;
+  outline: none !important;
+  transform: none !important;
+  translate: none !important;
+}
+
+.wallet_option[disabled]{
+  background-color: rgba(0, 0, 0, 0.1);
+  border: .12rem solid rgba(0, 0, 0, 0.1) !important;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.Mui-selected {
+  color: rgba(0, 0, 0, 0.5) !important;
+  outline: none !important;
+  transform: none !important;
+  translate: none !important;
+  border: none;
+}
+
+.Mui-selected {
+  font-size: 0.75rem !important;
+}
