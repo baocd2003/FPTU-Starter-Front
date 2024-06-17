@@ -51,7 +51,7 @@ const TextEditor = ({ setAboutUsDate }) => {
     <>
       <CKEditor
         editor={ClassicEditor}
-        data="<p>Chia sẻ câu chuyện của bạn tại đây!</p>"
+        data="<h1>Chia sẻ câu chuyện của bạn tại đây!</h1>"
         config={editorConfig}
         onReady={editor => {
           editor.editing.view.change((writer) => {

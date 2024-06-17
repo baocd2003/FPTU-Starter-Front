@@ -78,7 +78,7 @@ function UserProjects() {
                                 <Button
                                     variant="contained"
                                     startIcon={<NoteAddIcon />}
-                                    onClick={() => navigate("/choose-cate")}
+                                    onClick={() => navigate("/init-project/step-one")}
                                     sx={{
                                         color: "#44494D",
                                         backgroundColor: 'white',

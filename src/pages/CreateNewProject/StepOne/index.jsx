@@ -92,8 +92,6 @@ const StepOne = () => {
         <Typography sx={{
           fontSize: '2rem', fontWeight: 'bold', py: 2, px: 6, mb: 5, color: 'white',
           background: '#FBB03B',
-          backgroundImage:
-            'linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(255, 255, 255, 0.1))',
           textShadow: '.12rem .12rem .3rem rgba(0, 0, 0, 0.5)'
         }}
         >Thiết lập các thông tin cơ bản</Typography>
@@ -282,7 +280,7 @@ const StepOne = () => {
           </Grid>
 
           <Box sx={{ mb: 4, gap: 5, display: "flex", justifyContent: 'center', alignItems: 'center' }}>
-            <Button onClick={handleSubmit(onSubmit)} variant='outlined'
+            <Button variant='outlined'
               disableElevation
               disabled
               sx={{
@@ -300,7 +298,6 @@ const StepOne = () => {
               disableElevation
               sx={{
                 background: '#FBB03B', fontWeight: 'bold',
-                textShadow: '.1rem .1rem .5rem rgba(0, 0, 0, 0.1)',
                 '&:hover': {
                   background: '#CC9847'
                 },
