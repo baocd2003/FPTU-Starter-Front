@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { AccountBalance } from "@mui/icons-material";
 import axios from "axios";
 import { setFormData } from "../../../redux/projectFormSlice";
+import { ToastContainer, toast } from "react-toastify";
 
 
 const StepFour = () => {
@@ -19,7 +20,11 @@ const StepFour = () => {
   const [accountNumber, setAccountNumber] = useState()
   const [loading, setLoading] = useState(false)
 
-
+  const notify = (mess) => {
+    toast.warn(mess, {
+      position: "bottom-left"
+    });
+  }
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -60,12 +65,19 @@ const StepFour = () => {
       }
     }).then(res => {
       setLoading(false);
-      setBankOwner(res.data.data.accountName);
+      console.log(res.data.code)
+      if (res.data.code.toString() == '00') {
+        setBankOwner(res.data.data.accountName);
+
+      } else {
+        notify(res.data.desc)
+      }
     })
   }
 
   return (
     <>
+      <ToastContainer />
       <Box component={Paper} elevation={5} sx={{ width: "100%", overflow: 'hidden' }}>
         <Typography
           sx={{
