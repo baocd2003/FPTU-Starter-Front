@@ -17,8 +17,12 @@ import Tab from "@mui/material/Tab";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import Grid from "@mui/material/Grid";
+import LinearProgress from "@mui/material/LinearProgress";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import IconButton from "@mui/material/IconButton";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
+import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
 import { visuallyHidden } from "@mui/utils";
 import dayjs from "dayjs";
 import Cookies from "js-cookie";
@@ -39,6 +43,27 @@ const statuses = [
   "Từ chối",
   "Đã duyệt",
 ];
+
+const backgroundColor = [
+  "#C6C6C6",
+  "#3F51B5",
+  "#FBB03B",
+  "#368D59",
+  "#DB3700",
+  "#9E9E9E",
+  "#00CED1",
+];
+
+const currentDate = Date.parse(new Date().toString());
+
+const formatDate = (date) => dayjs(date).format("DD-MM-YYYY HH:mm");
+
+const progressPercentage = (startDate, endDate) => {
+  const totalDuration = endDate - startDate;
+  const elapsedDuration = currentDate - startDate;
+
+  return Math.min(Math.max((elapsedDuration / totalDuration) * 100, 0), 100);
+};
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -158,10 +183,43 @@ function AdminProjects() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [tabValue, setTabValue] = useState(0);
   const [open, setOpen] = useState(false);
+  const [progressValue, setProgressValue] = useState(0);
+  const [progressText, setProgressText] = useState("");
 
   const token = Cookies.get("_auth");
 
   console.log(projectList);
+
+  const timeLineProgress = (selectedProject) => {
+    if (selectedProject) {
+      const startDate = Date.parse(selectedProject.startDate);
+      const endDate = Date.parse(selectedProject.endDate);
+
+      const totalDuration = endDate - startDate;
+      const elapsedDuration = currentDate - startDate;
+      const progressPercentage = Math.min(
+        Math.max((elapsedDuration / totalDuration) * 100, 0),
+        100
+      );
+
+      if (startDate > currentDate) {
+        setProgressValue(null);
+        setProgressText("Chưa bắt đầu");
+      } else if (endDate < currentDate) {
+        setProgressValue(100);
+        setProgressText("Đã kết thúc");
+      } else {
+        setProgressValue(progressPercentage);
+        setProgressText(`${progressPercentage.toFixed(2)}%`);
+      }
+
+      console.log(startDate);
+      console.log(endDate);
+      console.log(currentDate);
+      console.log(progressValue);
+      console.log(progressPercentage);
+    }
+  };
 
   useEffect(() => {
     fetchProjects();
@@ -199,6 +257,7 @@ function AdminProjects() {
   const handleRowClick = (project) => {
     setSelectedProject(project);
     setOpenModal(true);
+    timeLineProgress(project);
   };
 
   const handleCloseModal = () => {
@@ -447,8 +506,37 @@ function AdminProjects() {
                       <ZoomInIcon fontSize="large" />
                     </IconButton>
                   </Box>
+                  <Box
+                    sx={{
+                      backgroundColor: `${
+                        backgroundColor[selectedProject.projectStatus]
+                      }`,
+                    }}
+                    className="text-center mt-4 p-1 text-slate-100 font-medium rounded"
+                  >
+                    {statuses[selectedProject.projectStatus]}
+                  </Box>
                 </Grid>
                 <Grid item xs={12} md={8} sx={{ mt: "16px !important" }}>
+                  <Box
+                    sx={{
+                      marginBottom: 2,
+                      textAlign: "right",
+                    }}
+                  >
+                    <Typography className="!text-sm italic ">
+                      Tạo ngày{" "}
+                      <span style={{ color: "#FBB03B" }}>
+                        {dayjs(selectedProject.createdDate).format(
+                          "DD-MM-YYYY HH:mm"
+                        )}
+                      </span>{" "}
+                      bởi{" "}
+                      <span style={{ color: "#FBB03B" }}>
+                        {selectedProject.projectOwnerName}
+                      </span>
+                    </Typography>
+                  </Box>
                   <Box
                     sx={{
                       marginBottom: 1,
@@ -457,50 +545,129 @@ function AdminProjects() {
                       alignItems: "center",
                     }}
                   >
-                    <Typography variant="h6" component="h2">
+                    <Typography
+                      variant="h6"
+                      component="h2"
+                      className="!font-bold"
+                    >
                       {selectedProject.projectName}
                     </Typography>
                   </Box>
                   <Box>
                     <Typography sx={{ mt: 1 }}>
-                      Miêu tả: {selectedProject.projectDescription}
-                    </Typography>
-                    <Typography>
-                      Chủ dự án: {selectedProject.projectOwnerName}
-                    </Typography>
-                    <Typography>
-                      Mục tiêu: {selectedProject.projectTarget}
-                    </Typography>
-                    <Typography>
-                      Ngày tạo:{" "}
-                      {dayjs(selectedProject.createdDate).format(
-                        "DD-MM-YYYY HH:mm"
-                      )}
-                    </Typography>
-                    <Typography>
-                      Ngày bắt đầu:{" "}
-                      {dayjs(selectedProject.startDate).format(
-                        "DD-MM-YYYY HH:mm"
-                      )}
-                    </Typography>
-                    <Typography>
-                      Ngày kết thúc:{" "}
-                      {dayjs(selectedProject.endDate).format(
-                        "DD-MM-YYYY HH:mm"
-                      )}
-                    </Typography>
-                    <Typography>
-                      Số dư: {selectedProject.projectBalance}
-                    </Typography>
-                    <Typography>
-                      Tài khoản ngân hàng: {selectedProject.projectBankAccount}
-                    </Typography>
-                    <Typography>
-                      Trạng thái: {statuses[selectedProject.projectStatus]}
+                      {selectedProject.projectDescription}
                     </Typography>
                   </Box>
                 </Grid>
               </Grid>
+              <Box>
+                <Typography
+                  sx={{ color: "#FBB03B" }}
+                  className="!font-semibold text-base"
+                >
+                  <AccessTimeIcon fontSize="small" /> Thời gian
+                </Typography>
+                <Box display="flex" justifyContent="space-between" mt={1}>
+                  <Typography variant="body2" color="textSecondary">
+                    {formatDate(selectedProject.startDate)}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    {formatDate(selectedProject.endDate)}
+                  </Typography>
+                </Box>
+                <LinearProgress
+                  sx={{
+                    backgroundColor: "#f0f0f0",
+                    "& .MuiLinearProgress-barColorPrimary": {
+                      backgroundColor: "#FBB03B",
+                    },
+                  }}
+                  variant={
+                    selectedProject.startDate > currentDate
+                      ? "indeterminate"
+                      : "determinate"
+                  }
+                  value={progressValue}
+                />
+                <Box display="flex" justifyContent="center" mt={1}>
+                  <Typography variant="body2" color="textSecondary">
+                    {progressText}
+                  </Typography>
+                </Box>
+              </Box>
+              <Box>
+                <Typography
+                  sx={{ color: "#FBB03B" }}
+                  className="!font-semibold text-base"
+                >
+                  <MonetizationOnOutlinedIcon fontSize="small" /> Mục tiêu
+                </Typography>
+                <Box display="flex" justifyContent="space-between" mt={1}>
+                  <Typography variant="body2" color="textSecondary">
+                    0
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    {selectedProject.projectTarget}
+                  </Typography>
+                </Box>
+                <LinearProgress
+                  sx={{
+                    backgroundColor: "#f0f0f0",
+                    "& .MuiLinearProgress-barColorPrimary": {
+                      backgroundColor: "#FBB03B",
+                    },
+                  }}
+                  variant={"determinate"}
+                  value={
+                    selectedProject.projectBalance <
+                    selectedProject.projectTarget
+                      ? Math.min(
+                          Math.max(
+                            (selectedProject.projectBalance /
+                              selectedProject.projectTarget) *
+                              100,
+                            0
+                          ),
+                          100
+                        )
+                      : 100
+                  }
+                />
+                <Box display="flex" justifyContent="center" mt={1}>
+                  <Typography variant="body2" color="textSecondary">
+                    {selectedProject.projectBalance} đã được ủng hộ
+                  </Typography>
+                </Box>
+              </Box>
+              <Box>
+                <Typography
+                  sx={{ color: "#FBB03B" }}
+                  className="!font-semibold text-base"
+                >
+                  <AccountBalanceOutlinedIcon fontSize="small" /> Tài khoản ngân
+                  hàng
+                </Typography>
+                <Box display="flex" flexDirection={"column"} mt={1}>
+                  <Typography variant="body2" mb={1}>
+                    Ngân hàng:{" "}
+                    <span className="!font-medium">
+                      {selectedProject.bankAccountName}
+                    </span>
+                  </Typography>
+                  <Typography variant="body2" mb={1}>
+                    Số tài khoản:{" "}
+                    <span className="!font-medium">
+                      {selectedProject.bankAccountNumber}
+                    </span>
+                  </Typography>
+                  <Typography variant="body2" mb={1}>
+                    Tên người thụ hưởng:{" "}
+                    <span className="!font-medium">
+                      {selectedProject.bankOwnerName}
+                    </span>
+                  </Typography>
+                </Box>
+              </Box>
 
               <Modal
                 open={open}
