@@ -1,8 +1,8 @@
 import React from 'react'
 import axios from "axios";
-const categoryApiInstance =  axios.create(
+const categoryApiInstance = axios.create(
     {
-        baseURL : "https://localhost:7235/api/categories"
+        baseURL: `${import.meta.env.VITE_REACT_APP_API_URL}/api/categories`
     }
 )
 
