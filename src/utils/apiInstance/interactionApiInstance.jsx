@@ -1,8 +1,8 @@
 import React from 'react'
 import axios from "axios";
-const interactionApiInstance =  axios.create(
+const interactionApiInstance = axios.create(
     {
-        baseURL : "https://localhost:7235/api/interactions"
+        baseURL: `${import.meta.env.VITE_REACT_APP_API_URL}/api/interactions`
     }
 )
 

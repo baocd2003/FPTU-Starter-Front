@@ -49,6 +49,8 @@ function InitStep() {
   const [packageType, setPackageType] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
+  const api_url = process.env.REACT_APP_API_URL
+
   //get selected category
   const selectedCategory = location.state?.selectedCate;
   console.log(selectedCategory);
@@ -65,7 +67,7 @@ function InitStep() {
     Aos.init({ duration: 2000 });
     const fetchUser = async () => {
       await axios
-        .get("https://localhost:7235/api/user/user-profile", {
+        .get(`${api_url}api/user/user-profile`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -89,7 +91,7 @@ function InitStep() {
         thumbnailFormData.set("thumbnailFile", thumbnailFile[0].file);
         liveDemoFormData.set("liveDemoFile", liveDemoFile[0].file);
         const thumbnailUrl = await fetch(
-          "https://localhost:7235/api/projects/add-thumbnail",
+          `${api_url}api/projects/add-thumbnail`,
           {
             method: "POST",
             body: thumbnailFormData,
@@ -98,7 +100,7 @@ function InitStep() {
         console.log(liveDemoFormData)
         const thumbnailData = await thumbnailUrl.json();
         const liveDemoUrl = await fetch(
-          "https://localhost:7235/api/projects/add-live-demo",
+          `${api_url}api/projects/add-live-demo`,
           {
             method: "POST",
             body: liveDemoFormData,
