@@ -68,9 +68,9 @@ function AccountWallet() {
   const openPaymentDialog = async (checkOutResponse) => {
     if (checkOutResponse) {
       const url = checkOutResponse.checkoutUrl;
-
+      const returnUrl = import.meta.env.VITE_APP_URL.toString();
       const payOSConfig = {
-        RETURN_URL: "http://localhost:5173/",
+        RETURN_URL: returnUrl,
         ELEMENT_ID: "config_root",
         CHECKOUT_URL: url,
         onSuccess: async (event) => {

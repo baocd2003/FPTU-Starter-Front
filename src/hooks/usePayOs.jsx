@@ -5,8 +5,12 @@ import { ErrorRounded } from "@mui/icons-material";
 
 
 export const loadWalletMoney = async (inputAmount) => {
-  const cancelUrl = "http://localhost:5173/";
-  const returnUrl = "http://localhost:5173/";
+  // const cancelUrl = "http://localhost:5173/";
+  // const returnUrl = "http://localhost:5173/";
+
+  const cancelUrl = import.meta.env.VITE_APP_URL.toString();
+  const returnUrl = import.meta.env.VITE_APP_URL.toString();
+
 
   const orderCode = Math.floor(Date.now());
   const expiredAt = Math.floor(Date.now() / 1000) + 300;
