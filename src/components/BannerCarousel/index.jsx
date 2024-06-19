@@ -51,7 +51,7 @@ function BannerCarousel() {
           }}>
             Vươn tới những <span className='text-[#FBB03B]'>vì sao</span><br /> dự án khởi nghiệp của bạn <br /> sẽ <span className='text-[#FBB03B]'>tỏa sáng!</span>
           </Typography>
-          <div className="absolute top-[70%] left-[10%]" style={{ zIndex: 2 }}>
+          <div className="absolute top-[72%] left-[10%]" style={{ zIndex: 2 }}>
             <Button onClick={checkAuth} sx={{ my: 4, color: '#FFF', display: 'block', width: '16rem', height: '4rem', borderRadius: '0.4rem !important', fontSize: '1rem', fontWeight: 900, letterSpacing: '1px !important', }} className="c-btn">Hiện thực hóa giấc mơ</Button>
           </div>
         </div>

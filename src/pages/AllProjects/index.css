@@ -18,3 +18,9 @@
 .radio-button .MuiRadio-root.Mui-checked {
     color: #44494D;
 }
+
+.category-select-button:focus,
+.category-select-button:active,
+.category-select-button:hover {
+    background-color: inherit !important
+}

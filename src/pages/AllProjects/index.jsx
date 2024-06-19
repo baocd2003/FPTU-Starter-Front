@@ -1,17 +1,19 @@
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import CloseIcon from "@mui/icons-material/Close";
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
 import SearchIcon from "@mui/icons-material/Search";
 import { CircularProgress, Grid, Paper } from "@mui/material";
-import Accordion from '@mui/material/Accordion';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import AccordionSummary from '@mui/material/AccordionSummary';
 import Backdrop from '@mui/material/Backdrop';
 import Box from "@mui/material/Box";
+import Collapse from '@mui/material/Collapse';
 import Divider from '@mui/material/Divider';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import InputBase from "@mui/material/InputBase";
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import Typography from '@mui/material/Typography';
@@ -23,6 +25,7 @@ import EmptyProject from '../../assets/EmptyProject.png';
 import FSUAppBar from '../../components/AppBar';
 import Footer from '../../components/Footer';
 import SingleCard from '../../components/ProjectCard/singleCard';
+import categoryApiInstance from "../../utils/apiInstance/categoryApiInstance";
 import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
 import './index.css';
 
@@ -80,6 +83,16 @@ function AllProjects() {
     const [numProject, setNumProject] = useState(0);
     const [totalProjectMoney, setTotalProjectMoney] = useState(0);
     const [totalPackage, setTotalPackage] = useState(0);
+    const [categories, setCategories] = useState([]);
+    const [selectedCategories, setSelectedCategories] = useState("");
+
+    const [openCategories, setOpenCategories] = useState({});
+
+    const [open, setOpen] = React.useState(true);
+
+    const handleClick = () => {
+        setOpen(!open);
+    };
 
     const setProject = (projectList) => {
         setProjects(projectList);
@@ -92,6 +105,7 @@ function AllProjects() {
         getNumProjects();
         getTotalProjectMoney();
         getTotalPackage();
+        getCategories();
     }, []);
 
     const getNumProjects = () => {
@@ -124,12 +138,24 @@ function AllProjects() {
         try {
             projectApiInstance.get(`/admin-count-package`).then((res) => {
                 if (res.data._statusCode === 200) {
-                    const formattedAmount = new Intl.NumberFormat('vi-VN').format(res.data._data);
-                    setTotalPackage(formattedAmount);
+                    setTotalPackage(res.data._data);
                 }
             })
         } catch (error) {
-            console.error("Error fetching project number:", error);
+            console.error("Error fetching category:", error);
+        }
+    }
+
+    const getCategories = () => {
+        try {
+            categoryApiInstance.get(``).then((res) => {
+                console.log(res.data);
+                if (res.data.result._isSuccess === true) {
+                    setCategories(res.data.result._data);
+                }
+            })
+        } catch (error) {
+            console.error("Error fetching project category:", error);
         }
     }
 
@@ -144,14 +170,11 @@ function AllProjects() {
         if (startDate >= today) {
             return Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
         }
-
         if (endDate <= today) {
             return 0;
         }
-
         const diffInMilliseconds = endDate - today;
         const daysRemaining = Math.floor(diffInMilliseconds / (1000 * 60 * 60 * 24));
-
         return daysRemaining;
     }
 
@@ -171,6 +194,26 @@ function AllProjects() {
         setSearchValue(e.target.value);
     };
 
+    const handleOpenCategory = (categoryName) => {
+        setOpenCategories((prevState) => ({
+            ...prevState,
+            [categoryName]: !prevState[categoryName],
+        }));
+    };
+
+    //Capitalize letter
+    const autoCapitalize = (name) => {
+        if (typeof name !== 'string' || name.length === 0) {
+            return name;
+        }
+        return name.charAt(0).toUpperCase() + name.slice(1);
+    }
+
+    //Choose Category
+    const handleButtonClick = (categoryName) => {
+        setSelectedCategories(categoryName);
+        console.log(categoryName)
+    };
 
     return (
         <div className='mt-[5.2rem]'>
@@ -193,7 +236,7 @@ function AllProjects() {
                         Toàn bộ dự án đang và đã được quyên góp trên FPTU Starter
                     </Typography>
                 </div>
-                <div className='absolute bottom-0 flex flex-row gap-10 justify-center w-full translate-y-12'>
+                <div className='absolute bottom-0 flex flex-row gap-10 justify-center w-full translate-y-20'>
                     <Paper elevation={4} className='project-stats'>
                         <Typography variant="h1" sx={{ fontSize: { lg: '2.4rem', xs: '1.5rem' }, color: '#FBB03B', fontWeight: 600, textAlign: 'center', mb: '0.8rem' }}>
                             {numProject}
@@ -220,7 +263,7 @@ function AllProjects() {
                     </Paper>
                 </div>
                 <div className="banner-background">
-                    <img src="https://i.ibb.co/HXhFsjs/banner-background.png" alt="banner" border="0" style={{ height: '40vh' }} />
+                    <img src="https://i.ibb.co/HXhFsjs/banner-background.png" alt="banner" border="0" style={{ height: '40vh', objectFit: 'cover' }} />
                 </div>
             </div>
             <div className='mx-[5rem] mt-[8rem]'>
@@ -230,24 +273,60 @@ function AllProjects() {
                             <Typography sx={{ fontWeight: 'bold', fontSize: '1.2rem', lineHeight: '1.75rem', textAlign: 'left', mb: '1.2rem' }}>
                                 Lọc kết quả
                             </Typography>
-                            <Accordion sx={{ border: 'none', boxShadow: 'none' }} defaultExpanded>
-                                <AccordionSummary
-                                    aria-controls="panel1-content"
-                                    id="panel1-header"
-                                    expandIcon={<ArrowDropDownIcon />}
-                                    sx={{ px: 0 }}
-                                >
-                                    <Typography sx={{ fontWeight: 'bold', fontSize: '1rem', lineHeight: '1.75rem', color: '#44494D' }}>Thể loại</Typography>
-                                </AccordionSummary>
-                                <AccordionDetails
-                                    sx={{ px: '0 !important', textAlign: 'left' }}>
-                                    <Typography sx={{ fontSize: '1rem', color: '#44494D' }}>Tất cả thể loại</Typography>
-                                </AccordionDetails>
-                                <AccordionDetails
-                                    sx={{ px: '0 !important', textAlign: 'left' }}>
-                                    <Typography sx={{ fontSize: '1rem', color: '#44494D' }}>Trò chơi</Typography>
-                                </AccordionDetails>
-                            </Accordion>
+                            <List
+                                sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
+                                component="nav"
+                                aria-labelledby="nested-list-subheader"
+                            >
+                                <ListItemButton onClick={handleClick} sx={{ padding: '0 !important', fontSize: '1.2rem', lineHeight: '1.75rem', mb: '1.2rem' }}>
+                                    <ListItemText primary="Thể loại" primaryTypographyProps={{
+                                        fontWeight: 'bold',
+                                        fontSize: '1rem',
+                                        lineHeight: '1.75rem',
+                                        color: '#44494D',
+                                    }} />
+                                    {open ? <ExpandLess /> : <ExpandMore />}
+                                </ListItemButton>
+                                <Collapse in={open} timeout="auto" unmountOnExit>
+                                    <List component="div" disablePadding>
+                                        <ListItemButton
+                                            onClick={() => handleButtonClick('all')}
+                                            key={"all"}
+                                            className="category-select-button"
+                                        >
+                                            <ListItemText primary="Tất cả thể loại" primaryTypographyProps={{ lineHeight: '1.75rem', color: '#44494D', }} />
+                                        </ListItemButton>
+                                        {categories.map((category) => (
+                                            <React.Fragment key={category.name}>
+                                                <ListItemButton onClick={() => handleOpenCategory(category.name)} sx={{
+                                                    paddingRight: '0 !important',
+                                                }}>
+                                                    <ListItemText primary={autoCapitalize(category.name)} primaryTypographyProps={{
+                                                        lineHeight: '1.75rem',
+                                                        color: '#44494D',
+                                                    }} />
+                                                    {openCategories[category.name] ? <ExpandLess /> : <ExpandMore />}
+                                                </ListItemButton>
+                                                <Collapse in={openCategories[category.name]} timeout="auto" unmountOnExit>
+                                                    <List component="div" disablePadding>
+                                                        {category.subCategories && category.subCategories.length > 0 && (
+                                                            category.subCategories.map((subcategory) => (
+                                                                <ListItemButton key={subcategory} sx={{
+                                                                    pl: 4
+                                                                }}
+                                                                    className="category-select-button"
+                                                                    onClick={() => handleButtonClick(subcategory.name)}>
+                                                                    <ListItemText primary={autoCapitalize(subcategory.name)} />
+                                                                </ListItemButton>
+                                                            ))
+                                                        )}
+                                                    </List>
+                                                </Collapse>
+                                            </React.Fragment>
+                                        ))}
+                                    </List>
+                                </Collapse>
+                            </List>
                             <Divider orientation="horizontal" flexItem sx={{ borderColor: '#44494D', borderWidth: '0.08rem', my: '1rem' }} />
                             <FormControl sx={{ width: '100%' }}>
                                 <FormLabel sx={{
@@ -310,11 +389,11 @@ function AllProjects() {
                                     ) : null}
                                 </Search>
                             </Box>
-                            <div className='w-full mt-[3.6rem]'>
+                            <div className='w-full mt-[1.6rem]'>
                                 <div className='w-full'>
                                     {projects && projects.length > 0 ? (
                                         <div className='flex w-full'>
-                                            <Grid container spacing={'30px'} rowSpacing={{ lg: '16px', xs: '4px' }}>
+                                            <Grid container columnSpacing={'30px'}>
                                                 {projects.map((item, index) => (
                                                     <Grid item xs={6} lg={4} key={item.id}>
                                                         <div className='flex justify-center'>
