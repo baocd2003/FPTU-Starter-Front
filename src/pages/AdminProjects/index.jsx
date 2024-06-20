@@ -18,6 +18,8 @@ import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import Grid from "@mui/material/Grid";
 import LinearProgress from "@mui/material/LinearProgress";
+import Chip from "@mui/material/Chip";
+import Stack from "@mui/material/Stack";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import IconButton from "@mui/material/IconButton";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -188,8 +190,6 @@ function AdminProjects() {
 
   const token = Cookies.get("_auth");
 
-  console.log(projectList);
-
   const timeLineProgress = (selectedProject) => {
     if (selectedProject) {
       const startDate = Date.parse(selectedProject.startDate);
@@ -211,30 +211,6 @@ function AdminProjects() {
       } else {
         setProgressValue(progressPercentage);
         setProgressText(`${progressPercentage.toFixed(2)}%`);
-      }
-
-      console.log(startDate);
-      console.log(endDate);
-      console.log(currentDate);
-      console.log(progressValue);
-      console.log(progressPercentage);
-    }
-  };
-
-  useEffect(() => {
-    fetchProjects();
-  }, [token]);
-
-  const fetchProjects = async () => {
-    if (token) {
-      try {
-        const response = await projectApiInstance.get("", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const projects = response.data._data;
-        setProjectList(projects);
-      } catch (error) {
-        console.error("Error fetching project list:", error);
       }
     }
   };
@@ -271,7 +247,7 @@ function AdminProjects() {
   const handleClose = () => setOpen(false);
 
   const setProject = (projectList) => {
-    // console.log("Hihi");
+    setProjectList(projectList);
   };
 
   const handleChangeTab = (event, newValue) => {
@@ -374,17 +350,21 @@ function AdminProjects() {
 
   const visibleRows = React.useMemo(
     () =>
-      stableSort(projectList, getComparator(order, orderBy)).slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage
-      ),
+      Array.isArray(projectList) && projectList.length > 0
+        ? stableSort(projectList, getComparator(order, orderBy)).slice(
+            page * rowsPerPage,
+            page * rowsPerPage + rowsPerPage
+          )
+        : [],
     [order, orderBy, page, rowsPerPage, projectList]
   );
 
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar projectsCount={projectList.length} />
+        <EnhancedTableToolbar
+          projectsCount={Array.isArray(projectList) ? projectList.length : 0}
+        />
         <Box sx={{ padding: 2, display: "flex", justifyContent: "center" }}>
           <Box sx={{ width: "100%", maxWidth: "1200px" }}>
             <SearchBarProjects
@@ -432,7 +412,7 @@ function AdminProjects() {
           sx={{ margin: 4 }}
           rowsPerPageOptions={[10, 20]}
           component="div"
-          count={projectList.length}
+          count={Array.isArray(projectList) ? projectList.length : 0}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -536,6 +516,21 @@ function AdminProjects() {
                         {selectedProject.projectOwnerName}
                       </span>
                     </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      marginBottom: 1,
+                    }}
+                  >
+                    <Stack direction="row" spacing={1}>
+                      <Chip
+                        label={selectedProject.categories[0].name}
+                        sx={{ backgroundColor: "#FBB03B", color: "white" }}
+                      />
+                      {selectedProject.subCategories.map((subCategory) => (
+                        <Chip key={subCategory.id} label={subCategory.name} />
+                      ))}
+                    </Stack>
                   </Box>
                   <Box
                     sx={{

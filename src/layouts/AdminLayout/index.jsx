@@ -42,7 +42,7 @@ function AdminLayout() {
     navigate("/admin/dashboard");
   };
   const navigateAccounts = () => {
-    navigate("/admin/accounts");
+    navigate("/admin/users");
   };
   const navigateProjects = () => {
     navigate("/admin/projects");

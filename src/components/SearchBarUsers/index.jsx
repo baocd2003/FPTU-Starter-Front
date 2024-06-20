@@ -10,25 +10,19 @@ import { alpha, styled } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
-import categoryApiInstance from "../../utils/apiInstance/categoryApiInstance";
+import userManagementApiInstance from "../../utils/apiInstance/userManagementApiInstance";
 import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
 import "./index.css";
 
 const filteredStatues = [
-  { label: "Chờ duyệt", statusIndex: 1 },
-  { label: "Đang tiến hành", statusIndex: 2 },
-  { label: "Từ chối", statusIndex: 5 },
-  { label: "Thành công", statusIndex: 3 },
-  { label: "Thất bại", statusIndex: 4 },
-  { label: "Đã xóa", statusIndex: 0 },
+  { label: "Hoạt động", statusIndex: 0 },
+  { label: "Đã chặn", statusIndex: 1 },
 ];
 
-const filteredTarget = [
-  { label: "Từ 0 - 1 triệu", statusIndex: 1 },
-  { label: "Từ 1 triệu - 10 triệu", statusIndex: 2 },
-  { label: "Từ 10 triệu - 100 triệu", statusIndex: 3 },
-  { label: "100 triệu trở lên", statusIndex: 4 },
-];
+// const filteredRole = [
+//   { label: "Chủ dự án", roleName: "ProjectOwner" },
+//   { label: "Backer", roleName: "Backer" },
+// ];
 
 const Search = styled("div")(() => ({
   borderRadius: "5px",
@@ -76,48 +70,42 @@ const StyledInputBase = styled(InputBase)(() => ({
   height: "100%",
 }));
 
-const SearchBarProjects = ({ setProject, searchType }) => {
+const SearchBarUsers = ({ setUsers }) => {
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("md"));
-  const [projectList, setProjectList] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [userList, setUserList] = useState([]);
 
   const [searchValue, setSearchValue] = useState("");
   const [status, setStatus] = useState("");
-  const [target, setTarget] = useState("");
-  const [categoryName, selectCategoryName] = useState("");
   const token = Cookies.get("_auth");
 
   useEffect(() => {
-    fetchProjects(searchValue, status, target, categoryName);
-    getCategories();
+    fetchUsers(searchValue, status);
   }, [token]);
 
-  const fetchProjects = async (searchValue, status, target, categoryName) => {
+  const fetchUsers = async (searchValue, status) => {
     if (token) {
       try {
-        const response = await projectApiInstance.get(
-          `user-project?searchType=${searchType}&searchName=${searchValue}&projectStatus=${status}&moneyTarget=${target}&categoryName=${categoryName}`,
+        const response = await userManagementApiInstance.get(
+          `?search=${searchValue}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
         if (response.data._data != null) {
-          const projects = response.data._data;
-          setProjectList(projects);
-          setProject(projects);
+          const users = response.data._data;
+          setUserList(users);
+          setUsers(users);
         }
       } catch (error) {
         console.error("Error fetching project list:", error);
       }
     } else {
       try {
-        const response = await projectApiInstance.get(
-          `user-project?searchType=${searchType}&searchName=${searchValue}&projectStatus=${status}&moneyTarget=${target}&categoryName=${categoryName}`
-        );
+        const response = await projectApiInstance.get(`?search=${searchValue}`);
         if (response.data._data != null) {
-          const projects = response.data._data;
-          setProjectList(projects);
-          setProject(projects);
+          const users = response.data._data;
+          setUserList(users);
+          setUsers(users);
         }
       } catch (error) {
         console.error("Error fetching project list:", error);
@@ -125,23 +113,9 @@ const SearchBarProjects = ({ setProject, searchType }) => {
     }
   };
 
-  const getCategories = async () => {
-    try {
-      const response = await categoryApiInstance.get("");
-      console.log(response);
-      if (response.data.result._data != null) {
-        console.log(response.data.result._data);
-        const category = response.data.result._data;
-        setCategories(category);
-      }
-    } catch (error) {
-      console.error("Error fetching category list:", error);
-    }
-  };
-
   const handleCancel = () => {
     setSearchValue("");
-    fetchProjects("", status, target, categoryName);
+    fetchUsers("", status);
   };
 
   const handleKeyUp = (e) => {
@@ -154,22 +128,12 @@ const SearchBarProjects = ({ setProject, searchType }) => {
 
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
-    fetchProjects(e.target.value, status, target, categoryName);
+    fetchUsers(e.target.value, status);
   };
 
   const handleSearchStatus = (statusIndex) => {
     setStatus(statusIndex);
-    fetchProjects(searchValue, statusIndex, target, categoryName);
-  };
-
-  const handleSearchCategory = (newCategoryName) => {
-    selectCategoryName(newCategoryName);
-    fetchProjects(searchValue, status, target, newCategoryName);
-  };
-
-  const handleSearchTarget = (newTarget) => {
-    setTarget(newTarget);
-    fetchProjects(searchValue, status, newTarget, categoryName);
+    fetchUsers(searchValue, statusIndex);
   };
 
   return (
@@ -202,7 +166,7 @@ const SearchBarProjects = ({ setProject, searchType }) => {
               onChange: handleSearchChange,
               value: searchValue,
             }}
-            placeholder={"Bạn đang tìm dự án gì?"}
+            placeholder={"Bạn đang tìm người dùng nào?"}
             onKeyUp={handleKeyUp}
           />
           {searchValue ? (
@@ -250,73 +214,39 @@ const SearchBarProjects = ({ setProject, searchType }) => {
             </Select>
           </FormControl>
         </Box>
-        <Box width={isSmallScreen ? "100%" : "auto"}>
+        {/* <Box width={isSmallScreen ? "100%" : "auto"}>
           <FormControl
             sx={{ minWidth: 120, width: "160px" }}
             size="small"
             fullWidth={isSmallScreen}
           >
-            <InputLabel id="select-small-label-2">Mục tiêu</InputLabel>
+            <InputLabel id="select-small-label-2">Vai trò</InputLabel>
             <Select
               labelId="select-small-label-2"
               id="select-small-2"
               defaultValue={0}
-              label="Mục tiêu"
+              label="Vai trò"
               sx={{ textAlign: "left" }}
             >
               <MenuItem value={0} onClick={() => handleSearchTarget("")}>
                 Tất cả
               </MenuItem>
-              {filteredTarget.map((item, index) => (
+              {filteredRole.map((item, index) => (
                 <MenuItem
                   key={index}
                   sx={{ width: "100%", height: "54px" }}
                   value={index + 1}
-                  onClick={() => handleSearchTarget(item.statusIndex)}
+                  onClick={() => handleSearchTarget(item.roleName)}
                 >
                   {item.label}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
-        </Box>
-        <Box width={isSmallScreen ? "100%" : "auto"}>
-          <FormControl
-            sx={{ minWidth: 120 }}
-            size="small"
-            fullWidth={isSmallScreen}
-          >
-            <InputLabel id="select-small-label-3">Thể loại</InputLabel>
-            <Select
-              labelId="select-small-label-3"
-              id="select-small-3"
-              label="Thể loại"
-              defaultValue={0}
-              sx={{ textAlign: "left" }}
-            >
-              <MenuItem
-                value={0}
-                sx={{ width: "100%", height: "54px" }}
-                onClick={() => handleSearchCategory("")}
-              >
-                Tất cả
-              </MenuItem>
-              {categories.map((item, index) => (
-                <MenuItem
-                  key={index}
-                  sx={{ width: "100%", height: "54px" }}
-                  value={index + 1}
-                  onClick={() => handleSearchCategory(item.name)}
-                >
-                  {item.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Box>
+        </Box> */}
       </div>
     </Box>
   );
 };
 
-export default SearchBarProjects;
+export default SearchBarUsers;
