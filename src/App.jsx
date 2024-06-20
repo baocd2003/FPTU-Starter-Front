@@ -10,6 +10,7 @@ import CreateProjectLayout from "./layouts/CreateProjectLayout";
 import UserProfileLayout from "./layouts/UserProfileLayout";
 import AdminOverview from "./pages/AdminOverview";
 import AdminProjects from "./pages/AdminProjects";
+import AdminUsers from "./pages/AdminUsers";
 import AllProjects from "./pages/AllProjects";
 import ChangePassword from "./pages/ChangePassword";
 import StepFive from "./pages/CreateNewProject/StepFive";
@@ -71,15 +72,19 @@ function App() {
           <Route path="/admin" element={<Navigate to="/admin/dashboard" />} />
           <Route path="/admin/projects" element={<AdminProjects />} />
           <Route path="/admin/dashboard" element={<AdminOverview />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
         </Route>
-        <Route element={<CreateProject />} >
+        <Route element={<CreateProject />}>
           <Route path="/create-project" element={<InitStep />} />
           <Route path="/create-project/second" element={<SecondStep />} />
           <Route path="/create-project/third" element={<ThirdStep />} />
         </Route>
         <Route path="/choose-cate" element={<ChooseCategories />} />
         <Route path="/choose-subCates" element={<ChooseSubCates />} />
-        <Route path="/project-detail/:projectId" element={<POProjectDetail />} />
+        <Route
+          path="/project-detail/:projectId"
+          element={<POProjectDetail />}
+        />
         <Route path="/profile/projects" element={<UserProjects />} />
         <Route path="/my-wallet" element={<AccountWallet />} />
         <Route path="/all-projects" element={<AllProjects />} />
