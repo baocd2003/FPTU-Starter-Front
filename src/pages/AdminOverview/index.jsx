@@ -29,15 +29,15 @@ function AdminOverview() {
                     setData(sortedData);
                 }
             })
-            // await projectApiInstance.get("/").then(res => {
-            //     console.log(res.data);
+            await projectApiInstance.get("/").then(res => {
+                console.log(res.data);
 
-            //     if (res.data) {
-            //         const num = res.data._data.length;
-            //         setProjectCount(num);
-            //         setIsLoading(false);
-            //     }
-            // })
+                if (res.data) {
+                    const num = res.data._data.length;
+                    setProjectCount(num);
+                    setIsLoading(false);
+                }
+            })
             await cateApiInstance.get("/count-subCates").then(res => {
                 console.log(res.data);
                 if (res.data.result._isSuccess) {

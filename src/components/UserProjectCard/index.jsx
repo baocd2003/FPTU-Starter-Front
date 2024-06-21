@@ -113,7 +113,7 @@ function UserProjectCard({ project, user }) {
                             </div>
                         </div>
                         <Typography gutterBottom color="text.secondary" component="div"
-                            sx={{ textAlign: "left", fontSize: '1.25rem', color: '#FBB03B', fontWeight: 600, mt: '8px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                            sx={{ textAlign: "left", fontSize: '1.25rem', color: '#FBB03B', fontWeight: 600, mt: '8px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor : 'pointer' }}
                             onClick={() => handleClickDetail(project)}>
                             {project.projectName}
                         </Typography>

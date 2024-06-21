@@ -69,7 +69,7 @@ function SignIn() {
       password: data.get('password'),
     });
     //Save token to cookie
-    userApiInstace.post("/login", jsonData).then(res => {
+    userApiInstace.post("login", jsonData).then(res => {
       console.log(res.data);
       if (res.data._data == null) {
         notify(`${res.data._message[0]}`);

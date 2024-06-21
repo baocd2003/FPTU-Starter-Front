@@ -77,7 +77,7 @@ function BarCountDonate({data}) {
             
             },
             title: {
-              text: 'Monthly Inflation in Argentina, 2002',
+              text: 'Trend dự án được ủng hộ nhiều nhất',
               floating: true,
               offsetY: 330,
               align: 'center',
