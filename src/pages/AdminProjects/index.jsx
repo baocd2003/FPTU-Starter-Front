@@ -20,6 +20,12 @@ import Grid from "@mui/material/Grid";
 import LinearProgress from "@mui/material/LinearProgress";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import Divider from "@mui/material/Divider";
+import Popover from "@mui/material/Popover";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import IconButton from "@mui/material/IconButton";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -187,6 +193,9 @@ function AdminProjects() {
   const [open, setOpen] = useState(false);
   const [progressValue, setProgressValue] = useState(0);
   const [progressText, setProgressText] = useState("");
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [currentRewardItems, setCurrentRewardItems] = useState([]);
+  const [openPopover, setOpenPopover] = useState(false);
 
   const token = Cookies.get("_auth");
 
@@ -245,6 +254,17 @@ function AdminProjects() {
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const handlePopoverOpen = (event, rewardItems) => {
+    setAnchorEl(event.currentTarget);
+    setCurrentRewardItems(rewardItems);
+    setOpenPopover(true);
+  };
+
+  const handlePopoverClose = () => {
+    setOpenPopover(false);
+    setAnchorEl(null);
+  };
 
   const setProject = (projectList) => {
     setProjectList(projectList);
@@ -446,6 +466,8 @@ function AdminProjects() {
             <Tab label="Tổng quan" className="tab-project" />
             <Tab label="Video demo" className="tab-project" />
             <Tab label="Hình ảnh" className="tab-project" />
+            <Tab label="Gói" className="tab-project" />
+            <Tab label="Danh sách ủng hộ" className="tab-project" />
           </Tabs>
 
           {tabValue === 0 && selectedProject && (
@@ -723,6 +745,142 @@ function AdminProjects() {
               </ImageList>
             </Box>
           )}
+
+          {tabValue === 3 && selectedProject && (
+            <Box
+              sx={{ marginTop: "16px", gap: 2 }}
+              display={"flex"}
+              flexWrap={"wrap"}
+            >
+              {selectedProject.packageViewResponses.map(
+                (projectPackage, index) => (
+                  <Card sx={{ maxWidth: 240 }} key={index}>
+                    <CardMedia
+                      component="img"
+                      alt="green iguana"
+                      height="160"
+                      image={projectPackage.packageImage}
+                    />
+                    <CardContent>
+                      <Typography
+                        gutterbottom="true"
+                        sx={{ textAlign: "left", fontSize: "1rem" }}
+                      >
+                        {projectPackage.packageName}
+                      </Typography>
+                      <Typography
+                        gutterbottom="true"
+                        sx={{
+                          fontWeight: "bold",
+                          textAlign: "left",
+                          fontSize: "1.2rem",
+                        }}
+                      >
+                        {projectPackage.requiredAmount
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}{" "}
+                        VND
+                      </Typography>
+                      <Typography
+                        gutterbottom="true"
+                        sx={{ textAlign: "left", fontSize: ".8rem" }}
+                      >
+                        {projectPackage.packageDescription}
+                      </Typography>
+                      <Divider gutterbottom="true" sx={{ marginTop: 1 }} />
+                    </CardContent>
+                    <CardActions sx={{ justifyContent: "center" }}>
+                      <Button
+                        size="small"
+                        sx={{ color: "#FFB30B" }}
+                        onMouseEnter={(e) =>
+                          handlePopoverOpen(e, projectPackage.rewardItems)
+                        }
+                        onMouseLeave={handlePopoverClose}
+                      >
+                        Xem quà
+                      </Button>
+                      <Popover
+                        sx={{
+                          pointerEvents: "none",
+                        }}
+                        open={openPopover}
+                        anchorEl={anchorEl}
+                        anchorOrigin={{
+                          vertical: "top",
+                          horizontal: "right",
+                        }}
+                        transformOrigin={{
+                          vertical: "bottom",
+                          horizontal: "left",
+                        }}
+                        onClose={handlePopoverClose}
+                        disableRestoreFocus
+                      >
+                        {currentRewardItems.length > 0 ? (
+                          currentRewardItems.map((reward, index) => (
+                            <Box
+                              sx={{
+                                p: 2,
+                                display: "flex",
+                              }}
+                              key={index}
+                            >
+                              <Box
+                                sx={{
+                                  width: "100px",
+                                  height: "100px",
+                                  overflow: "hidden",
+                                  flexShrink: 0,
+                                }}
+                              >
+                                <CardMedia
+                                  component="img"
+                                  alt={reward.imageUrl}
+                                  height="140"
+                                  image={reward.imageUrl}
+                                  sx={{
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "cover",
+                                  }}
+                                />
+                              </Box>
+                              <Box sx={{ ml: 2 }}>
+                                <Typography variant="h6">
+                                  {reward.name}
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                >
+                                  {reward.description}
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                >
+                                  Số lượng: {reward.quantity}
+                                </Typography>
+                              </Box>
+                            </Box>
+                          ))
+                        ) : (
+                          <Box sx={{ padding: 2 }}>
+                            <Typography variant="body2" color="text.secondary">
+                              Không có quà
+                            </Typography>
+                          </Box>
+                        )}
+                      </Popover>
+                    </CardActions>
+                  </Card>
+                )
+              )}
+            </Box>
+          )}
+
+          {tabValue === 4 && <Box>Danh sách ủng hộ</Box>}
 
           {selectedProject?.projectStatus === 1 && (
             <Box sx={{ mt: 2, display: "flex", justifyContent: "center" }}>
