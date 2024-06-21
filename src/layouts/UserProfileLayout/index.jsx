@@ -1,6 +1,4 @@
-import BallotIcon from '@mui/icons-material/Ballot';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
-import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import { Button, CircularProgress, Divider } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Backdrop from '@mui/material/Backdrop';

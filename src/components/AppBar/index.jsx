@@ -14,6 +14,7 @@ import Swal from 'sweetalert2';
 import HeaderLogo2 from "../../assets/HeaderLogo2.png";
 import logo from "../../assets/logo-transparent.png";
 import userManagementApiInstance from '../../utils/apiInstance/userManagementApiInstance';
+import AuthenticationModal from '../AuthenticationModal';
 import "./index.css";
 
 const pages = [
@@ -39,6 +40,13 @@ function FSUAppBar({ isLogined, refetchData }) {
   const [isLoading, setIsLoading] = React.useState(false);
   const [logoSrc, setLogoSrc] = React.useState(logo);
   const [classHeader, setClassHeader] = React.useState("scrolled");
+
+  //Open Authentication Modal
+  const [openModal, setOpenModal] = React.useState(false);
+
+  //Login Modal
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
 
   const navigate = useNavigate();
 
@@ -205,6 +213,7 @@ function FSUAppBar({ isLogined, refetchData }) {
           </Toolbar>
         </Container>
       </AppBar>
+      <AuthenticationModal open={openModal} handleCloseModal={handleCloseModal} />
     </>
   );
 }
