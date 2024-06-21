@@ -17,6 +17,7 @@ function Footer() {
             paddingLeft: "0.5rem !important",
             paddingRight: "1rem !important",
           },
+          zIndex: 2
         }}
       >
         <Grid spacing={2} container className="!mt-0 !ms-0 ">
@@ -81,7 +82,7 @@ function Footer() {
           </Grid>
         </Grid>
       </Container>
-      <Box className="w-full mt-auto text-neutral-100">
+      <Box className="w-full mt-auto text-neutral-100" sx={{ zIndex: 2 }}>
         <hr />
         <Typography
           variant="body2"

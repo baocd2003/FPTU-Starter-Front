@@ -1,7 +1,7 @@
-import AddIcon from '@mui/icons-material/Add';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CircleIcon from '@mui/icons-material/Circle';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import StarIcon from '@mui/icons-material/Star';
 import { Button } from '@mui/material';
 import Accordion from '@mui/material/Accordion';
@@ -155,7 +155,7 @@ function HomePage() {
 							</div>
 						</div>
 						<ProjectCard setSwiperRef={(ref) => { swiperPopularProjectRef.current = ref.current }} type={"popular"} />
-						<Button sx={{ px: '2.4rem !important', color: '#44494D', display: 'block', height: '3.2rem', borderRadius: '0.4rem !important', fontSize: '1rem', fontWeight: 600, mx: 'auto', mt: '1.6rem', letterSpacing: '1px', textTransform: 'none' }} className="all-project-btn">
+						<Button onClick={() => navigate('/all-projects')} sx={{ px: '2.4rem !important', color: '#44494D', display: 'block', height: '3.2rem', borderRadius: '0.4rem !important', fontSize: '1rem', fontWeight: 600, mx: 'auto', mt: '1.6rem', letterSpacing: '1px', textTransform: 'none' }} className="all-project-btn">
 							Xem toàn bộ dự án
 						</Button>
 					</div>
@@ -220,7 +220,7 @@ function HomePage() {
 							</div>
 						</div>
 						<ProjectCard setSwiperRef={(ref) => { swiperNewProjectRef.current = ref.current }} type={"new"} />
-						<Button sx={{ px: '2.4rem !important', color: '#44494D', display: 'block', height: '3.2rem', borderRadius: '0.4rem !important', fontSize: '1rem', fontWeight: 600, mx: 'auto', mt: '1.6rem', letterSpacing: '1px', textTransform: 'none' }} className="all-project-btn">
+						<Button onClick={() => navigate('/all-projects')} sx={{ px: '2.4rem !important', color: '#44494D', display: 'block', height: '3.2rem', borderRadius: '0.4rem !important', fontSize: '1rem', fontWeight: 600, mx: 'auto', mt: '1.6rem', letterSpacing: '1px', textTransform: 'none' }} className="all-project-btn">
 							Xem toàn bộ dự án
 						</Button>
 					</div>
@@ -239,7 +239,7 @@ function HomePage() {
 										Làm thế nào chúng tôi có thể giúp bạn?
 									</Typography>
 									<Typography variant="h3" sx={{ fontSize: { lg: '1.2rem', xs: '0.8rem' }, color: 'white', fontWeight: 600, textAlign: 'justify', mr: '40px', lineHeight: '2.4rem', mb: '2.4rem' }}>
-										Chúng tôi rất vui được giải đáp những thắc mắc phổ biến mà quý khách có thể gặp phải khi sử dụng dịch vụ của chúng tôi
+										Chúng tôi rất vui được giải đáp những thắc mắc phổ biến mà bạn có thể gặp phải khi sử dụng dịch vụ của chúng tôi
 									</Typography>
 								</Box>
 								<Button sx={{ px: '2.4rem !important', color: '#44494D', backgroundColor: '#FFFFFF !important', border: '2px solid transparent !important', display: 'block', height: '3.2rem', borderRadius: '0.4rem !important', fontSize: '1rem', fontWeight: 600, letterSpacing: '1px', textTransform: 'none', ml: '20px' }} className="all-project-btn">
@@ -250,7 +250,7 @@ function HomePage() {
 								<Box sx={{ px: '20px' }}>
 									<Accordion sx={{ mb: '2.4rem', borderRadius: '0.4rem' }}>
 										<AccordionSummary
-											expandIcon={<AddIcon />}
+											expandIcon={<ExpandMoreIcon />}
 											aria-controls="panel1-content"
 											id="panel1-header"
 											sx={{ textAlign: 'left' }}
@@ -263,7 +263,7 @@ function HomePage() {
 									</Accordion>
 									<Accordion sx={{ mb: '2.4rem', borderRadius: '0.4rem', outline: 'none !important' }}>
 										<AccordionSummary
-											expandIcon={<AddIcon />}
+											expandIcon={<ExpandMoreIcon />}
 											aria-controls="panel1-content"
 											id="panel1-header"
 											sx={{ textAlign: 'left' }}
@@ -276,7 +276,7 @@ function HomePage() {
 									</Accordion>
 									<Accordion sx={{ mb: '2.4rem', borderRadius: '0.4rem' }}>
 										<AccordionSummary
-											expandIcon={<AddIcon />}
+											expandIcon={<ExpandMoreIcon />}
 											aria-controls="panel1-content"
 											id="panel1-header"
 											sx={{ textAlign: 'left' }}
@@ -289,7 +289,7 @@ function HomePage() {
 									</Accordion>
 									<Accordion sx={{ mb: '2.4rem', borderRadius: '0.4rem' }}>
 										<AccordionSummary
-											expandIcon={<AddIcon />}
+											expandIcon={<ExpandMoreIcon />}
 											aria-controls="panel1-content"
 											id="panel1-header"
 											sx={{ textAlign: 'left' }}
@@ -302,7 +302,7 @@ function HomePage() {
 									</Accordion>
 									<Accordion sx={{ borderRadius: '0.4rem' }}>
 										<AccordionSummary
-											expandIcon={<AddIcon />}
+											expandIcon={<ExpandMoreIcon />}
 											aria-controls="panel1-content"
 											id="panel1-header"
 											sx={{ textAlign: 'left' }}

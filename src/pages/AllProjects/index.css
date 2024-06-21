@@ -22,5 +22,12 @@
 .category-select-button:focus,
 .category-select-button:active,
 .category-select-button:hover {
-    background-color: inherit !important
+    background-color: #FBB03B !important;
+}
+
+.category-select-button:focus .MuiListItemText-root span,
+.category-select-button:active .MuiListItemText-root span,
+.category-select-button:hover .MuiListItemText-root span {
+    color: white !important;
+    font-weight: 600;
 }
