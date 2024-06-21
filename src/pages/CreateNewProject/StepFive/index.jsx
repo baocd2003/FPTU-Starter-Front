@@ -100,7 +100,7 @@ const StepFive = () => {
     // get thumbnail url
     const api_url = import.meta.env.VITE_REACT_APP_API_URL
     const thumbnailUrl = await fetch(
-      `${api_url}api/projects/add-thumbnail`,
+      `${api_url}/api/projects/add-thumbnail`,
       {
         method: "POST",
         body: thumbnailFormData,
@@ -112,7 +112,7 @@ const StepFive = () => {
 
     // get livedemo url
     const liveDemoUrl = await fetch(
-      `${api_url}api/projects/add-live-demo`,
+      `${api_url}/api/projects/add-live-demo`,
       {
         method: "POST",
         body: liveDemoFormData,

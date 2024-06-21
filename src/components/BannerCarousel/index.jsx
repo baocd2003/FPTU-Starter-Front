@@ -17,7 +17,7 @@ function BannerCarousel() {
   const navigate = useNavigate();
   const checkAuth = () => {
     if (existedAuth !== undefined) {
-      navigate("/choose-cate")
+      navigate("/init-project/step-one")
     } else {
       Swal.fire({
         title: "Cần đăng nhập",
