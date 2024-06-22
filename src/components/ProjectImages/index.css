@@ -13,7 +13,23 @@
     align-items: center;
     flex-direction: column;
 }
-.live-video video{
-    width: 100% !important;
-    height: 500px !important ;
+
+.carousel img, .carousel video {
+    object-fit: contain !important;
+    height: 100% !important;
+    background: rgba(0, 0, 0, 0.9) !important;
+}
+ 
+.thumb{
+    object-fit: cover;
+    height: 4rem !important;
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.1);
+
+}
+
+.thumb video, .thumb img{
+    object-fit: contain;
+    height: 100%;
 }

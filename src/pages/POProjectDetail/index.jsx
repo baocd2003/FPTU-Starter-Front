@@ -1,4 +1,4 @@
-import { Close } from "@mui/icons-material";
+import { Circle, Close } from "@mui/icons-material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { Avatar, Backdrop, Box, Button, Card, CardActions, CardContent, CardMedia, Chip, CircularProgress, Container, Divider, Drawer, Grid, InputAdornment, LinearProgress, Stack, Tab, TextField, Typography, linearProgressClasses, styled } from "@mui/material";
 import { tabsClasses } from '@mui/material/Tabs';
@@ -18,6 +18,7 @@ import interactionApiInstance from "../../utils/apiInstance/interactionApiInstan
 import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
 import userManagementApiInstance from "../../utils/apiInstance/userManagementApiInstance";
 import './index.css';
+import walletApiInstance from "../../utils/apiInstance/walletApiInstance.jsx";
 
 function POProjectDetail() {
   const [project, setProject] = useState(null);
@@ -29,6 +30,7 @@ function POProjectDetail() {
   const [projectUser, setProjectUser] = useState(null);
   const [checkOwner, setCheckOwner] = useState(false);
   const [checkLike, setCheckLike] = useState([]);
+  const [userWallet, setUserWallet] = useState();
   const navigate = useNavigate();
   const [backerList, setBackerList] = useState([]);
   const containerRef = useRef(null);
@@ -39,6 +41,23 @@ function POProjectDetail() {
       containerRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  console.log(userWallet)
+
+  const fetchUserWallet = (token) => {
+    walletApiInstance.get("/user-wallet", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => {
+        setUserWallet(res.data._data);
+      })
+      .catch(error => {
+        console.error('Error fetching user wallet:', error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }
 
   const [openDrawer, setOpenDrawer] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState(null);
@@ -61,7 +80,7 @@ function POProjectDetail() {
       }, {
         headers: { Authorization: `Bearer ${token}` }
       }).then(res => {
-        console.log(res.data);
+        // console.log(res.data);
         checkUserLike();
       })
     }
@@ -157,7 +176,7 @@ function POProjectDetail() {
     interactionApiInstance.get(`/check-user-like/${projectId}`, {
       headers: { Authorization: `Bearer ${token}` }
     }).then(res => {
-      console.log(res.data);
+      // console.log(res.data);
       setCheckLike(res.data.result);
     })
   }
@@ -195,6 +214,8 @@ function POProjectDetail() {
       });
   }
 
+  // console.log('project', project)
+
   useEffect(() => {
     //check project owner
     const token = Cookies.get("_auth");
@@ -202,11 +223,12 @@ function POProjectDetail() {
     if (token == undefined) {
       setCheckOwner(false);
     } else {
+      fetchUserWallet(token)
       projectApiInstance.get(`/check-owner?projectId=${projectId}`, {
         headers: { Authorization: `Bearer ${token}` }
       }).then(res => {
         setCheckOwner(res.data.result._data);
-        console.log(res.data);
+        // console.log(res.data);
       })
       checkUserLike();
     }
@@ -214,8 +236,8 @@ function POProjectDetail() {
     getProjectDetail();
     getBackers();
   }, [projectId])
-  console.log(images);
-  console.log(project)
+  // console.log(images);
+  // console.log(project)
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0');
@@ -251,7 +273,10 @@ function POProjectDetail() {
                   sx={{ fontWeight: 'bold', fontSize: '1.5rem', mb: '1rem' }}
                 >Thông tin gói ủng hộ</Typography>
                 <Box sx={{ display: 'flex', gap: 2 }}>
-                  <img src='https://i.ibb.co/K7TGtpK/istockphoto-1409955148-612x612.jpg' className="h-[8rem] rounded-sm" />
+                  <Box sx={{ position: 'relative' }}>
+                    <img src='https://t4.ftcdn.net/jpg/03/03/46/39/360_F_303463981_i1CiZU5VYclryudt7VI7YSEDw9mgkSqJ.jpg' className="h-[8rem] rounded-sm" />
+                    <Typography sx={{ color: 'white', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', whiteSpace: 'nowrap' }}>{selectedPackage.requiredAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</Typography>
+                  </Box>
                   <Box sx={{ width: '100%' }}>
                     <Typography
                       sx={{ fontSize: '1.2rem', mb: '1rem', }}
@@ -303,7 +328,18 @@ function POProjectDetail() {
                     sx={{ fontSize: '1.2rem' }}
                   >{selectedPackage.requiredAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}đ</Typography>
                 </Box>
-
+                <Box
+                  sx={{
+                    width: '100%', background: 'rgba(0, 0, 0, 0.2)', p: 1, my: 3, borderRadius: '.3rem',
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box sx={{ height: '.7rem', background: 'rgba(0, 0, 0, 0.8)', width: '.7rem', borderRadius: '50%', outline: '2px solid rgba(255, 255, 255, .9)' }}></Box>
+                    Sử dụng số dư ví
+                  </Box>
+                  <Typography sx={{ fontWeight: 'bold' }}>{userWallet.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}đ</Typography>
+                </Box>
 
                 <Button variant='contained'
                   disableElevation
@@ -337,11 +373,12 @@ function POProjectDetail() {
       </Backdrop>
       {project && projectUser && (
         <Box>
+          {/* upper project info */}
           <Box
             sx={{
               background: "#F0F0F0",
               pt: "5rem",
-              pb: "3rem"
+              // pb: "3rem"
             }}
           >
             <Container className="flex flex-row justify-center items-center"
@@ -349,11 +386,17 @@ function POProjectDetail() {
                 maxWidth: { lg: "lg", xl: "xl", xs: "xs" },
               }}
             >
+              <Box item xs={7.5} sx={{ mt: '3rem !important', mb: '1rem !important' }}>
+                <Typography
+                  textAlign={'left'}
+                  sx={{ fontSize: '1.5rem', fontWeight: 'bold' }}
+                >Tổng quan dự án</Typography>
+              </Box>
               <Grid container>
-                <Grid item xs={7}>
+                <Grid item xs={7.5} sx={{ mt: '0 !important' }}>
                   <ProjectImages thumbNail={project.projectThumbnail} images={images} liveDemo={project.projectLiveDemo} />
                 </Grid>
-                <Grid item xs={5} paddingLeft={5}>
+                <Grid item xs={4.5} sx={{ mt: '0 !important' }} paddingLeft={5}>
                   <Box
                     sx={{
                       display: "flex",
@@ -441,7 +484,7 @@ function POProjectDetail() {
                     value={project.projectBalance > project.projectTarget ? 100 : Math.round((project.projectBalance / project.projectTarget) * 100)} />
 
                   <ProjectDetailStat numb={`${project.projectBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND`} stat={`đã được kêu gọi trên mục tiêu ${project.projectTarget.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND`} />
-                  <ProjectDetailStat numb={"299"} stat={"người đầu tư"} />
+                  <ProjectDetailStat numb={backerList.length} stat={"người ủng hộ"} />
                   <ProjectDetailStat numb={remainingDays} stat={"ngày còn lại"} />
                   <Stack spacing={1} direction="column" sx={{ my: 4 }}>
                     {checkOwner ?
@@ -457,7 +500,7 @@ function POProjectDetail() {
                           Ủng hộ dự án
                         </Button>
                         <Grid container spacing={2} sx={{ alignItems: 'center' }}>
-                          <Grid item xs={6} sx={{ paddingLeft: '0px !important' }}>
+                          <Grid item xs={6} sx={{ paddingLeft: '0px !important', my: '0 !important' }}>
                             <Button variant="contained"
                               sx={{
                                 width: "100%", whiteSpace: "nowrap"
@@ -470,7 +513,7 @@ function POProjectDetail() {
                               {checkLike.length !== 0 ? 'Đã thích' : 'Thích'}
                             </Button>
                           </Grid>
-                          <Grid item xs={6}>
+                          <Grid item xs={6} sx={{ my: '0 !important' }}>
                             <Box className='flex'>
                               <FaFacebook className="social-link" />
                               <FaInstagram className="social-link" />
@@ -488,211 +531,271 @@ function POProjectDetail() {
               </Grid>
             </Container >
           </Box>
-          <Container className="flex flex-row justify-center items-center"
-            sx={{
-              maxWidth: { lg: "lg", xl: "xl", xs: "xs" },
-              height: "100vh"
-            }}
-            ref={containerRef}
-          >
-            <Grid container>
-              <Grid item xs={9} sx={{ pr: 10, mt: "0 !important" }}>
-                <TabContext value={tabValue}>
-                  <TabList
-                    onChange={handleChange}
-                    // centered
-                    // variant="fullWidth"
+
+          {/* below project info */}
+          <TabContext value={tabValue} >
+            <Box
+              sx={{
+                position: "sticky", top: 0, zIndex: 2,
+              }}>
+              <Container sx={{ maxWidth: { lg: "lg", xl: "xl", xs: "xs" } }}>
+                <TabList
+                  onChange={handleChange}
+                  // centered
+                  // variant="fullWidth"
+                  sx={{
+                    background: "white",
+                    [`& .${tabsClasses.scrollButtons}`]: {
+                      '&.Mui-disabled': { opacity: 0.3 },
+                    },
+                    [`& .MuiTabs-indicator`]: {
+                      display: "flex",
+                      justifyContent: "center",
+                      backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                    },
+
+                  }}>
+                  <Tab label="Danh sách gói"
                     sx={{
-                      background: "white",
-                      [`& .${tabsClasses.scrollButtons}`]: {
-                        '&.Mui-disabled': { opacity: 0.3 },
-                      },
-                      [`& .MuiTabs-indicator`]: {
-                        display: "flex",
-                        justifyContent: "center",
-                        backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                      },
+                      fontStyle: "normal",
+                      fontWeight: "bold", px: 4, py: 3, whiteSpace: "nowrap",
+                      textTransform: "none", color: "rgba(0, 0, 0, 0.6) !important",
+                      '&:active': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
+                      '&:focus': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
+                    }}
+                    value="1" />
+                  <Tab label="Về chúng mình"
+                    sx={{
+                      fontStyle: "normal",
+                      fontWeight: "bold", px: 4, py: 3, whiteSpace: "nowrap",
+                      textTransform: "none", color: "rgba(0, 0, 0, 0.6) !important",
+                      '&:active': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
+                      '&:focus': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
+                    }}
+                    value="2" />
+                  <Tab label="Cập nhật"
+                    sx={{
+                      fontStyle: "normal",
+                      fontWeight: "bold", px: 4, py: 3, whiteSpace: "nowrap",
+                      textTransform: "none", color: "rgba(0, 0, 0, 0.6) !important",
+                      '&:active': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
+                      '&:focus': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
+                    }}
+                    value="3" />
+                  <Tab label="Danh sách người ủng hộ"
+                    sx={{
+                      fontStyle: "normal",
+                      fontWeight: "bold", px: 4, py: 3, whiteSpace: "nowrap",
+                      textTransform: "none", color: "rgba(0, 0, 0, 0.6) !important",
+                      '&:active': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
+                      '&:focus': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
+                    }}
+                    value="4" />
+                  <Tab label="Bình luận"
+                    sx={{
+                      fontStyle: "normal",
+                      fontWeight: "bold", px: 4, py: 3, whiteSpace: "nowrap",
+                      textTransform: "none", color: "rgba(0, 0, 0, 0.6) !important",
+                      '&:active': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
+                      '&:focus': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
+                    }}
+                    value="5" />
 
-                    }}>
-                    <Tab label="Danh sách gói"
-                      sx={{
-                        fontStyle: "normal",
-                        fontWeight: "bold", px: 4, py: 3, whiteSpace: "nowrap",
-                        textTransform: "none", color: "rgba(0, 0, 0, 0.6) !important",
-                        '&:active': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
-                        '&:focus': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
-                      }}
-                      value="1" />
-                    <Tab label="Về chúng mình"
-                      sx={{
-                        fontStyle: "normal",
-                        fontWeight: "bold", px: 4, py: 3, whiteSpace: "nowrap",
-                        textTransform: "none", color: "rgba(0, 0, 0, 0.6) !important",
-                        '&:active': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
-                        '&:focus': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
-                      }}
-                      value="2" />
-                    <Tab label="Cập nhật"
-                      sx={{
-                        fontStyle: "normal",
-                        fontWeight: "bold", px: 4, py: 3, whiteSpace: "nowrap",
-                        textTransform: "none", color: "rgba(0, 0, 0, 0.6) !important",
-                        '&:active': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
-                        '&:focus': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
-                      }}
-                      value="3" />
-                    <Tab label="Danh sách người ủng hộ"
-                      sx={{
-                        fontStyle: "normal",
-                        fontWeight: "bold", px: 4, py: 3, whiteSpace: "nowrap",
-                        textTransform: "none", color: "rgba(0, 0, 0, 0.6) !important",
-                        '&:active': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
-                        '&:focus': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
-                      }}
-                      value="4" />
-                    <Tab label="Bình luận"
-                      sx={{
-                        fontStyle: "normal",
-                        fontWeight: "bold", px: 4, py: 3, whiteSpace: "nowrap",
-                        textTransform: "none", color: "rgba(0, 0, 0, 0.6) !important",
-                        '&:active': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
-                        '&:focus': { outline: 'none !important', color: "rgba(0, 0, 0, 0.6) !important", background: "transparent !important" },
-                      }}
-                      value="5" />
+                </TabList>
+              </Container>
 
-                  </TabList>
-                  <Divider />
-                  <TabPanel value="1" sx={{ minHeight: "200vh" }}>
-                    <Grid container rowSpacing={0} columnSpacing={2}>
+              <Divider />
+            </Box>
 
-                      <Box sx={{ width: "100%", mb: 3 }}>
-                        <Typography
-                          sx={{ fontSize: "1.8rem", fontWeight: "bold", color: "rgba(0, 0, 0, 0.7)" }}
-                        >Danh sách các gói ủng hộ</Typography>
-                        <Typography
-                          sx={{ fontSize: ".85rem", fontWeight: "bold", color: "rgba(0, 0, 0, 0.5)" }}
-                        >Chọn các gói ủng hộ có sẵn với các phần quà hấp dẫn</Typography>
-                      </Box>
-                      {project && project.packageViewResponses.map((projectPackage, index) => (
-                        <Grid item xs={4} sx={{ my: ".5rem !important" }}>
-                          <Card key={index}>
-                            <CardMedia
-                              component="img"
-                              alt="green iguana"
-                              image="https://i.ibb.co/K7TGtpK/istockphoto-1409955148-612x612.jpg"
-                              sx={{ height: "9rem" }}
-                            />
-                            <CardContent>
+            <Container className="flex flex-row justify-center items-center"
+              sx={{
+                maxWidth: { lg: "lg", xl: "xl", xs: "xs" },
+                // height: "200vh"
+              }}
+              ref={containerRef}
+            >
+              <Grid container >
+                {tabValue == '1'
+                  ? (
+                    <>
+                      <Grid item xs={12} sx={{ mt: '0 !important' }}>
+                        <TabPanel value="1" sx={{ minHeight: "" }}>
+                          <Grid container rowSpacing={0} columnSpacing={5} key={project.id}>
+                            <Box sx={{ width: "100%", mb: 3 }}>
                               <Typography
-                                gutterBottom
-                                sx={{ textAlign: "left", fontSize: "1rem" }}
-                              >
-                                {projectPackage.packageName}
-                              </Typography>
+                                sx={{ fontSize: "1.8rem", fontWeight: "bold", color: "rgba(0, 0, 0, 0.7)" }}
+                              >Danh sách các gói ủng hộ</Typography>
                               <Typography
-                                gutterBottom
-                                sx={{ fontWeight: "bold", textAlign: "left", fontSize: "1.2rem" }}
+                                sx={{ fontSize: ".85rem", fontWeight: "bold", color: "rgba(0, 0, 0, 0.5)" }}
+                              >Chọn các gói ủng hộ có sẵn với các phần quà hấp dẫn</Typography>
+                            </Box>
+                            {project && project.packageViewResponses.filter(projectPackage => projectPackage.packageType !== 'Free').map((projectPackage, index) => (
+                              <Grid item xs={4} sx={{ my: ".5rem !important" }}>
+                                <Card key={index} sx={{ position: 'relative' }}>
+                                  <CardMedia
+                                    component="img"
+                                    alt="green iguana"
+                                    image="https://t4.ftcdn.net/jpg/03/03/46/39/360_F_303463981_i1CiZU5VYclryudt7VI7YSEDw9mgkSqJ.jpg"
+                                    sx={{ height: "12rem" }}
+                                  />
+                                  <Box sx={{ position: 'absolute', top: '4.5rem', left: '5rem' }}>
+                                    <Typography sx={{ fontSize: '2rem', fontWeight: 'bold', color: 'white' }}>
+                                      {projectPackage.requiredAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND
+                                    </Typography>
+
+                                  </Box>
+                                  <CardContent sx={{ height: '15rem' }}>
+                                    <Typography
+                                      gutterBottom
+                                      sx={{ textAlign: "left", fontSize: "1rem" }}
+                                    >
+                                      {projectPackage.packageName}
+                                    </Typography>
+                                    <Typography
+                                      gutterBottom
+                                      sx={{ fontWeight: "bold", textAlign: "left", fontSize: "1.2rem" }}
+                                    >
+                                      {projectPackage.requiredAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND
+                                    </Typography>
+                                    <Typography
+                                      gutterBottom
+                                      sx={{ textAlign: "left", fontSize: ".8rem" }}
+                                    >
+                                      {projectPackage.packageDescription}
+                                    </Typography>
+                                    <Divider gutterBottom />
+                                    <Box sx={{ px: 3 }}>
+                                      <Typography textAlign={'left'} sx={{ my: .5 }}>Thông tin đặc quyền</Typography>
+                                      <ul>
+                                        {projectPackage.rewardItems.map((item, index) =>
+                                          <li style={{ listStyleType: 'initial', textAlign: 'left', fontSize: '.85rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.name} - {item.description}</li>
+                                        )}
+                                      </ul>
+                                    </Box>
+                                  </CardContent>
+                                  <CardActions sx={{ display: 'flex', justifyContent: 'center' }}>
+                                    {!checkOwner
+                                      ? (
+                                        <Button onClick={() => handleDonatePackage(projectPackage)} variant="contained">
+                                          Chọn
+                                        </Button>
+                                      )
+                                      : (
+                                        <Button variant="contained" disabled>Chỉnh sửa</Button>
+                                      )
+                                    }
+                                  </CardActions>
+                                </Card>
+                              </Grid>
+                            ))}
+                          </Grid>
+                          <Divider sx={{ width: "100%", fontWeight: "bold", color: "rgba(0, 0, 0, 0.5)", my: 3 }}>OR</Divider>
+                          <Box sx={{ width: "100%" }}>
+                            <Typography
+                              sx={{ fontSize: "1.8rem", fontWeight: "bold", color: "rgba(0, 0, 0, 0.7)" }}
+                            >Ủng hộ nhanh</Typography>
+                            <Typography
+                              sx={{ fontSize: ".85rem", fontWeight: "bold", color: "rgba(0, 0, 0, 0.5)" }}
+                            >Nhập số tiền bạn muốn ủng hộ trực tiếp cho nhà phát triển dự án</Typography>
+                            <TextField
+                              type="number"
+                              placeholder="Nhập số tiền"
+                              value={freeDonateAmount}
+                              onChange={(e) => setFreeDonateAmount(e.target.value)}
+                              sx={{ width: "50%", my: 2 }}
+                              InputProps={{
+                                endAdornment: <InputAdornment>VND</InputAdornment>,
+                              }}
+                            /> <br />
+                            <Button onClick={() => handleFreeDonate()} variant="contained" sx={{ background: "#FCAE3D" }}>Ủng hộ</Button>
+                          </Box>
+                        </TabPanel>
+                      </Grid>
+                    </>
+                  )
+                  : (
+                    <>
+                      <Grid item xs={9} sx={{ mt: '0 !important', pr: 5 }}>
+                        <TabPanel value="2">
+                          <div dangerouslySetInnerHTML={{ __html: project.aboutUs?.content }} />
+                        </TabPanel>
+                        <TabPanel value="3">Theo dõi cập nhật tiến độ dự án tại đây</TabPanel>
+                        <TabPanel value="4">
+                          <BackerList data={backerList} />
+                        </TabPanel>
+                        <TabPanel value="5">
+                          <CommentSection projectId={projectId} token={Cookies.get('_auth')} />
+                        </TabPanel>
+                      </Grid>
+                      <Grid item xs={3} sx={{ height: '200vh' }}>
+                        <Typography textAlign={"left"} sx={{
+                          fontWeight: "bold", fontSize: "1.5rem",
+                          color: "rgba(0, 0, 0, 0.8)", px: 1, position: "sticky", top: "4.5rem"
+                        }}>Ủng hộ ngay</Typography>
+                        <Box sx={{ height: "80vh", overflowY: "scroll", position: "sticky", top: "6rem !important" }}>
+                          {project && project.packageViewResponses.filter(projectPackage => projectPackage.packageType !== 'Free').map((projectPackage, index) => (
+                            <Card key={index} sx={{ borderRadius: 0, border: ".1rem solid rgba(0, 0, 0, 0.12)", mt: 3, mx: 1, position: 'relative' }}>
+                              <CardMedia
+                                component="img"
+                                alt="green iguana"
+                                image="https://t4.ftcdn.net/jpg/03/03/46/39/360_F_303463981_i1CiZU5VYclryudt7VI7YSEDw9mgkSqJ.jpg"
+                                sx={{ height: "9rem" }}
+                              />
+                              <Typography
+                                sx={{
+                                  fontWeight: 'bold', fontSize: '1.5rem',
+                                  color: 'white', position: 'absolute',
+                                  top: '3.5rem', left: '4.5rem'
+                                }}
                               >
                                 {projectPackage.requiredAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND
                               </Typography>
-                              <Typography
-                                gutterBottom
-                                sx={{ textAlign: "left", fontSize: ".8rem" }}
-                              >
-                                {projectPackage.packageDescription}
-                              </Typography>
-                              <Divider gutterBottom />
-                            </CardContent>
-                            <CardActions>
-                              <Button onClick={() => handleDonatePackage(projectPackage)} variant="contained">
-                                Chọn
-                              </Button>
-                            </CardActions>
-                          </Card>
-                        </Grid>
-                      ))}
-                    </Grid>
-                    <Divider sx={{ width: "100%", fontWeight: "bold", color: "rgba(0, 0, 0, 0.5)", my: 3 }}>OR</Divider>
-                    <Box sx={{ width: "100%" }}>
-                      <Typography
-                        sx={{ fontSize: "1.8rem", fontWeight: "bold", color: "rgba(0, 0, 0, 0.7)" }}
-                      >Ủng hộ nhanh</Typography>
-                      <Typography
-                        sx={{ fontSize: ".85rem", fontWeight: "bold", color: "rgba(0, 0, 0, 0.5)" }}
-                      >Nhập số tiền bạn muốn ủng hộ trực tiếp cho nhà phát triển dự án</Typography>
-                      <TextField
-                        type="number"
-                        placeholder="Nhập số tiền"
-                        value={freeDonateAmount}
-                        onChange={(e) => setFreeDonateAmount(e.target.value)}
-                        sx={{ width: "50%", my: 2 }}
-                        InputProps={{
-                          endAdornment: <InputAdornment>VND</InputAdornment>,
-                        }}
-                      /> <br />
-                      <Button onClick={() => handleFreeDonate()} variant="contained" sx={{ background: "#FCAE3D" }}>Ủng hộ</Button>
-                    </Box>
-                  </TabPanel>
-                  <TabPanel value="2" sx={{ minHeight: "200vh" }}>Về chúng mình</TabPanel>
-                  <TabPanel value="3" sx={{ minHeight: "200vh" }}>Cập nhật</TabPanel>
-                  <TabPanel value="4" sx={{ minHeight: "200vh" }}>
-                    <BackerList data={backerList} />
-                  </TabPanel>
-                  <TabPanel value="5" sx={{ minHeight: "200vh" }}>
-                    <CommentSection projectId={projectId} token={Cookies.get('_auth')} />
-                  </TabPanel>
-                </TabContext>
+                              <CardContent>
+                                <Typography
+                                  gutterBottom
+                                  sx={{ textAlign: "left", fontSize: "1rem" }}
+                                >
+                                  {projectPackage.packageName}
+                                </Typography>
+                                <Typography
+                                  gutterBottom
+                                  sx={{ fontWeight: "bold", textAlign: "left", fontSize: "1.2rem" }}
+                                >
+                                  {projectPackage.requiredAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND
+                                </Typography>
+                                <Typography
+                                  gutterBottom
+                                  sx={{ textAlign: "left", fontSize: ".8rem" }}
+                                >
+                                  {projectPackage.packageDescription}
+                                </Typography>
+                                <Divider />
+
+                              </CardContent>
+                              <CardActions>
+                                {!checkOwner
+                                  ? (
+                                    <Button onClick={() => handleDonatePackage(projectPackage)} variant="contained">
+                                      Chọn
+                                    </Button>
+                                  )
+                                  : (
+                                    <Button variant="contained" disabled>Chỉnh sửa</Button>
+                                  )
+                                }
+                              </CardActions>
+                            </Card>
+                          ))}
+                        </Box>
+                      </Grid>
+                    </>
+                  )
+                }
               </Grid>
+            </Container>
 
-              {/*******************************
-               * Sticky project packages
-               */}
-              <Grid item xs={3} >
-                <Typography textAlign={"left"} sx={{
-                  fontWeight: "bold", fontSize: "1.2rem",
-                  color: "rgba(0, 0, 0, 0.8)", py: 2, px: 1, position: "sticky", top: "4.5rem"
-                }}>Ủng hộ ngay</Typography>
-                <Box sx={{ maxHeight: "80vh", overflowY: "scroll", position: "sticky", top: "7.5rem" }}>
-                  {project && project.packageViewResponses.map((projectPackage, index) => (
+          </TabContext>
 
-                    <Card key={index} sx={{ borderRadius: 0, border: ".1rem solid rgba(0, 0, 0, 0.12)", mt: 3, mx: 1 }}>
-                      <CardMedia
-                        component="img"
-                        alt="green iguana"
-                        image="https://i.ibb.co/K7TGtpK/istockphoto-1409955148-612x612.jpg"
-                        sx={{ height: "9rem" }}
-                      />
-                      <CardContent>
-                        <Typography
-                          gutterBottom
-                          sx={{ textAlign: "left", fontSize: "1rem" }}
-                        >
-                          {projectPackage.packageName}
-                        </Typography>
-                        <Typography
-                          gutterBottom
-                          sx={{ fontWeight: "bold", textAlign: "left", fontSize: "1.2rem" }}
-                        >
-                          {projectPackage.requiredAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND
-                        </Typography>
-                        <Typography
-                          gutterBottom
-                          sx={{ textAlign: "left", fontSize: ".8rem" }}
-                        >
-                          {projectPackage.packageDescription}
-                        </Typography>
-                        <Divider gutterBottom />
-                      </CardContent>
-                      <CardActions>
-                        <Button variant="contained">Chọn</Button>
-                      </CardActions>
-                    </Card>
-                  ))}
-                </Box>
-              </Grid>
-            </Grid>
-
-          </Container>
         </Box >
 
       )
