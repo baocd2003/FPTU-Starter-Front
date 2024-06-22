@@ -153,7 +153,7 @@ const StepFive = () => {
         endDate: allStepData.stepOneData.endDate,
         projectTarget: allStepData.stepOneData.ProjectTarget,
         projectBalance: 0,
-        projectStatus: 0,
+        projectStatus: 1,
         projectThumbnail: thumbnailData,
         projectLiveDemo: liveDemoData,
         ProjectOwnerEmail: userEmail,

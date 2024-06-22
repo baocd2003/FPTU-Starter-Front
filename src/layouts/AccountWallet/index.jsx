@@ -1,4 +1,4 @@
-import { Backdrop, BottomNavigation, BottomNavigationAction, Box, Button, CircularProgress, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, InputAdornment, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, colors } from "@mui/material";
+import { Backdrop, BottomNavigation, BottomNavigationAction, Box, Button, CircularProgress, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, InputAdornment, Modal, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, colors } from "@mui/material";
 import FSUAppBar from "../../components/AppBar";
 import Cookies from "js-cookie";
 import { useEffect, useState, forwardRef, useRef } from "react";
@@ -20,8 +20,10 @@ function AccountWallet() {
   const [isLoading, setIsLoading] = useState(true);
   const [userWallet, setUserWallet] = useState(null);
   const [open, setOpen] = useState(false);
+  const [openWithdrawForm, setOpenWithdrawForm] = useState(false)
   const navigate = useNavigate();
   const [value, setValue] = useState(0);
+  const [priceInput, setPriceInput] = useState(2000);
 
   const priceRef = useRef(2000);
 
@@ -54,7 +56,7 @@ function AccountWallet() {
     try {
       setOpen(false);
       setIsLoading(true);
-      const response = await loadWalletMoney(priceRef.current.value);
+      const response = await loadWalletMoney(priceInput);
       if (response.data == null) throw new Error("Call Api failed: ");
       openPaymentDialog(response.data);
     } catch (err) {
@@ -64,6 +66,17 @@ function AccountWallet() {
       setIsLoading(false);
     }
   }
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+  };
 
   const openPaymentDialog = async (checkOutResponse) => {
     if (checkOutResponse) {
@@ -114,7 +127,11 @@ function AccountWallet() {
     }
   }
 
-  console.log(userWallet);
+  const handleOpenWithdrawForm = () => {
+
+  }
+
+  // console.log(userWallet);
 
   return (
     <>
@@ -128,7 +145,6 @@ function AccountWallet() {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-
       <Dialog
         open={open}
         keepMounted
@@ -147,7 +163,9 @@ function AccountWallet() {
             fullWidth
             variant="outlined"
             defaultValue="2000"
-            inputRef={priceRef}
+            onChange={(e) => setPriceInput(e.target.value)}
+            // inputRef={priceRef}
+            value={priceInput}
             InputProps={{
               startAdornment: <InputAdornment position="start">VND</InputAdornment>,
             }}
@@ -158,7 +176,34 @@ function AccountWallet() {
           <Button onClick={handleCreatePayment}>Agree</Button>
         </DialogActions>
       </Dialog>
-
+      <Dialog
+        open={openWithdrawForm}
+        keepMounted
+        onClose={() => setOpenWithdrawForm(false)}
+        fullWidth
+      >
+        <DialogTitle>Tạo lệnh rút tiền tiền</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="price"
+            label="Nhập số tiền bạn muốn rút từ ví"
+            fullWidth
+            variant="outlined"
+            defaultValue="2000"
+            inputRef={priceRef}
+            InputProps={{
+              startAdornment: <InputAdornment position="start">VND</InputAdornment>,
+            }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)}>Hủy</Button>
+          <Button onClick={handleCreatePayment}>Tiếp tục</Button>
+        </DialogActions>
+      </Dialog>
       {userWallet && (
         <Box sx={{ background: "#F0F0F0", minHeight: "150vh" }}>
           <Box
@@ -229,7 +274,7 @@ function AccountWallet() {
               }}
             >
               <BottomNavigationAction className="wallet_option" onClick={handleOpenLoadMoneyForm} label="Nạp tiền" icon={<AddBoxOutlinedIcon />} />
-              <BottomNavigationAction className="wallet_option" disabled label="Rút tiền" icon={<GetAppOutlinedIcon />} />
+              <BottomNavigationAction className="wallet_option" disabled onClick={() => setOpenWithdrawForm(true)} label="Rút tiền" icon={<GetAppOutlinedIcon />} />
               <BottomNavigationAction className="wallet_option" disabled label="Liên kết" icon={<AccountBalanceOutlinedIcon />} />
               <BottomNavigationAction className="wallet_option" disabled label="Phương thức" icon={<CreditCardOutlinedIcon />} />
 
@@ -237,22 +282,26 @@ function AccountWallet() {
           </Box>
 
 
-          <Container>
+          <Container
+            sx={{
+              maxWidth: { lg: "lg", xl: "xl", xs: "xs" },
+            }}
+          >
             <Divider sx={{ fontWeight: "bold", fontSize: "1.1rem", color: "rgba(0, 0, 0, 0.6)", my: 3 }}>Hoạt động của ví</Divider>
 
-            <TableContainer component={Paper} elevation={10} sx={{ px: 2 }}>
+            <TableContainer component={Paper} elevation={10} >
               <Table>
                 <caption style={{ captionSide: "top", fontWeight: "bold", fontSize: "1.1rem" }}>Giao dịch gần đây</caption>
-                <TableHead>
-                  <TableRow sx={{ background: "rgba(0, 0, 0, 0.3)", fontWeight: "bold", borderStartStartRadius: "1rem" }}>
-                    <TableCell>Phương thức</TableCell>
-                    <TableCell align="right">Mô tả</TableCell>
-                    <TableCell align="right">Thời gian</TableCell>
-                    <TableCell align="right">Số tiền</TableCell>
-                    <TableCell align="right">Trạng thái</TableCell>
+                <TableHead sx={{ background: 'rgba(0, 0, 0, 0.3)', px: 2, }}>
+                  <TableRow sx={{ fontWeight: "bold", borderStartStartRadius: "1rem", }}>
+                    <TableCell sx={{ color: 'white', fontWeight: 'bold', width: '20%' }}>Phương thức</TableCell>
+                    <TableCell sx={{ color: 'white', fontWeight: 'bold', width: '20%' }} align="right">Mô tả</TableCell>
+                    <TableCell sx={{ color: 'white', fontWeight: 'bold', width: '20%' }} align="right">Thời gian</TableCell>
+                    <TableCell sx={{ color: 'white', fontWeight: 'bold', width: '20%' }} align="right">Số tiền</TableCell>
+                    <TableCell sx={{ color: 'white', fontWeight: 'bold', width: '20%' }} align="right">Trạng thái</TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody>
+                <TableBody sx={{ px: 2 }}>
                   {userWallet.transactions.map((trans) => (
                     <TableRow
                       key={trans.id}
@@ -262,7 +311,7 @@ function AccountWallet() {
                         Chuyển khoản
                       </TableCell>
                       <TableCell align="right">{trans.description}</TableCell>
-                      <TableCell align="right">{trans.createDate}</TableCell>
+                      <TableCell align="right">{formatDate(trans.createDate)}</TableCell>
                       <TableCell align="right">{trans.totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} đ</TableCell>
                       <TableCell align="right">Thành công</TableCell>
                     </TableRow>
