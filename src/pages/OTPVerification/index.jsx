@@ -49,7 +49,6 @@ function OTPVerification() {
         setIsLoading(true);
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        //Save token to cookie
         userApiInstace.post(`/login-2FA?code=${otp}&userName=${userName}`).then(res => {
             console.log(res.data);
             if (res.data._data == null) {
