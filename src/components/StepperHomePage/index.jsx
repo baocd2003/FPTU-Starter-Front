@@ -58,7 +58,6 @@ function StepperHomePage({ setSwiperRef, type }) {
         } catch (error) {
             console.error("Error fetching project list:", error);
         }
-        console.log(projects)
     }, []);
 
     useEffect(() => {

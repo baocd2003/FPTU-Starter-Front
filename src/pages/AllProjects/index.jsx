@@ -392,22 +392,35 @@ function AllProjects() {
                                         >
                                             <ListItemText primary="Tất cả thể loại" className="category-select-text" primaryTypographyProps={{ lineHeight: '1.75rem', color: selectedCategories === "" ? '#FFFFFF' : '#44494D', fontWeight: selectedCategories === "" ? 600 : 400, }} />
                                         </ListItemButton>
-                                        {categories.map((category) => (
-                                            <React.Fragment key={category.name}>
-                                                <ListItemButton onClick={(event) => handleCategoryClick(event.currentTarget.dataset.value)} data-value={category.name} className="category-select-button" sx={{
-                                                    paddingRight: '0 !important',
-                                                    backgroundColor: selectedCategories === category.name ? '#FBB03B' : 'inherit',
-                                                    borderRadius: '0.4rem',
-                                                    mb: '0.8rem',
-                                                }}>
-                                                    <ListItemText primary={autoCapitalize(category.name)} className="category-select-text" primaryTypographyProps={{
-                                                        lineHeight: '1.75rem',
-                                                        color: selectedCategories === category.name ? '#FFFFFF' : '#44494D',
-                                                        fontWeight: selectedCategories === category.name ? 600 : 400,
-                                                    }} />
-                                                </ListItemButton>
-                                            </React.Fragment>
-                                        ))}
+                                        {isCategoriesLoading ? (
+                                            <CircularProgress sx={{ color: '#44494D', mb: '0.8rem', mx: 'auto' }} />
+                                        ) : (
+                                            categories.map((category) => (
+                                                <React.Fragment key={category.name}>
+                                                    <ListItemButton
+                                                        onClick={(event) => handleCategoryClick(event.currentTarget.dataset.value)}
+                                                        data-value={category.name}
+                                                        className="category-select-button"
+                                                        sx={{
+                                                            paddingRight: '0 !important',
+                                                            backgroundColor: selectedCategories === category.name ? '#FBB03B' : 'inherit',
+                                                            borderRadius: '0.4rem',
+                                                            mb: '0.8rem',
+                                                        }}
+                                                    >
+                                                        <ListItemText
+                                                            primary={autoCapitalize(category.name)}
+                                                            className="category-select-text"
+                                                            primaryTypographyProps={{
+                                                                lineHeight: '1.75rem',
+                                                                color: selectedCategories === category.name ? '#FFFFFF' : '#44494D',
+                                                                fontWeight: selectedCategories === category.name ? 600 : 400,
+                                                            }}
+                                                        />
+                                                    </ListItemButton>
+                                                </React.Fragment>
+                                            ))
+                                        )}
                                     </List>
                                 </Collapse>
                             </List>
