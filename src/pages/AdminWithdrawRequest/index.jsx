@@ -52,9 +52,14 @@ function AdminWithdrawRequest() {
                 const response = await withdrawRequestApiInstance.get("", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                setWithdrawRequest(response.data);
+                if (Array.isArray(response.data._data)) {
+                    setWithdrawRequest(response.data._data);
+                } else {
+                    setWithdrawRequest([]);
+                }
             } catch (error) {
                 console.error("Error fetching withdraw request list:", error);
+                setWithdrawRequest([]);
             }
         }
         setIsLoading(false);
@@ -164,20 +169,16 @@ function AdminWithdrawRequest() {
 
     const handleOpenModal = async (rowData) => {
         setSelectedRow(rowData);
-        try {
-            const response = await withdrawRequestApiInstance.post("admin-project-request", rowData.id, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            setSelectedRow(response);
-        } catch (error) {
-            console.error("Error fetching withdraw request:", error);
-        }
+        // try {
+        //     const response = await withdrawRequestApiInstance.post("admin-project-request", rowData.id, {
+        //         headers: { Authorization: `Bearer ${token}` },
+        //     });
+        //     setSelectedRow(response);
+        // } catch (error) {
+        //     console.error("Error fetching withdraw request:", error);
+        // }
         setModalOpen(true);
     };
-
-    const fetchQuickQr = async (rowData) => {
-
-    }
 
     const handleCloseModal = () => {
         setSelectedRow(null);
@@ -272,7 +273,12 @@ function AdminWithdrawRequest() {
                                         <div className='text-[1.2rem] text-[#44494D] mb-[1rem]'><strong>Loại giao dịch:</strong> {requestType[selectedRow.requestType]}</div>
                                     </Grid>
                                     {selectedRow.status === 1 && (
-                                        <Divider orientation="vertical" flexItem />
+                                        <>
+                                            <Divider orientation="vertical" flexItem />
+                                            <Grid>
+
+                                            </Grid>
+                                        </>
                                     )}
                                 </Grid>
                                 {selectedRow.status === 0 ? (

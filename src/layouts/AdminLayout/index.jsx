@@ -1,7 +1,8 @@
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import TransactionIcon from "@mui/icons-material/AttachMoney";
+import CategoryIcon from "@mui/icons-material/Category";
 import ProjectIcon from "@mui/icons-material/Folder";
 import QueryStatsIcon from "@mui/icons-material/QueryStats";
+import RequestPageIcon from "@mui/icons-material/RequestPage";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { Grid } from "@mui/material";
 import Box from "@mui/material/Box";
@@ -15,8 +16,6 @@ import React from "react";
 import { PiHandWithdrawBold } from "react-icons/pi";
 import { Outlet, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
-import CategoryIcon from "@mui/icons-material/Category";
-import RequestPageIcon from "@mui/icons-material/RequestPage";
 
 function AdminLayout() {
   const navigate = useNavigate();
@@ -52,9 +51,6 @@ function AdminLayout() {
   const navigateProjects = () => {
     navigate("/admin/projects");
   };
-  const navigateWithdrawRequests = () => {
-    navigate("/admin/withdraw-requests");
-  };
   const navigateCategories = () => {
     navigate("/admin/categories");
   };
@@ -63,6 +59,9 @@ function AdminLayout() {
   };
   const navigateConfiguration = () => {
 
+  };
+  const navigateTransactions = () => {
+    navigate("/admin/transactions");
   };
 
   //navigate mapping
