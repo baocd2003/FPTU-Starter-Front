@@ -38,7 +38,7 @@ function AdminOverview() {
                     setIsLoading(false);
                 }
             })
-            await cateApiInstance.get("/count-subCates").then(res => {
+            await cateApiInstance.get("/count-subCates?top=5").then(res => {
                 console.log(res.data);
                 if (res.data.result._isSuccess) {
                     setCountData(res.data.result._data)

@@ -3,6 +3,7 @@ import FSUAppBar from "../../components/AppBar";
 import Cookies from "js-cookie";
 import { useEffect, useState, forwardRef, useRef } from "react";
 import walletApiInstance from "../../utils/apiInstance/walletApiInstance";
+import withdrawApiInstance from "../../utils/apiInstance/withdrawApiInstance";
 import { loadWalletMoney, getPayOSTransaction } from "../../hooks/usePayOs";
 import { usePayOS, PayOSConfig } from "payos-checkout";
 import { useNavigate } from "react-router-dom";
@@ -24,7 +25,7 @@ function AccountWallet() {
   const navigate = useNavigate();
   const [value, setValue] = useState(0);
   const [priceInput, setPriceInput] = useState(2000);
-
+  const [withdrawAmount, setWithdrawAmount] = useState(5000);
   const priceRef = useRef(2000);
 
   const token = Cookies.get("_auth");
@@ -127,8 +128,36 @@ function AccountWallet() {
     }
   }
 
-  const handleOpenWithdrawForm = () => {
-
+  const handleWithdraw = async () => {
+    try {
+      if(withdrawAmount < 5000){
+        Swal.fire({
+          title: "Số tiền ",
+          text: err.response?.data || "Đx",
+          icon: "warning"
+        });
+      }
+      const withdrawResponse = await withdrawApiInstance.post('/withdraw-wallet-request', {
+        amount : withdrawAmount
+      }, {
+        headers: { Authorization: `Bearer ${token}` },
+      }).then(() => {
+        Swal.fire({
+          title: "Tạo yêu cầu rút tiền thành công!",
+          text: "Thời gian xử lí diễn ra từ 2-3 ngày!",
+          icon: "success"
+        });
+        fetchUserWallet();
+      })
+      console.log(withdrawResponse)
+      setOpenWithdrawForm(false)
+    } catch (err) {
+      Swal.fire({
+        title: "Đã có lỗi!",
+        text: err.response?.data || "Đx",
+        icon: "warning"
+      });
+    }
   }
 
   // console.log(userWallet);
@@ -172,8 +201,8 @@ function AccountWallet() {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button onClick={handleCreatePayment}>Agree</Button>
+          <Button onClick={() => setOpen(false)}>Hủy</Button>
+          <Button onClick={handleCreatePayment}>Nạp</Button>
         </DialogActions>
       </Dialog>
       <Dialog
@@ -182,7 +211,7 @@ function AccountWallet() {
         onClose={() => setOpenWithdrawForm(false)}
         fullWidth
       >
-        <DialogTitle>Tạo lệnh rút tiền tiền</DialogTitle>
+        <DialogTitle>Tạo lệnh rút tiền</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -192,7 +221,8 @@ function AccountWallet() {
             label="Nhập số tiền bạn muốn rút từ ví"
             fullWidth
             variant="outlined"
-            defaultValue="2000"
+            defaultValue="5000"
+            onChange={(e) => setWithdrawAmount(e.target.value)}
             inputRef={priceRef}
             InputProps={{
               startAdornment: <InputAdornment position="start">VND</InputAdornment>,
@@ -200,8 +230,8 @@ function AccountWallet() {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)}>Hủy</Button>
-          <Button onClick={handleCreatePayment}>Tiếp tục</Button>
+          <Button onClick={() => setOpenWithdrawForm(false)}>Hủy</Button>
+          <Button onClick={handleWithdraw}>Tiếp tục</Button>
         </DialogActions>
       </Dialog>
       {userWallet && (
@@ -274,7 +304,7 @@ function AccountWallet() {
               }}
             >
               <BottomNavigationAction className="wallet_option" onClick={handleOpenLoadMoneyForm} label="Nạp tiền" icon={<AddBoxOutlinedIcon />} />
-              <BottomNavigationAction className="wallet_option" disabled onClick={() => setOpenWithdrawForm(true)} label="Rút tiền" icon={<GetAppOutlinedIcon />} />
+              <BottomNavigationAction className="wallet_option" onClick={() => setOpenWithdrawForm(true)} label="Rút tiền" icon={<GetAppOutlinedIcon />} />
               <BottomNavigationAction className="wallet_option" disabled label="Liên kết" icon={<AccountBalanceOutlinedIcon />} />
               <BottomNavigationAction className="wallet_option" disabled label="Phương thức" icon={<CreditCardOutlinedIcon />} />
 
