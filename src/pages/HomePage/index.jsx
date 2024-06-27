@@ -28,33 +28,30 @@ import './index.css';
 import axios from 'axios';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import userApiInstace from '../../utils/apiInstance/userApiInstace';
+import { Troubleshoot } from '@mui/icons-material';
 
 function HomePage() {
 	const [checkIsLogin, setCheckIsLogin] = useState(false);
-	const [isLoadingLogin, setIsLoadingLogin] = useState(false);
+	// const [isLoadingLogin, setIsLoadingLogin] = useState(false);
 	const swiperPopularProjectRef = useRef(null);
 	const swiperNewProjectRef = useRef(null);
-
 
 	useEffect(() => {
 		Aos.init({ duration: 2000 });
 		const isLogined = Cookies.get('_auth') !== undefined;
 		setCheckIsLogin(isLogined);
-		if (location.hash) {
-			setIsLoadingLogin(true)
-		}
 	}, []);
+
 	const navigate = useNavigate();
 
 	if (location.hash) {
-
 		checkIfRedirectedFromOAuth();
 	}
 
 	return (
 		<div className="home">
 			<FSUAppBar isLogined={checkIsLogin} />
-			<Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoadingLogin}>
+			<Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={(location.hash)}>
 				<CircularProgress color="inherit" />
 			</Backdrop>
 			<ToastContainer />
@@ -456,6 +453,9 @@ const GetGoogleUser = async () => {
 						console.error("Error during Google login:", error);
 						notify("An error occurred during Google login. Please try again.");
 					}
+					setTimeout(() => {
+						navigate('/')
+					}, 5000)
 				});
 			})
 			.catch((error) => {
