@@ -3,21 +3,24 @@ import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
 import { Carousel } from "react-responsive-carousel";
 import { useNavigate } from "react-router-dom";
+import { animated, useSpring } from 'react-spring';
 import Swal from 'sweetalert2';
 import './index.css';
+
 function BannerCarousel() {
   const [existedAuth, setExistedAuth] = useState();
+
   useEffect(() => {
     const token = Cookies.get("_auth");
     if (token !== undefined) {
       setExistedAuth(token);
     }
-  })
-  // console.log(existedAuth);
+  });
+  
   const navigate = useNavigate();
   const checkAuth = () => {
     if (existedAuth !== undefined) {
-      navigate("/choose-cate")
+      navigate("/init-project/step-one");
     } else {
       Swal.fire({
         title: "Cần đăng nhập",
@@ -25,25 +28,53 @@ function BannerCarousel() {
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Về trang đăng nhập",
-        cancelButtonText: "Ở lại trang"
+        cancelButtonText: "Ở lại trang",
       }).then((result) => {
         if (result.isConfirmed) {
           navigate("/login");
         }
-      })
+      });
     }
-  }
+  };
+
+  const ParallaxImage = ({ src, children }) => {
+    const [{ offset }, setOffset] = useSpring(() => ({ offset: 0 }));
+
+    useEffect(() => {
+      const handleScroll = () => {
+        setOffset({ offset: window.scrollY * 0.3 });
+      };
+
+      window.addEventListener('scroll', handleScroll);
+      return () => window.removeEventListener('scroll', handleScroll);
+    }, [setOffset]);
+
+    return (
+      <div className="relative">
+        <animated.div style={{ transform: offset.to(o => `translateY(${o}px)`) }}>
+          <img src={src} className='bannerImg' alt="Banner" />
+        </animated.div>
+        <div className='overlay'></div>
+        {children}
+      </div>
+    );
+  };
 
   return (
     <div>
+      <style>
+        {`
+          .bannerImg {
+            object-fit: cover !important;
+          }
+        `}
+      </style>
       <Carousel autoPlay={true} showThumbs={false} infiniteLoop showArrows={false} showStatus={false}
         transitionTime={1000}
         animationHandler="slide"
         interval={5000}
       >
-        <div className='relative'>
-          <div className='overlay'></div>
-          <img src={"https://i.ibb.co/8K7BwCX/sinhvien-fpt-khoinghiep.png"} className='bannerImg' />
+        <ParallaxImage src={"https://i.ibb.co/8K7BwCX/sinhvien-fpt-khoinghiep.png"}>
           <Typography className="bannerTitle" sx={{
             position: "absolute", top: "40%", left: "10%", color: "white", fontWeight: "bold",
             textAlign: "left", zIndex: 2, textTransform: "uppercase", userSelect: 'none',
@@ -54,10 +85,8 @@ function BannerCarousel() {
           <div className="absolute top-[70%] left-[10%]" style={{ zIndex: 2 }}>
             <Button onClick={checkAuth} sx={{ my: 4, color: '#FFF', display: 'block', width: '16rem', height: '4rem', borderRadius: '0.4rem !important', fontSize: '1rem', fontWeight: 900, letterSpacing: '1px !important', }} className="c-btn">Hiện thực hóa giấc mơ</Button>
           </div>
-        </div>
-        <div className='relative'>
-          <div className='overlay'></div>
-          <img src={"https://i.ibb.co/w4DyqHq/banner-Carousel2.jpg"} className='bannerImg' />
+        </ParallaxImage>
+        <ParallaxImage src={"https://i.ibb.co/w4DyqHq/banner-Carousel2.jpg"}>
           <Typography className="bannerTitle" sx={{
             position: "absolute", top: "40%", right: "10%", color: "white", fontWeight: "bold",
             textAlign: "right", zIndex: 2, textTransform: "uppercase", userSelect: 'none',
@@ -68,10 +97,8 @@ function BannerCarousel() {
           <div className="absolute top-[70%] right-[10%]" style={{ zIndex: 2 }}>
             <Button onClick={checkAuth} sx={{ my: 4, color: '#FFF', display: 'block', width: '12rem', height: '4rem', borderRadius: '0.4rem !important', fontSize: '1rem', fontWeight: 900, letterSpacing: '1px !important', }} className="c-btn">Bắt đầu dự án</Button>
           </div>
-        </div>
-        <div className='relative'>
-          <div className='overlay'></div>
-          <img src={"https://i.ibb.co/5WL9LHB/Banner-Carousel3.jpg"} className='bannerImg' />
+        </ParallaxImage>
+        <ParallaxImage src={"https://i.ibb.co/5WL9LHB/Banner-Carousel3.jpg"}>
           <Typography className="bannerTitle" sx={{
             position: "absolute", top: "40%", left: '10%', color: "white", fontWeight: "bold",
             textAlign: "left", zIndex: 2, textTransform: "uppercase", userSelect: 'none',
@@ -82,10 +109,10 @@ function BannerCarousel() {
           <div className="absolute top-[70%] left-[10%]" style={{ zIndex: 2 }}>
             <Button onClick={checkAuth} sx={{ my: 4, color: '#FFF', display: 'block', width: '12rem', height: '4rem', borderRadius: '0.4rem !important', fontSize: '1rem', fontWeight: 900, letterSpacing: '1px !important', }} className="c-btn">Bắt đầu dự án</Button>
           </div>
-        </div>
+        </ParallaxImage>
       </Carousel>
     </div>
-  )
+  );
 }
 
-export default BannerCarousel
+export default BannerCarousel;

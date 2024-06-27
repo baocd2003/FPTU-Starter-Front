@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
-import logo from "../../assets/logo.png";
-import { Container, Grid } from "@mui/material";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import TransactionIcon from "@mui/icons-material/AttachMoney";
+import ProjectIcon from "@mui/icons-material/Folder";
+import QueryStatsIcon from "@mui/icons-material/QueryStats";
+import SettingsIcon from "@mui/icons-material/Settings";
+import { Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
@@ -10,17 +11,25 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import QueryStatsIcon from "@mui/icons-material/QueryStats";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import ProjectIcon from "@mui/icons-material/Folder";
-import RequestPageIcon from "@mui/icons-material/RequestPage";
+import React from "react";
+import { PiHandWithdrawBold } from "react-icons/pi";
+import { Outlet, useNavigate } from "react-router-dom";
+import logo from "../../assets/logo.png";
 import CategoryIcon from "@mui/icons-material/Category";
+import RequestPageIcon from "@mui/icons-material/RequestPage";
 
 function AdminLayout() {
   const navigate = useNavigate();
 
-  //title list
-  const titleList = ["Tổng quan", "Tài khoản", "Dự án", "Rút tiền", "Thể loại"];
+  const titleList = [
+    "Tổng quan",
+    "Tài khoản",
+    "Dự án",
+    "Giao dịch",
+    "Danh mục",
+    "Yêu cầu rút tiền",
+    "Cấu hình",
+  ];
 
   //icon mapping
   const iconMapping = {
@@ -29,6 +38,8 @@ function AdminLayout() {
     2: <ProjectIcon />,
     3: <RequestPageIcon />,
     4: <CategoryIcon />,
+    5: <PiHandWithdrawBold />,
+    6: <SettingsIcon />,
   };
 
   //navigate functions
@@ -47,14 +58,22 @@ function AdminLayout() {
   const navigateCategories = () => {
     navigate("/admin/categories");
   };
+  const navigateWithdrawRequests = () => {
+    navigate("/admin/withdraw-request");
+  };
+  const navigateConfiguration = () => {
+
+  };
 
   //navigate mapping
   const onClickMapping = {
     0: navigateDashboard,
     1: navigateAccounts,
     2: navigateProjects,
-    3: navigateWithdrawRequests,
-    4: navigateCategories,
+    3: navigateTransactions,
+    4: navigateWithdrawRequests,
+    5: navigateCategories,
+    6: navigateConfiguration,
   };
 
   const DrawerList = (
@@ -82,7 +101,7 @@ function AdminLayout() {
             "& .MuiDrawer-paper": {
               position: "relative",
               width: 250,
-              height: "100vh", // Ensures the Drawer takes up full height
+              height: "100vh",
               backgroundColor: "white",
               boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
               zIndex: 1,
