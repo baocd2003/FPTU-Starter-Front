@@ -3,7 +3,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CircleIcon from '@mui/icons-material/Circle';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import StarIcon from '@mui/icons-material/Star';
-import { Button } from '@mui/material';
+import { Backdrop, Button, CircularProgress } from '@mui/material';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -27,10 +27,11 @@ import { ToastContainer, toast } from 'react-toastify';
 import './index.css';
 import axios from 'axios';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
+import userApiInstace from '../../utils/apiInstance/userApiInstace';
 
 function HomePage() {
 	const [checkIsLogin, setCheckIsLogin] = useState(false);
-
+	const [isLoadingLogin, setIsLoadingLogin] = useState(false);
 	const swiperPopularProjectRef = useRef(null);
 	const swiperNewProjectRef = useRef(null);
 
@@ -39,17 +40,23 @@ function HomePage() {
 		Aos.init({ duration: 2000 });
 		const isLogined = Cookies.get('_auth') !== undefined;
 		setCheckIsLogin(isLogined);
-
+		if (location.hash) {
+			setIsLoadingLogin(true)
+		}
 	}, []);
 	const navigate = useNavigate();
 
 	if (location.hash) {
+
 		checkIfRedirectedFromOAuth();
 	}
 
 	return (
 		<div className="home">
 			<FSUAppBar isLogined={checkIsLogin} />
+			<Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoadingLogin}>
+				<CircularProgress color="inherit" />
+			</Backdrop>
 			<ToastContainer />
 			<BannerCarousel />
 			<div data-aos="fade-up">
@@ -392,8 +399,8 @@ const checkIfRedirectedFromOAuth = () => {
 		params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
 	}
 	if (Object.keys(params).length > 0 && params["state"]) {
-		const { setIsLoading } = useOutletContext();
-		setIsLoading(true);
+		// const { setIsLoading } = useOutletContext();
+		// setIsLoading(true);
 		if (params["state"] == "d8b5390695d765a6f2f7bf59b4134d751e21588b464153b44d68eda52c4dc1b2%7C838e080b0a4f8816524cb68c72ab63c193cc01e9624614080acc13833ebe1d13") {
 			localStorage.setItem("oauth2-test-params", JSON.stringify(params));
 
@@ -406,7 +413,7 @@ const checkIfRedirectedFromOAuth = () => {
 }
 
 const GetGoogleUser = async () => {
-	const { setIsLoading } = useOutletContext();
+	// const { setIsLoading } = useOutletContext();
 	const signIn = useSignIn();
 	const navigate = useNavigate();
 	const params = JSON.parse(localStorage.getItem("oauth2-test-params"));
@@ -438,7 +445,7 @@ const GetGoogleUser = async () => {
 							tokenType: "Bearer",
 							authState: { email: response.data.email }
 						});
-						navigate("/home");
+						window.location.href = import.meta.env.VITE_APP_URL.toString();
 					} else {
 						notify(res.data._message);
 					}
@@ -459,11 +466,11 @@ const GetGoogleUser = async () => {
 					console.error("Error fetching user data:", error);
 				}
 			})
-		setIsLoading(false)
+		// setIsLoading(false)
 
 	} else {
 		handleGoogleLogin();
-		setIsLoading(false);
+		// setIsLoading(false);
 	}
 }
 

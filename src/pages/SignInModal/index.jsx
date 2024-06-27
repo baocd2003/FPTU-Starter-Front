@@ -146,10 +146,6 @@ function LoginModal() {
         setButtonLoading(false);
     }
 
-    if (location.hash) {
-        checkIfRedirectedFromOAuth();
-    }
-
     return (
         <div className="flex flex-row items-center h-full">
             <div className='flex flex-col justify-center items-center !h-full login-section w-full px-[3.2rem]'>
