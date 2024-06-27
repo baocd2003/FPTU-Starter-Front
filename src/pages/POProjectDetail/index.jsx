@@ -45,6 +45,24 @@ function POProjectDetail() {
 
   console.log(userWallet)
 
+  const checkEnoughWallet = (amount) => {
+    if(userWallet.balance < amount){
+      Swal.fire({
+        title: "Số dư trong ví của bạn không đủ!",
+        html: '<span id="my-wallet-link" style="color: #FCAE3D; cursor: pointer;">Ví của bạn</span>',
+        icon: "warning",
+        didOpen: () => {
+          document.getElementById('my-wallet-link').addEventListener('click', () => {
+            navigate('/my-wallet');
+            Swal.close();
+          });
+        }
+      });
+      return false;
+    }else{
+      return true;
+    }
+  }
   const fetchUserWallet = (token) => {
     walletApiInstance.get("/user-wallet", {
       headers: { Authorization: `Bearer ${token}` },
@@ -90,26 +108,29 @@ function POProjectDetail() {
   //donate
   const handleFreeDonate = () => {
     try {
-      const data = {
-        projectId: project.id,
-        amountDonate: freeDonateAmount
-      }
-      setIsLoading(true)
-      const token = Cookies.get("_auth");
-      projectApiInstance.post("/free-backer-donate", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-        .then((res) => {
-          getProjectDetail()
-          Swal.fire({
-            title: "Bạn đã giao dịch thành công!",
-            text: `Bạn đã ủng hộ nhanh cho của dự án ${project.projectName}`,
-            icon: "success"
+      if(checkEnoughWallet(freeDonateAmount)){
+        const data = {
+          projectId: project.id,
+          amountDonate: freeDonateAmount
+        }
+        setIsLoading(true)
+        const token = Cookies.get("_auth");
+        projectApiInstance.post("/free-backer-donate", data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((res) => {
+            getProjectDetail()
+            Swal.fire({
+              title: "Bạn đã giao dịch thành công!",
+              text: `Bạn đã ủng hộ nhanh cho của dự án ${project.projectName}`,
+              icon: "success"
+            });
+            // navigate('/my-wallet')
           });
-          // navigate('/my-wallet')
-        });
+      }
+      
     } catch (err) {
       console.log(err)
     } finally {
@@ -119,25 +140,28 @@ function POProjectDetail() {
 
   const confirmDonatePackage = () => {
     try {
-      const data = {
-        packageId: selectedPackage.id,
-      }
-      setIsLoading(true)
-      const token = Cookies.get("_auth");
-      projectApiInstance.post("/package-backer-donate", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-        .then((res) => {
-          getProjectDetail()
-          Swal.fire({
-            title: "Bạn đã giao dịch thành công!",
-            text: `Bạn đã ủng hộ gói ${selectedPackage.packageName} của dự án ${project.projectName}`,
-            icon: "success"
+      if(checkEnoughWallet(selectedPackage.requiredAmount)){
+        const data = {
+          packageId: selectedPackage.id,
+        }
+        setIsLoading(true)
+        const token = Cookies.get("_auth");
+        projectApiInstance.post("/package-backer-donate", data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((res) => {
+            getProjectDetail()
+            Swal.fire({
+              title: "Bạn đã giao dịch thành công!",
+              text: `Bạn đã ủng hộ gói ${selectedPackage.packageName} của dự án ${project.projectName}`,
+              icon: "success"
+            });
+            // navigate('/my-wallet')
           });
-          // navigate('/my-wallet')
-        });
+      }
+      
     } catch (err) {
       console.log(err)
     } finally {
