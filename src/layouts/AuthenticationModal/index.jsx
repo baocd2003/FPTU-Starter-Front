@@ -26,7 +26,7 @@ function AuthenticationModal(props) {
     transform: 'translate(-50%, -50%)',
     width: '80%',
     height: 'fit-content',
-    minHeight: !isSmallScreen ? '85vh' : 'none',
+    minHeight: !isSmallScreen ? '80vh' : 'none',
     bgcolor: '#FFFFFF',
     boxShadow: 24,
     borderRadius: '1rem',
@@ -87,7 +87,7 @@ function AuthenticationModal(props) {
                     style={{
                       objectFit: 'cover',
                       width: '100%',
-                      minHeight: '85vh',
+                      minHeight: '80vh',
                       borderRadius: '1rem'
                     }}
                   />

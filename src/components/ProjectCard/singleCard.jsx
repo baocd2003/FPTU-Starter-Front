@@ -24,7 +24,7 @@ function SingleCard({ id, category, imageLink, title, po, amount, progress, days
   }
 
   return (
-    <Card sx={{ width: '18rem', height: 'fit-content', padding: '20px', boxShadow: '0', borderRadius: '0.8rem', transition: 'all 0.2s', backgroundColor: 'transparent' }} className='project-card'>
+    <Card sx={{ width: '18rem', height: 'fit-content', padding: '16px', boxShadow: '0', borderRadius: '0.8rem', transition: 'all 0.2s', backgroundColor: 'transparent' }} className='project-card'>
       <CardMedia
         sx={{
           height: '12rem', borderRadius: '0.4rem', mb: '1.2rem', position: 'relative', mx: 'auto',

@@ -1,0 +1,306 @@
+import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
+import { CircularProgress, Grid, Modal, Paper } from "@mui/material";
+import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TablePagination from '@mui/material/TablePagination';
+import TableRow from '@mui/material/TableRow';
+import Cookies from "js-cookie";
+import React, { useEffect, useState } from 'react';
+import withdrawRequestApiInstance from '../../utils/apiInstance/withdrawRequestApiInstance';
+import './index.css';
+
+const status = ['Đang chờ', 'Đã tiếp nhận', 'Từ chối', 'Thành công'];
+const requestType = ['Ủng hộ miễn phí', 'Ủng hộ qua gói', 'Thêm tiền', 'Rút từ ví', 'Rút từ dự án', 'Hoàn trả', 'Hoa hồng'];
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '40%',
+    bgcolor: 'background.paper',
+    boxShadow: '0.4rem',
+    px: '4rem',
+    py: '2.4rem',
+    outline: 'none'
+};
+
+function AdminWithdrawRequest() {
+    const [isLoading, setIsLoading] = useState(false);
+    const [withdrawRequest, setWithdrawRequest] = useState([]);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [selectedRow, setSelectedRow] = useState(null);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalGrid, setModalGrid] = useState(12);
+
+    const token = Cookies.get("_auth");
+
+    useEffect(() => {
+        fetchWithdrawRequestData();
+    }, [token]);
+
+    const fetchWithdrawRequestData = async () => {
+        setIsLoading(true);
+        if (token) {
+            try {
+                const response = await withdrawRequestApiInstance.get("", {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                setWithdrawRequest(response.data);
+            } catch (error) {
+                console.error("Error fetching withdraw request list:", error);
+            }
+        }
+        setIsLoading(false);
+    };
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
+    const formatAmount = (amount) => {
+        return new Intl.NumberFormat('vi-VN').format(amount);
+    };
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleString('vi-VN', { dateStyle: 'short', timeStyle: 'short' });
+    };
+
+    const isWithinTwoDays = (dateString) => {
+        const date = new Date(dateString);
+        const currentDate = new Date();
+        const diffTime = Math.abs(date - currentDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays <= 2;
+    };
+
+    const getStatusStyle = (statusText) => {
+        let backgroundColor = '';
+        let border = '';
+        let color = '';
+        switch (statusText) {
+            case 0:
+                backgroundColor = '#EEEEEE';
+                border = '1px solid #A7A7A7';
+                color = '#A7A7A7'
+                break;
+            case 1:
+                backgroundColor = '#FFEDD8';
+                border = '1px solid #FBB03B';
+                color = '#FBB03B'
+                break;
+            case 2:
+                backgroundColor = '#FFE5E1';
+                border = '1px solid #ed1c24';
+                color = '#ed1c24'
+                break;
+            case 3:
+                backgroundColor = '#CCFFBD';
+                border = '1px solid #4CAF50';
+                color = '#4CAF50'
+                break;
+            default:
+                backgroundColor = '#9E9E9E';
+                border = '1px solid #44494D';
+                color = '#44494D'
+                break;
+        }
+        return {
+            backgroundColor,
+            border,
+            color,
+            padding: '4px 8px',
+            borderRadius: '0.4rem',
+            fontWeight: 'bold',
+            textAlign: 'center',
+            width: '8rem'
+        };
+    };
+
+    const getRequestTypeStyle = (typeText) => {
+        let backgroundColor = '';
+        let border = '';
+        let color = '';
+        switch (typeText) {
+            case 3:
+                backgroundColor = '#EEEEEE';
+                border = '1px solid #44494D';
+                color = '#44494D'
+                break;
+            case 4:
+                backgroundColor = '#FFEDD8';
+                border = '1px solid #FBB03B';
+                color = '#FBB03B'
+                break;
+            default:
+                backgroundColor = '#F5F7F8';
+                border = '1px solid #A7A7A7';
+                color = '#A7A7A7'
+                break;
+        }
+        return {
+            backgroundColor,
+            border,
+            color,
+            padding: '4px 8px',
+            borderRadius: '0.4rem',
+            fontWeight: 'bold',
+            textAlign: 'center',
+            width: '8rem'
+        };
+    };
+
+    const handleOpenModal = async (rowData) => {
+        setSelectedRow(rowData);
+        try {
+            const response = await withdrawRequestApiInstance.post("admin-project-request", rowData.id, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            setSelectedRow(response);
+        } catch (error) {
+            console.error("Error fetching withdraw request:", error);
+        }
+        setModalOpen(true);
+    };
+
+    const fetchQuickQr = async (rowData) => {
+
+    }
+
+    const handleCloseModal = () => {
+        setSelectedRow(null);
+        setModalOpen(false);
+    };
+
+    return (
+        <div className='mx-[3.2rem] my-[1.2rem]'>
+            <h1 className='text-[1.6rem] font-bold mb-[4rem]'>Yêu cầu rút tiền</h1>
+            <TableContainer component={Paper} elevation={2}>
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell align="left" className='table-header'>Tên người rút</TableCell>
+                            <TableCell align="left" className='table-header'>Số tiền rút</TableCell>
+                            <TableCell align="left" className='table-header'>Ngày hết hạn</TableCell>
+                            <TableCell align="left" className='table-header'>Trạng thái</TableCell>
+                            <TableCell align="left" className='table-header'>Loại giao dịch</TableCell>
+                            <TableCell></TableCell>
+                        </TableRow>
+                    </TableHead>
+                    {isLoading ? (
+                        <TableBody>
+                            <TableRow>
+                                <TableCell colSpan={6} align="center">
+                                    <CircularProgress color="inherit" sx={{ color: '#44494D' }} />
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+                    ) : (
+                        <TableBody>
+                            {(rowsPerPage > 0
+                                ? withdrawRequest.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                : withdrawRequest
+                            ).map((withdrawRequestItem) => (
+                                <TableRow
+                                    key={withdrawRequestItem.id}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                    <TableCell align="left">
+                                        Hihi
+                                    </TableCell>
+                                    <TableCell align="left" className='table-row'>{formatAmount(withdrawRequestItem.amount)} VND</TableCell>
+                                    <TableCell align="left" className='table-row' style={{
+                                        fontWeight: 'bold',
+                                        color: isWithinTwoDays(withdrawRequestItem.expiredDate) ? 'red' : 'green',
+                                    }}>
+                                        {formatDate(withdrawRequestItem.expiredDate)}
+                                    </TableCell>
+                                    <TableCell align="left" className='table-row'>
+                                        <div style={getStatusStyle(withdrawRequestItem.status)}>{status[withdrawRequestItem.status]}</div>
+                                    </TableCell>
+                                    <TableCell align="left" className='table-row'>
+                                        <div style={getRequestTypeStyle(withdrawRequestItem.requestType)}>{requestType[withdrawRequestItem.requestType]}</div>
+                                    </TableCell>
+                                    <TableCell align="center" style={{ width: '4rem', padding: '8px' }}>
+                                        <ModeEditOutlineIcon onClick={() => handleOpenModal(withdrawRequestItem)} fontSize='small' sx={{ fontSize: '1.2rem', color: '#44494D', cursor: 'pointer' }} />
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    )}
+                </Table>
+                <TablePagination
+                    labelRowsPerPage="Số hàng mỗi trang:"
+                    labelDisplayedRows={({ from, to, count }) => `${from}-${to} của ${count}`}
+                    rowsPerPageOptions={[10, 25, 50, 100]}
+                    component="div"
+                    count={withdrawRequest.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </TableContainer>
+            <Modal
+                open={modalOpen}
+                onClose={handleCloseModal}
+                style={{ zIndex: '100000' }}
+            >
+                <Paper sx={style}>
+                    <div className='flex flex-col h-fit mx-auto'>
+                        <h2 className='text-[2.4rem] font-bold text-[#44494D] text-center'>Chi tiết yêu cầu</h2>
+                        {selectedRow && (
+                            <div>
+                                <Grid container>
+                                    <Grid item xs={12} lg={modalGrid}>
+                                        <div className='text-[1.2rem] text-[#44494D] mb-[1rem]'><strong>Tên người rút:</strong> Hihi</div>
+                                        <div className='text-[1.2rem] text-[#44494D] mb-[1rem]'><strong>Số tiền rút:</strong> {formatAmount(selectedRow.amount)} VND</div>
+                                        <div className='text-[1.2rem] text-[#44494D] font-bold mb-[1rem]' style={{ color: isWithinTwoDays(selectedRow.expiredDate) ? 'red' : 'green' }}><strong style={{ color: '#44494D', fontWeight: 'bold' }}>Ngày hết hạn:</strong> {formatDate(selectedRow.expiredDate)}</div>
+                                        <div className='text-[1.2rem] text-[#44494D] mb-[1rem]'><strong>Trạng thái:</strong> {status[selectedRow.status]}</div>
+                                        <div className='text-[1.2rem] text-[#44494D] mb-[1rem]'><strong>Loại giao dịch:</strong> {requestType[selectedRow.requestType]}</div>
+                                    </Grid>
+                                    {selectedRow.status === 1 && (
+                                        <Divider orientation="vertical" flexItem />
+                                    )}
+                                </Grid>
+                                {selectedRow.status === 0 ? (
+                                    <div className='flex justify-center flex-row'>
+                                        <Button variant="contained" sx={{ mr: '2rem', backgroundColor: '#4CAF50', textTransform: 'none', fontWeight: 'bold' }}>
+                                            Đồng ý
+                                        </Button>
+                                        <Button variant="contained" sx={{ backgroundColor: '#ed1c24', textTransform: 'none', fontWeight: 'bold' }}>
+                                            Từ chối
+                                        </Button>
+                                    </div>
+                                ) : selectedRow.status == 1 ? (
+                                    <div className='flex justify-center flex-row'>
+                                        <Button variant="contained" sx={{ mr: '2rem', backgroundColor: '#4CAF50', textTransform: 'none', fontWeight: 'bold' }}>
+                                            Xác nhận
+                                        </Button>
+                                        <Button variant="contained" sx={{ backgroundColor: '#ed1c24', textTransform: 'none', fontWeight: 'bold' }}>
+                                            Hủy bỏ
+                                        </Button>
+                                    </div>
+                                ) : null}
+                            </div>
+                        )}
+                    </div>
+                </Paper>
+            </Modal>
+        </div >
+    );
+}
+
+export default AdminWithdrawRequest;
