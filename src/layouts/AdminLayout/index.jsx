@@ -15,16 +15,18 @@ import React from "react";
 import { PiHandWithdrawBold } from "react-icons/pi";
 import { Outlet, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
+import CategoryIcon from "@mui/icons-material/Category";
+import RequestPageIcon from "@mui/icons-material/RequestPage";
 
 function AdminLayout() {
   const navigate = useNavigate();
 
-  //title list
   const titleList = [
     "Tổng quan",
     "Tài khoản",
     "Dự án",
     "Giao dịch",
+    "Danh mục",
     "Yêu cầu rút tiền",
     "Cấu hình",
   ];
@@ -34,9 +36,10 @@ function AdminLayout() {
     0: <QueryStatsIcon />,
     1: <AccountCircleIcon />,
     2: <ProjectIcon />,
-    3: <TransactionIcon />,
-    4: <PiHandWithdrawBold />,
-    5: <SettingsIcon />,
+    3: <RequestPageIcon />,
+    4: <CategoryIcon />,
+    5: <PiHandWithdrawBold />,
+    6: <SettingsIcon />,
   };
 
   //navigate functions
@@ -49,14 +52,17 @@ function AdminLayout() {
   const navigateProjects = () => {
     navigate("/admin/projects");
   };
-  const navigateTransactions = () => {
-    navigate("/admin/transactions");
+  const navigateWithdrawRequests = () => {
+    navigate("/admin/withdraw-requests");
   };
-  const navigateConfiguration = () => {
-    navigate("/admin/configuration");
+  const navigateCategories = () => {
+    navigate("/admin/categories");
   };
   const navigateWithdrawRequests = () => {
     navigate("/admin/withdraw-request");
+  };
+  const navigateConfiguration = () => {
+
   };
 
   //navigate mapping
@@ -66,7 +72,8 @@ function AdminLayout() {
     2: navigateProjects,
     3: navigateTransactions,
     4: navigateWithdrawRequests,
-    5: navigateConfiguration,
+    5: navigateCategories,
+    6: navigateConfiguration,
   };
 
   const DrawerList = (

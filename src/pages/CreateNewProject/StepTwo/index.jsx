@@ -1,5 +1,5 @@
 import { Box, Button, Divider, Grid, Paper, Typography } from "@mui/material";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setStepTwo } from "../../../redux/projectStepSlice";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -10,8 +10,10 @@ import { setFormData } from "../../../redux/projectFormSlice";
 const StepTwo = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const existingData = useSelector((state) => state.projectForm.projectForm.stepTwoData)
+  const [aboutUsData, setAboutUsData] = useState(existingData)
 
-  const [aboutUsData, setAboutUsDate] = useState('')
+
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -57,13 +59,13 @@ const StepTwo = () => {
                 Chia sẻ cho mọi người về cậu chuyện của bạn</Divider>
             </Grid>
 
-            <Grid item xs={12} sx={{ m: '0 !important' }}>
-              <TextEditor setAboutUsDate={setAboutUsDate} />
+            <Grid item xs={12} sx={{ m: '0 !important', }}>
+              <TextEditor aboutUsData={aboutUsData} setAboutUsData={setAboutUsData} />
             </Grid>
 
           </Grid>
 
-          <Box sx={{ mt: 2, gap: 5, display: "flex", justifyContent: 'center', alignItems: 'center' }}>
+          <Box sx={{ mt: 10, gap: 5, display: "flex", justifyContent: 'center', alignItems: 'center' }}>
             <Button onClick={() => navigate('/init-project/step-one')} variant='outlined'
               disableElevation
               sx={{
