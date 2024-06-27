@@ -146,6 +146,10 @@ function LoginModal() {
         setButtonLoading(false);
     }
 
+    if (location.hash) {
+        checkIfRedirectedFromOAuth();
+    }
+
     return (
         <div className="flex flex-row items-center h-full">
             <div className='flex flex-col justify-center items-center !h-full login-section w-full px-[3.2rem]'>
@@ -278,6 +282,7 @@ function LoginModal() {
                                             borderRadius: '5px',
                                             fontSize: "1rem"
                                         }}
+                                        onClick={() => handleGoogleLogin()}
                                         className="my-2"
                                         label="Tiếp tục với Google"
                                     />
@@ -290,5 +295,38 @@ function LoginModal() {
         </div>
     )
 }
+
+const handleGoogleLogin = () => {
+    const oauth2Endpoint = "https://accounts.google.com/o/oauth2/v2/auth";
+    const CLIENT_ID =
+        "252559592629-ccrsf6knt2jcvo4b706geb6ubrcn4ojk.apps.googleusercontent.com";
+    const REDIRECTED_URL = import.meta.env.VITE_APP_URL.toString() + 'home';
+
+    const form = document.createElement("form");
+    form.setAttribute("method", "GET");
+    form.setAttribute("action", oauth2Endpoint);
+
+    var params = {
+        client_id: CLIENT_ID,
+        redirect_uri: REDIRECTED_URL,
+        response_type: "token",
+        scope: "openid profile email",
+        include_granted_scopes: "true",
+        state: "d8b5390695d765a6f2f7bf59b4134d751e21588b464153b44d68eda52c4dc1b2%7C838e080b0a4f8816524cb68c72ab63c193cc01e9624614080acc13833ebe1d13",
+        prompt: "consent"
+    };
+
+    for (var p in params) {
+        var input = document.createElement("input");
+        input.setAttribute("type", "hidden");
+        input.setAttribute("name", p);
+        input.setAttribute("value", params[p]);
+        form.appendChild(input);
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+};
+
 
 export default LoginModal;

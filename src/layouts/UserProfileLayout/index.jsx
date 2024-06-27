@@ -1,5 +1,5 @@
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
-import { Button, CircularProgress, Container, Divider, Grid, Typography } from '@mui/material';
+import { Button, CircularProgress, Divider } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
@@ -230,56 +230,6 @@ function UserProfileLayout() {
             >
                 <CircularProgress color="inherit" />
             </Backdrop>
-            <Container
-                sx={{ height: '30rem', border: 1, mt: '8rem', maxWidth: { lg: "lg", xl: "xl", xs: "xs" }, p: '0 !important' }}>
-                <Grid container>
-                    <Grid item xs={3.5} sx={{ border: 1, mt: '0 !important', pt: '1rem' }}>
-                        <div className='relative flex justify-center'>
-                            {isImage ? (
-                                <Avatar
-                                    alt="User"
-                                    src={user.userAvatarUrl || ''}
-                                    sx={{ width: "8rem", height: "8rem", marginLeft: '20px', marginRight: '20px', outline: '.5rem solid white' }}
-                                />
-                            ) : (
-                                <Avatar
-                                    alt="User"
-                                    src={''}
-                                    sx={{ width: "8rem", height: "8rem", marginLeft: '20px', marginRight: '20px', outline: '.5rem solid white' }}
-                                />
-                            )}
-                            <div
-                                style={{
-                                    position: 'absolute',
-                                    bottom: 0,
-                                    right: 80
-                                }}
-                            >
-                                <Avatar
-                                    onClick={handleOpenAvt}
-                                    sx={{
-                                        cursor: 'pointer', backgroundColor: 'white', boxShadow: '0 0 5px rgba(0, 0, 0, 0.2)',
-                                        color: '#44494D',
-                                        '&:hover': {
-                                            backgroundColor: '#FBB03B',
-                                            color: 'white',
-                                            transition: 'all 0.3s',
-                                        }
-                                    }}>
-                                    <CameraAltIcon />
-                                </Avatar>
-                            </div>
-                        </div>
-                        <Box>
-                            <Typography>{user.accountName}</Typography>
-                        </Box>
-                    </Grid>
-                    <Grid item xs={8.5} sx={{ mt: '0 !important' }}>
-
-                    </Grid>
-                </Grid>
-            </Container>
-
             <div className='userProfile'>
                 {isLoading || !user ? (
                     <div className='w-full flex justify-center mt-1 mb-8'>
@@ -348,7 +298,42 @@ function UserProfileLayout() {
                             </div>
                         </div>
                         <div className='avatarProfile mt-[-2rem] flex'>
-
+                            <div className='relative'>
+                                {isImage ? (
+                                    <Avatar
+                                        alt="User"
+                                        src={user.userAvatarUrl || ''}
+                                        sx={{ width: "8rem", height: "8rem", marginLeft: '20px', marginRight: '20px', outline: '.5rem solid white' }}
+                                    />
+                                ) : (
+                                    <Avatar
+                                        alt="User"
+                                        src={''}
+                                        sx={{ width: "8rem", height: "8rem", marginLeft: '20px', marginRight: '20px', outline: '.5rem solid white' }}
+                                    />
+                                )}
+                                <div
+                                    style={{
+                                        position: 'absolute',
+                                        bottom: 0,
+                                        right: 24
+                                    }}
+                                >
+                                    <Avatar
+                                        onClick={handleOpenAvt}
+                                        sx={{
+                                            cursor: 'pointer', backgroundColor: 'white', boxShadow: '0 0 5px rgba(0, 0, 0, 0.2)',
+                                            color: '#44494D',
+                                            '&:hover': {
+                                                backgroundColor: '#FBB03B',
+                                                color: 'white',
+                                                transition: 'all 0.3s',
+                                            }
+                                        }}>
+                                        <CameraAltIcon />
+                                    </Avatar>
+                                </div>
+                            </div>
                             <div className='briefInfo flex w-full'>
                                 {user ? (
                                     <div className='flex flex-col userBriefInfo'>
