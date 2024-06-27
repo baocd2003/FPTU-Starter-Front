@@ -25,9 +25,9 @@
 	font-family: "Barlow" !important;
 }
 
-.carousel {
+/* .carousel {
 	height: 100vh;
-}
+} */
 
 .carouselImg {
 	-webkit-filter: grayscale(100%) !important;
