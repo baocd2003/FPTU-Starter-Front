@@ -1,76 +1,49 @@
-import { CKEditor } from '@ckeditor/ckeditor5-react'
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import React, { useState } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; // import styles
 
-const editorConfig = {
-  toolbar: {
-    items: [
-      'heading',
-      '|',
-      'bold',
-      'italic',
-      'link',
-      'bulletedList',
-      'numberedList',
-      'blockQuote',
-      '|',
-      'imageUpload',
-      'insertImage',
-      'insertTable',
-      'mediaEmbed',
-      'undo',
-      'redo',
-      'CKBox',
-      'indent',
-      'outdent'
-    ]
-  },
-  image: {
-    toolbar: [
-      'imageTextAlternative',
-      'imageStyle:inline',
-      'imageStyle:block',
-      'imageStyle:side',
-      'linkImage'
-    ]
-  },
-  table: {
-    contentToolbar: [
-      'tableColumn',
-      'tableRow',
-      'mergeTableCells'
-    ]
-  },
-  language: 'en'
-};
+const TextEditor = ({ aboutUsData, setAboutUsData }) => {
 
-
-const TextEditor = ({ setAboutUsDate }) => {
-
+  const handleChange = (content, delta, source, editor) => {
+    setAboutUsData(editor.getHTML()); // can also use editor.getText() or editor.getContents()
+  };
 
   return (
-    <>
-      <CKEditor
-        editor={ClassicEditor}
-        data="<h1>Chia sẻ câu chuyện của bạn tại đây!</h1>"
-        config={editorConfig}
-        onReady={editor => {
-          editor.editing.view.change((writer) => {
-            writer.setStyle(
-              "height",
-              "20rem",
-              editor.editing.view.document.getRoot()
-            );
-
-          })
-          setAboutUsDate(editor.getData());
-        }}
-        onChange={(event, editor) => {
-          // console.log(editor.getData());
-          setAboutUsDate(editor.getData());
-        }}
+    <div>
+      <ReactQuill
+        value={aboutUsData}
+        onChange={handleChange}
+        modules={modules}
+        formats={formats}
+        style={{ height: '20rem' }}
       />
-    </>
-  )
-}
+      {/* <div dangerouslySetInnerHTML={{ __html: value }}></div> */}
+    </div>
+  );
+};
 
-export default TextEditor
+// Optional: Define the modules and formats you want to use
+const modules = {
+  toolbar: [
+    [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+    [{ size: [] }],
+    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+    [{ 'list': 'ordered' }, { 'list': 'bullet' },
+    { 'indent': '-1' }, { 'indent': '+1' }],
+    ['link', 'image', 'video'],
+    ['clean']
+  ],
+  clipboard: {
+    // toggle to add extra line breaks when pasting HTML:
+    matchVisual: false,
+  }
+};
+
+const formats = [
+  'header', 'font', 'size',
+  'bold', 'italic', 'underline', 'strike', 'blockquote',
+  'list', 'bullet', 'indent',
+  'link', 'image', 'video'
+];
+
+export default TextEditor;

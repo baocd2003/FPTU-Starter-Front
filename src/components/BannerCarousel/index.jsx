@@ -13,7 +13,7 @@ function BannerCarousel() {
       setExistedAuth(token);
     }
   })
-  console.log(existedAuth);
+  // console.log(existedAuth);
   const navigate = useNavigate();
   const checkAuth = () => {
     if (existedAuth !== undefined) {
