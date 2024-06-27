@@ -22,8 +22,8 @@ function setCookie(name, value, expiresIn) {
   var time = now.getTime() + (7 * 60 * 60 * 1000);
   var expireTime = time + 1000 * expiresIn;
   now.setTime(expireTime);
-  console.log(now);
-  console.log(now.toUTCString());
+  // console.log(now);
+  // console.log(now.toUTCString());
   const cookieString = `${name}=${value}; expires=${now.toUTCString()}; path=/`;
   document.cookie = cookieString;
 }
@@ -34,11 +34,11 @@ function SignIn() {
   const { setIsLoading } = useOutletContext();
 
   if (location.hash) {
-    console.log("Yes");
+    // console.log("Yes");
     checkIfRedirectedFromOAuth();
   }
   else {
-    console.log("No");
+    // console.log("No");
   }
 
   const signIn = useSignIn();
@@ -55,7 +55,6 @@ function SignIn() {
 
   var now = new Date();
   var time = now.getTime();
-  console.log(time)
   const handleSubmit = (event) => {
     setIsLoading(true);
     event.preventDefault();
@@ -64,13 +63,13 @@ function SignIn() {
       email: data.get('email'),
       password: data.get('password'),
     }
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    // console.log({
+    //   email: data.get('email'),
+    //   password: data.get('password'),
+    // });
     //Save token to cookie
     userApiInstace.post("login", jsonData).then(res => {
-      console.log(res.data);
+      // console.log(res.data);
       if (res.data._data == null) {
         notify(`${res.data._message[0]}`);
       } else {
@@ -359,6 +358,11 @@ const GetGoogleUser = () => {
   const signIn = useSignIn();
   const navigate = useNavigate();
   const params = JSON.parse(localStorage.getItem("oauth2-test-params"));
+  const notify = (mess) => {
+    toast.warn(mess, {
+      position: "bottom-left"
+    });
+  }
   if (params && params["access_token"]) {
     axios
       .get("https://www.googleapis.com/oauth2/v3/userinfo", {
@@ -383,11 +387,7 @@ const GetGoogleUser = () => {
                 password: response.data.email.toUpperCase() + "a1",
                 confirmPassword: response.data.email.toUpperCase() + "a1",
               };
-              const notify = (mess) => {
-                toast.warn(mess, {
-                  position: "bottom-left"
-                });
-              }
+
               userApiInstace.post(`/register-google?avatarUrl=${response.data.picture}`, jsonData).then((res) => {
                 if (res.data._data == null) {
                   notify(`${res.data._message[0]}`);
@@ -401,7 +401,7 @@ const GetGoogleUser = () => {
                     tokenType: "Bearer",
                     authState: { email: jsonData.email },
                   });
-                  setCookie("_auth", Cookies.get("_auth"), 3600);
+                  // setCookie("_auth", Cookies.get("_auth"), 3600);
                   navigate("/home");
                 }
               });
@@ -426,7 +426,7 @@ const GetGoogleUser = () => {
                   });
                   console.log(Cookies.get("_auth"));
                   if (Cookies.get("_auth") != undefined) {
-                    navigate("/");
+                    navigate("/home");
                   }
                 }
               });
