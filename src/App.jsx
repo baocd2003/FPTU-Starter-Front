@@ -11,7 +11,7 @@ import UserProfileLayout from "./layouts/UserProfileLayout";
 import AdminOverview from "./pages/AdminOverview";
 import AdminProjects from "./pages/AdminProjects";
 import AdminUsers from "./pages/AdminUsers";
-import AdminTransactions from "./pages/AdminTransactions";
+import AdminCategories from "./pages/AdminCategories";
 import AllProjects from "./pages/AllProjects";
 import ChangePassword from "./pages/ChangePassword";
 import StepFive from "./pages/CreateNewProject/StepFive";
@@ -74,7 +74,7 @@ function App() {
           <Route path="/admin/projects" element={<AdminProjects />} />
           <Route path="/admin/dashboard" element={<AdminOverview />} />
           <Route path="/admin/users" element={<AdminUsers />} />
-          <Route path="/admin/transactions" element={<AdminTransactions />} />
+          <Route path="/admin/categories" element={<AdminCategories />} />
         </Route>
         <Route element={<CreateProject />}>
           <Route path="/create-project" element={<InitStep />} />
