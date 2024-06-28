@@ -2,8 +2,6 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CategoryIcon from "@mui/icons-material/Category";
 import ProjectIcon from "@mui/icons-material/Folder";
 import QueryStatsIcon from "@mui/icons-material/QueryStats";
-import RequestPageIcon from "@mui/icons-material/RequestPage";
-import SettingsIcon from "@mui/icons-material/Settings";
 import { Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -25,10 +23,8 @@ function AdminLayout() {
     "Tổng quan",
     "Tài khoản",
     "Dự án",
-    "Giao dịch",
     "Danh mục",
     "Yêu cầu rút tiền",
-    "Cấu hình",
   ];
 
   //icon mapping
@@ -36,10 +32,8 @@ function AdminLayout() {
     0: <QueryStatsIcon />,
     1: <AccountCircleIcon />,
     2: <ProjectIcon />,
-    3: <RequestPageIcon />,
-    4: <CategoryIcon />,
-    5: <PiHandWithdrawBold />,
-    6: <SettingsIcon />,
+    3: <CategoryIcon />,
+    4: <PiHandWithdrawBold />,
   };
 
   //navigate functions
@@ -53,16 +47,10 @@ function AdminLayout() {
     navigate("/admin/projects");
   };
   const navigateCategories = () => {
-
+    navigate("/admin/categories");
   };
   const navigateWithdrawRequests = () => {
     navigate("/admin/withdraw-request");
-  };
-  const navigateConfiguration = () => {
-
-  };
-  const navigateTransactions = () => {
-    navigate("/admin/transactions");
   };
 
   //navigate mapping
@@ -70,10 +58,8 @@ function AdminLayout() {
     0: navigateDashboard,
     1: navigateAccounts,
     2: navigateProjects,
-    3: navigateTransactions,
-    4: navigateCategories,
-    5: navigateWithdrawRequests,
-    6: navigateConfiguration,
+    3: navigateCategories,
+    4: navigateWithdrawRequests,
   };
 
   const DrawerList = (
