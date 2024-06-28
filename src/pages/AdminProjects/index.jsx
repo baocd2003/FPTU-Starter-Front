@@ -38,6 +38,7 @@ import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import SearchBarProjects from "../../components/SearchBarProjects";
+import BackerList from "../../components/BackerList";
 import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
 import transactionApiInstance from "../../utils/apiInstance/transactionApiInstance";
 import "./index.css";
@@ -196,6 +197,7 @@ function AdminProjects() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentRewardItems, setCurrentRewardItems] = useState([]);
   const [openPopover, setOpenPopover] = useState(false);
+  const [backerList, setBackerList] = useState([]);
 
   const token = Cookies.get("_auth");
 
@@ -378,6 +380,24 @@ function AdminProjects() {
         : [],
     [order, orderBy, page, rowsPerPage, projectList]
   );
+
+  //get backers
+  const getBackers = (projectId) => {
+    projectApiInstance
+      .get(`/get-project-backer?projectId=${projectId}`)
+      .then((res) => {
+        if (res.data) {
+          setBackerList(res.data.result._data);
+        }
+      });
+  };
+
+  useEffect(() => {
+    if (tabValue === 4 && selectedProject) {
+      console.log(selectedProject);
+      getBackers(selectedProject.id);
+    }
+  }, [tabValue, selectedProject]);
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -903,7 +923,11 @@ function AdminProjects() {
             </Box>
           )}
 
-          {tabValue === 4 && <Box>Danh sách ủng hộ</Box>}
+          {tabValue === 4 && (
+            <Box>
+              <BackerList data={backerList} />
+            </Box>
+          )}
 
           {selectedProject?.projectStatus === 1 && (
             <Box sx={{ mt: 2, display: "flex", justifyContent: "center" }}>
