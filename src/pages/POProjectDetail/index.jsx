@@ -46,7 +46,7 @@ function POProjectDetail() {
   console.log(userWallet)
 
   const checkEnoughWallet = (amount) => {
-    if(userWallet.balance < amount){
+    if (userWallet.balance < amount) {
       Swal.fire({
         title: "Số dư trong ví của bạn không đủ!",
         html: '<span id="my-wallet-link" style="color: #FCAE3D; cursor: pointer;">Ví của bạn</span>',
@@ -59,7 +59,7 @@ function POProjectDetail() {
         }
       });
       return false;
-    }else{
+    } else {
       return true;
     }
   }
@@ -108,7 +108,7 @@ function POProjectDetail() {
   //donate
   const handleFreeDonate = () => {
     try {
-      if(checkEnoughWallet(freeDonateAmount)){
+      if (checkEnoughWallet(freeDonateAmount)) {
         const data = {
           projectId: project.id,
           amountDonate: freeDonateAmount
@@ -130,7 +130,7 @@ function POProjectDetail() {
             // navigate('/my-wallet')
           });
       }
-      
+
     } catch (err) {
       console.log(err)
     } finally {
@@ -140,7 +140,7 @@ function POProjectDetail() {
 
   const confirmDonatePackage = () => {
     try {
-      if(checkEnoughWallet(selectedPackage.requiredAmount)){
+      if (checkEnoughWallet(selectedPackage.requiredAmount)) {
         const data = {
           packageId: selectedPackage.id,
         }
@@ -161,7 +161,7 @@ function POProjectDetail() {
             // navigate('/my-wallet')
           });
       }
-      
+
     } catch (err) {
       console.log(err)
     } finally {
@@ -225,13 +225,13 @@ function POProjectDetail() {
           const start = new Date(res.data._data.startDate);
           const end = new Date(res.data._data.endDate);
           const daysDiff = Math.floor((end - today) / (1000 * 60 * 60 * 24));
-          setRemainingDays(daysDiff > 0 ? daysDiff : 0);
+          setRemainingDays(daysDiff > 0 ? (daysDiff + 1) : 0);
           const imgUrls = res.data._data.images.map((v, i) => v.url)
           setImages(imgUrls)
           userManagementApiInstance.get(`/user-profile/${res.data._data.ownerId}`).then((userRes) => {
             setProjectUser(userRes.data._data);
           })
-          if(res.data._data.projectStatus == 3){
+          if (res.data._data.projectStatus == 3) {
             setIsSuccess(true);
           }
         }
@@ -265,7 +265,7 @@ function POProjectDetail() {
     getBackers();
   }, [projectId])
   // console.log(images);
-  // console.log(project)
+  console.log(project)
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0');
@@ -276,14 +276,15 @@ function POProjectDetail() {
   };
 
   //handel cash out
-  const handleCashOut = async () =>{
+  const handleCashOut = async () => {
     const token = Cookies.get("_auth");
-    await withdrawApiInstance.post('/create-project-request',{
-      projectId : project.id
-    },{
+    await withdrawApiInstance.post('/create-project-request', {
+      projectId: project.id
+    }, {
       headers: { Authorization: `Bearer ${token}` }
     }).then(res => {
       console.log(res);
+      getProjectDetail();
       Swal.fire({
         title: "Bạn đã tạo yêu cầu rút thành công!",
         text: `Vui lòng chờ admin xử lí yêu cầu của bạn, có thể mất từ 1-3 ngày!!`,
@@ -533,13 +534,15 @@ function POProjectDetail() {
                   <ProjectDetailStat numb={remainingDays} stat={"ngày còn lại"} />
                   <Stack spacing={1} direction="column" sx={{ my: 4 }}>
                     {checkOwner ?
-                      <Button onClick={handleCashOut} variant="contained" disabled={!isSuccess} sx={{ width: "100%", whiteSpace: "nowrap", background: "#FCAE3D", fontWeight: "bold", py: 1 }}>Rút tiền</Button>
+                      <Button onClick={handleCashOut} variant="contained" disabled={!(isSuccess && (remainingDays == 0) && !(project.projectStatus == 7))} sx={{ width: "100%", whiteSpace: "nowrap", background: "#FCAE3D", fontWeight: "bold", py: 1 }}>
+                        {(project.projectStatus == 7) ? 'Đã tạo lệnh rút tiền' : 'Rút tiền'}</Button>
                       : <>
                         <Button variant="contained"
                           sx={{
                             width: "100%", whiteSpace: "nowrap"
                             , background: "#FCAE3D", fontWeight: "bold", py: 1
                           }}
+                          disabled={(isSuccess && (remainingDays == 0))}
                           className="like-btn"
                           onClick={handleScroll}>
                           Ủng hộ dự án
@@ -721,7 +724,7 @@ function POProjectDetail() {
                                   <CardActions sx={{ display: 'flex', justifyContent: 'center' }}>
                                     {!checkOwner
                                       ? (
-                                        <Button onClick={() => handleDonatePackage(projectPackage)} variant="contained">
+                                        <Button disabled={(isSuccess && (remainingDays == 0))} onClick={() => handleDonatePackage(projectPackage)} variant="contained">
                                           Chọn
                                         </Button>
                                       )

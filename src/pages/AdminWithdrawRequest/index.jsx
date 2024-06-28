@@ -190,8 +190,8 @@ function AdminWithdrawRequest() {
                     fetchWithdrawRequestData();
                     break;
                 case 4:
-                    await withdrawApiInstance.post(`admin-processing-project-request`, formData, {
-                        headers: { Authorization: `Bearer ${token}` },
+                    await withdrawApiInstance.post(`admin-processing-project-request`, selectedRequest.withdrawRequest.id, {
+                        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
                     });
                     fetchWithdrawRequestData();
                     break;
@@ -201,6 +201,7 @@ function AdminWithdrawRequest() {
         } catch (error) {
             console.error("Error fetching withdraw request list:", error);
         }
+        setModalOpen(false);
     }
 
     const handleApproveRequest = async (selectedRequest) => {
@@ -215,8 +216,8 @@ function AdminWithdrawRequest() {
                     fetchWithdrawRequestData();
                     break;
                 case 4:
-                    await withdrawApiInstance.post(`admin-approved-project-request`, formData, {
-                        headers: { Authorization: `Bearer ${token}` },
+                    await withdrawApiInstance.post(`admin-approved-project-request`, selectedRequest.withdrawRequest.id, {
+                        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
                     });
                     fetchWithdrawRequestData();
                     break;
@@ -226,6 +227,7 @@ function AdminWithdrawRequest() {
         } catch (error) {
             console.error("Error fetching withdraw request list:", error);
         }
+        setModalOpen(false);
     }
 
     const handleRejectRequest = async (selectedRequest) => {
@@ -251,6 +253,7 @@ function AdminWithdrawRequest() {
         } catch (error) {
             console.error("Error fetching withdraw request list:", error);
         }
+        setModalOpen(false);
     }
 
     return (
@@ -364,7 +367,7 @@ function AdminWithdrawRequest() {
                                 <Grid container columnSpacing={2}>
                                     {selectedRow.withdrawRequest.status === 1 && (
                                         <Grid item xs={6} lg={6} sx={{ display: 'flex', my: 'auto' }}>
-                                            <img src={`https://img.vietqr.io/image/vietcombank-${selectedRow.bankAccount.bankAccountNumber}-compact2.jpg?amount=${selectedRow.withdrawRequest.amount}&addInfo=Chuyen%20tien%20accountName=Quy%20Vac%20Xin%20Covid`} style={{ width: '24rem', height: '20rem' }} />
+                                            <img src={`https://img.vietqr.io/image/vietcombank-${selectedRow.bankAccount.bankAccountNumber}-compact2.jpg?amount=${selectedRow.withdrawRequest.amount}&addInfo=Chuyen%20tien%20&accountName=Quy%20Vac%20Xin%20Covid`} style={{ width: '24rem', height: '20rem' }} />
                                         </Grid>
                                     )}
                                     <Grid item xs={12} lg={selectedRow.withdrawRequest.status === 1 ? 6 : 12} sx={{ display: 'flex', my: 'auto', flexDirection: 'column' }}>
