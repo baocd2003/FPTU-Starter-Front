@@ -21,10 +21,8 @@ import Cookies from "js-cookie";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import SearchBarCategories from "../../components/SearchBarCategories";
-import SearchBarUsers from "../../components/SearchBarUsers";
-import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
-import userManagementApiInstance from "../../utils/apiInstance/userManagementApiInstance";
 import categoryApiInstance from "../../utils/apiInstance/categoryApiInstance";
+import "./index.css";
 
 // Row component to display each category and its subcategories
 function Row(props) {
@@ -32,10 +30,24 @@ function Row(props) {
   const [open, setOpen] = useState(false);
   const [newSubCategory, setNewSubCategory] = useState("");
 
-  const handleAddSubCategory = (e) => {
+  const handleAddSubCategory = async (e) => {
     if (e.key === "Enter" && newSubCategory.trim() !== "") {
-      onAddSubCategory(row.id, newSubCategory);
-      setNewSubCategory("");
+      try {
+        const res = await categoryApiInstance.post(
+          `create-sub-caetgory?categoryId=${row.id}`,
+          {
+            name: newSubCategory,
+          }
+        );
+        if (res.data._isSuccess === true) {
+          onAddSubCategory(row.id, newSubCategory);
+          setNewSubCategory("");
+        } else {
+          console.error("Error creating subcategory:", res.data.result._error);
+        }
+      } catch (error) {
+        console.error("Error creating subcategory:", error);
+      }
     }
   };
 
@@ -47,6 +59,7 @@ function Row(props) {
             aria-label="expand row"
             size="small"
             onClick={() => setOpen(!open)}
+            className="ib-arrow"
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
@@ -66,6 +79,7 @@ function Row(props) {
               },
             }}
             onClick={() => setOpen(true)}
+            className="btn-add-subcate"
           >
             Thêm
           </Button>
@@ -92,6 +106,7 @@ function Row(props) {
                         onChange={(e) => setNewSubCategory(e.target.value)}
                         onKeyDown={handleAddSubCategory}
                         placeholder="Thêm danh mục phụ"
+                        className="input-sub"
                       />
                     </TableCell>
                   </TableRow>

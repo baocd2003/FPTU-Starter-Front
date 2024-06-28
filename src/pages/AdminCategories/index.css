@@ -1,0 +1,3 @@
+.input-sub:focus, .btn-add-subcate:focus, .ib-arrow:focus {
+    outline: none !important;
+}
