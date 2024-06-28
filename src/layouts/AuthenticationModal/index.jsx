@@ -8,7 +8,6 @@ import Tabs from '@mui/material/Tabs';
 import { useTheme } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 import { animated, useSpring } from 'react-spring';
-import SwipeableViews from "react-swipeable-views-react-18-fix";
 import SignInModal from '../../pages/SignInModal';
 import SignUpModal from '../../pages/SignUpModal';
 import './index.css';
@@ -48,10 +47,7 @@ function AuthenticationModal(props) {
   };
 
   return (
-    <Modal
-      open={props.open}
-      onClose={onCloseModal}
-    >
+    <Modal open={props.open} onClose={onCloseModal}>
       <animated.div style={modelProps}>
         <Box sx={modalStyle}>
           <IconButton
@@ -115,21 +111,12 @@ function AuthenticationModal(props) {
                       }} />
                     </Tabs>
                   </Box>
-                  <SwipeableViews
-                    axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                    index={tabValue}
-                    className='authenSwiper'
-                    containerStyle={{
-                      transition: 'transform 0.35s cubic-bezier(0.15, 0.3, 0.25, 1) 0s'
-                    }}
-                  >
-                    <TabPanel value={tabValue.toString()} index={0} dir={theme.direction} sx={{ height: '100%' }}>
-                      <SignInModal />
-                    </TabPanel>
-                    <TabPanel value={tabValue.toString()} index={1} dir={theme.direction} sx={{ height: '100%' }}>
-                      <SignUpModal />
-                    </TabPanel>
-                  </SwipeableViews>
+                  <TabPanel value={'0'} index={0} dir={theme.direction} sx={{ height: '100%' }}>
+                    <SignInModal />
+                  </TabPanel>
+                  <TabPanel value={'1'} index={1} dir={theme.direction} sx={{ height: '100%' }}>
+                    <SignUpModal />
+                  </TabPanel>
                 </TabContext>
               </div>
             </Grid>
