@@ -34,6 +34,7 @@ function UserProjects() {
             headers: { Authorization: `Bearer ${token}` },
         })
             .then(response => {
+                console.log(response)
                 const userData = response.data._data;
                 console.log(userData);
                 setUser(userData);
@@ -113,6 +114,7 @@ function UserProjects() {
                                                         project={item}
                                                         key={item.id}
                                                         user={user}
+                                                        
                                                     />
                                                 </Grid>
                                             ))}
