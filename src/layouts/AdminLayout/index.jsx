@@ -21,7 +21,15 @@ function AdminLayout() {
   const navigate = useNavigate();
 
   //title list
-  const titleList = ["Tổng quan", "Tài khoản", "Dự án", "Rút tiền", "Danh mục"];
+  const titleList = [
+    "Tổng quan",
+    "Tài khoản",
+    "Dự án",
+    "Giao dịch",
+    "Danh mục",
+    "Yêu cầu rút tiền",
+    "Cấu hình",
+  ];
 
   //icon mapping
   const iconMapping = {
