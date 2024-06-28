@@ -47,7 +47,8 @@ function AccountWallet() {
 
   useEffect(() => {
     fetchUserWallet();
-  }, [token])
+  }, [token]);
+  console.log(userWallet)
 
   const handleOpenLoadMoneyForm = () => {
     setOpen(true);
@@ -129,35 +130,44 @@ function AccountWallet() {
   }
 
   const handleWithdraw = async () => {
-    try {
-      if(withdrawAmount < 5000){
+      fetchUserWallet();
+      console.log(withdrawAmount)
+      if(userWallet.bankAccount == null || userWallet.bankAccount == undefined){
+        setOpenWithdrawForm(false);
         Swal.fire({
-          title: "Số tiền ",
-          text: err.response?.data || "Đx",
+          title: "Vui lòng liên kết ví của bạn với tài khoản ngân hàng ",
           icon: "warning"
         });
+        return;
       }
-      const withdrawResponse = await withdrawApiInstance.post('/withdraw-wallet-request', {
-        amount : withdrawAmount
-      }, {
-        headers: { Authorization: `Bearer ${token}` },
-      }).then(() => {
+      if(withdrawAmount < 5000){
+        setOpenWithdrawForm(false)
         Swal.fire({
-          title: "Tạo yêu cầu rút tiền thành công!",
-          text: "Thời gian xử lí diễn ra từ 2-3 ngày!",
-          icon: "success"
+          title: "Số tiền rút phải trên 5000 đồng",
+          icon: "warning"
         });
-        fetchUserWallet();
-      })
-      console.log(withdrawResponse)
-      setOpenWithdrawForm(false)
-    } catch (err) {
-      Swal.fire({
-        title: "Đã có lỗi!",
-        text: err.response?.data || "Đx",
-        icon: "warning"
-      });
-    }
+      }else{
+        const withdrawResponse = await withdrawApiInstance.post('/withdraw-wallet-request', {
+          amount : withdrawAmount,
+          bankAccountRequest:{
+            ownerName : userWallet.bankAccount.ownerName,
+            bankAccountNumber : userWallet.bankAccount.bankAccountNumber,
+            bankAccountName : userWallet.bankAccount.bankAccountName
+          }
+        }, {
+          headers: { Authorization: `Bearer ${token}` },
+        }).then(() => {
+          Swal.fire({
+            title: "Tạo yêu cầu rút tiền thành công!",
+            text: "Thời gian xử lí diễn ra từ 2-3 ngày!",
+            icon: "success"
+          });
+          fetchUserWallet();
+        })
+        console.log(withdrawResponse)
+        setOpenWithdrawForm(false)
+      }
+    
   }
 
   // console.log(userWallet);
@@ -222,6 +232,7 @@ function AccountWallet() {
             fullWidth
             variant="outlined"
             defaultValue="5000"
+            type="number"
             onChange={(e) => setWithdrawAmount(e.target.value)}
             inputRef={priceRef}
             InputProps={{
