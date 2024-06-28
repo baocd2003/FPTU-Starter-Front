@@ -168,7 +168,7 @@ function AdminWithdrawRequest() {
         };
     };
 
-    const handleOpenModal = async (rowData) => {
+    const handleOpenModal = (rowData) => {
         setSelectedRow(rowData);
         setModalOpen(true);
     };
@@ -178,16 +178,79 @@ function AdminWithdrawRequest() {
         setModalOpen(false);
     };
 
-    const handleProcessingRequest = (id) => {
-
+    const handleProcessingRequest = async (selectedRequest) => {
+        const formData = new FormData();
+        formData.append("requestId", selectedRequest.withdrawRequest.id);
+        try {
+            switch (selectedRequest.withdrawRequest.requestType) {
+                case 3:
+                    await withdrawApiInstance.post(`admin-processing-withdraw-wallet`, formData, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    });
+                    fetchWithdrawRequestData();
+                    break;
+                case 4:
+                    await withdrawApiInstance.post(`admin-processing-project-request`, formData, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    });
+                    fetchWithdrawRequestData();
+                    break;
+                default:
+                    console.error("Unknown request type");
+            }
+        } catch (error) {
+            console.error("Error fetching withdraw request list:", error);
+        }
     }
 
-    const handleApproveRequest = (id) => {
-
+    const handleApproveRequest = async (selectedRequest) => {
+        const formData = new FormData();
+        formData.append("requestId", selectedRequest.withdrawRequest.id);
+        try {
+            switch (selectedRequest.withdrawRequest.requestType) {
+                case 3:
+                    await withdrawApiInstance.post(`admin-approved-withdraw-wallet-request`, formData, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    });
+                    fetchWithdrawRequestData();
+                    break;
+                case 4:
+                    await withdrawApiInstance.post(`admin-approved-project-request`, formData, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    });
+                    fetchWithdrawRequestData();
+                    break;
+                default:
+                    console.error("Unknown request type");
+            }
+        } catch (error) {
+            console.error("Error fetching withdraw request list:", error);
+        }
     }
 
-    const handleRejectRequest = (id) => {
-
+    const handleRejectRequest = async (selectedRequest) => {
+        const formData = new FormData();
+        formData.append("requestId", selectedRequest.withdrawRequest.id);
+        try {
+            switch (selectedRequest.withdrawRequest.requestType) {
+                case 3:
+                    await withdrawApiInstance.post(`admin-rejected-withdraw-wallet`, formData, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    });
+                    fetchWithdrawRequestData();
+                    break;
+                case 4:
+                    await withdrawApiInstance.post(`admin-rejected-withdraw-project`, formData, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    });
+                    fetchWithdrawRequestData();
+                    break;
+                default:
+                    console.error("Unknown request type");
+            }
+        } catch (error) {
+            console.error("Error fetching withdraw request list:", error);
+        }
     }
 
     return (
@@ -240,7 +303,11 @@ function AdminWithdrawRequest() {
                                         <div style={getRequestTypeStyle(withdrawRequestItem.withdrawRequest.requestType)}>{requestType[withdrawRequestItem.withdrawRequest.requestType]}</div>
                                     </TableCell>
                                     <TableCell align="center" style={{ width: '4rem', padding: '8px' }}>
-                                        <ModeEditOutlineIcon onClick={() => handleOpenModal(withdrawRequestItem)} fontSize='small' sx={{ fontSize: '1.2rem', color: '#44494D', cursor: 'pointer' }} />
+                                        <ModeEditOutlineIcon
+                                            onClick={() => handleOpenModal(withdrawRequestItem)}
+                                            fontSize='small'
+                                            sx={{ fontSize: '1.2rem', color: '#44494D', cursor: 'pointer' }}
+                                        />
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -263,6 +330,8 @@ function AdminWithdrawRequest() {
                 open={modalOpen}
                 onClose={handleCloseModal}
                 style={{ zIndex: '100000' }}
+                aria-labelledby="modal-title"
+                aria-describedby="modal-description"
             >
                 <Paper sx={style}>
                     <IconButton
@@ -295,7 +364,7 @@ function AdminWithdrawRequest() {
                                 <Grid container columnSpacing={2}>
                                     {selectedRow.withdrawRequest.status === 1 && (
                                         <Grid item xs={6} lg={6} sx={{ display: 'flex', my: 'auto' }}>
-                                            <img src="https://img.vietqr.io/image/vietcombank-996116407-compact2.jpg?amount=600000&addInfo=dong%20qop%20quy%20vac%20xin&accountName=Quy%20Vac%20Xin%20Covid" title="W3Schools Free Online Web Tutorials" />
+                                            <img src={`https://img.vietqr.io/image/vietcombank-${selectedRow.bankAccount.bankAccountNumber}-compact2.jpg?amount=${selectedRow.withdrawRequest.amount}&addInfo=Chuyen%20tien%20accountName=Quy%20Vac%20Xin%20Covid`} style={{ width: '24rem', height: '20rem' }} />
                                         </Grid>
                                     )}
                                     <Grid item xs={12} lg={selectedRow.withdrawRequest.status === 1 ? 6 : 12} sx={{ display: 'flex', my: 'auto', flexDirection: 'column' }}>
@@ -357,19 +426,19 @@ function AdminWithdrawRequest() {
                                 </Grid>
                                 {selectedRow.withdrawRequest.status === 0 ? (
                                     <div className='flex justify-center flex-row mt-[1.2rem]'>
-                                        <Button onClick={handleProcessingRequest(selectedRow.id)} variant="contained" sx={{ mr: '2rem', backgroundColor: '#4CAF50', textTransform: 'none', fontWeight: 'bold' }}>
+                                        <Button onClick={() => handleProcessingRequest(selectedRow)} variant="contained" sx={{ mr: '2rem', backgroundColor: '#4CAF50', textTransform: 'none', fontWeight: 'bold' }}>
                                             Đồng ý
                                         </Button>
-                                        <Button onClick={handleRejectRequest(selectedRow.id)} variant="contained" sx={{ backgroundColor: '#ed1c24', textTransform: 'none', fontWeight: 'bold' }}>
+                                        <Button onClick={() => handleRejectRequest(selectedRow)} variant="contained" sx={{ backgroundColor: '#ed1c24', textTransform: 'none', fontWeight: 'bold' }}>
                                             Từ chối
                                         </Button>
                                     </div>
                                 ) : selectedRow.withdrawRequest.status == 1 ? (
                                     <div className='flex justify-center flex-row mt-[1.2rem]'>
-                                        <Button onClick={handleApproveRequest(selectedRow.id)} variant="contained" sx={{ mr: '2rem', backgroundColor: '#4CAF50', textTransform: 'none', fontWeight: 'bold' }}>
+                                        <Button onClick={() => handleApproveRequest(selectedRow)} variant="contained" sx={{ mr: '2rem', backgroundColor: '#4CAF50', textTransform: 'none', fontWeight: 'bold' }}>
                                             Xác nhận
                                         </Button>
-                                        <Button onClick={handleRejectRequest(selectedRow.id)} variant="contained" sx={{ backgroundColor: '#ed1c24', textTransform: 'none', fontWeight: 'bold' }}>
+                                        <Button onClick={() => handleRejectRequest(selectedRow)} variant="contained" sx={{ backgroundColor: '#ed1c24', textTransform: 'none', fontWeight: 'bold' }}>
                                             Hủy bỏ
                                         </Button>
                                     </div>
