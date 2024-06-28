@@ -10,8 +10,8 @@ import CreateProjectLayout from "./layouts/CreateProjectLayout";
 import UserProfileLayout from "./layouts/UserProfileLayout";
 import AdminOverview from "./pages/AdminOverview";
 import AdminProjects from "./pages/AdminProjects";
-import AdminTransactions from "./pages/AdminTransactions";
 import AdminUsers from "./pages/AdminUsers";
+import AdminCategories from "./pages/AdminCategories";
 import AdminWithdrawRequest from "./pages/AdminWithdrawRequest";
 import AllProjects from "./pages/AllProjects";
 import ChangePassword from "./pages/ChangePassword";
@@ -75,7 +75,7 @@ function App() {
           <Route path="/admin/projects" element={<AdminProjects />} />
           <Route path="/admin/dashboard" element={<AdminOverview />} />
           <Route path="/admin/users" element={<AdminUsers />} />
-          <Route path="/admin/transactions" element={<AdminTransactions />} />
+          <Route path="/admin/categories" element={<AdminCategories />} />
           <Route path="/admin/withdraw-request" element={<AdminWithdrawRequest />} />
         </Route>
         <Route element={<CreateProject />}>

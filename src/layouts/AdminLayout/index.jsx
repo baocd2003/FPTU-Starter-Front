@@ -20,6 +20,7 @@ import logo from "../../assets/logo.png";
 function AdminLayout() {
   const navigate = useNavigate();
 
+  //title list
   const titleList = [
     "Tổng quan",
     "Tài khoản",
