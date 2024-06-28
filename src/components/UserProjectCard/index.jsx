@@ -89,10 +89,10 @@ function UserProjectCard({ project, user }) {
             }}
         >
             <Grid container>
-                <Grid item lg={4.5} xs={12}>
+                <Grid item lg={4.5} xs={12} sx={{ my: '0 !important' }}>
                     <img src={project.projectThumbnail} alt="Project Thumbnail" style={{ height: '100%', borderTopLeftRadius: '10px', objectFit: 'cover' }} className='projectImage' />
                 </Grid>
-                <Grid item lg={7.5} xs={12}>
+                <Grid item lg={7.5} xs={12} sx={{ my: '0 !important' }}>
                     <div style={{ margin: '24px', textAlign: 'left' }}>
                         <div className='flex gap-2 flex-row justify-between mb-2'>
                             {project.categories.slice(0, 1).map((cate, index) => (
@@ -113,7 +113,7 @@ function UserProjectCard({ project, user }) {
                             </div>
                         </div>
                         <Typography gutterBottom color="text.secondary" component="div"
-                            sx={{ textAlign: "left", fontSize: '1.25rem', color: '#FBB03B', fontWeight: 600, mt: '8px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                            sx={{ textAlign: "left", fontSize: '1.25rem', color: '#FBB03B', fontWeight: 600, mt: '8px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor: 'pointer' }}
                             onClick={() => handleClickDetail(project)}>
                             {project.projectName}
                         </Typography>

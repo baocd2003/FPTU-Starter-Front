@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
-import logo from "../../assets/logo.png";
-import { Container, Grid } from "@mui/material";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import CategoryIcon from "@mui/icons-material/Category";
+import ProjectIcon from "@mui/icons-material/Folder";
+import QueryStatsIcon from "@mui/icons-material/QueryStats";
+import { Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
@@ -10,11 +10,10 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import QueryStatsIcon from "@mui/icons-material/QueryStats";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import ProjectIcon from "@mui/icons-material/Folder";
-import TransactionIcon from "@mui/icons-material/AttachMoney";
-import SettingsIcon from "@mui/icons-material/Settings";
+import React from "react";
+import { PiHandWithdrawBold } from "react-icons/pi";
+import { Outlet, useNavigate } from "react-router-dom";
+import logo from "../../assets/logo.png";
 
 function AdminLayout() {
   const navigate = useNavigate();
@@ -24,8 +23,8 @@ function AdminLayout() {
     "Tổng quan",
     "Tài khoản",
     "Dự án",
-    "Giao dịch",
-    "Cấu hình",
+    "Danh mục",
+    "Yêu cầu rút tiền",
   ];
 
   //icon mapping
@@ -33,8 +32,8 @@ function AdminLayout() {
     0: <QueryStatsIcon />,
     1: <AccountCircleIcon />,
     2: <ProjectIcon />,
-    3: <TransactionIcon />,
-    4: <SettingsIcon />,
+    3: <CategoryIcon />,
+    4: <PiHandWithdrawBold />,
   };
 
   //navigate functions
@@ -42,16 +41,16 @@ function AdminLayout() {
     navigate("/admin/dashboard");
   };
   const navigateAccounts = () => {
-    navigate("/admin/accounts");
+    navigate("/admin/users");
   };
   const navigateProjects = () => {
     navigate("/admin/projects");
   };
-  const navigateTransactions = () => {
-    navigate("/admin/transactions");
+  const navigateCategories = () => {
+    navigate("/admin/categories");
   };
-  const navigateConfiguration = () => {
-    navigate("/admin/configuration");
+  const navigateWithdrawRequests = () => {
+    navigate("/admin/withdraw-request");
   };
 
   //navigate mapping
@@ -59,8 +58,8 @@ function AdminLayout() {
     0: navigateDashboard,
     1: navigateAccounts,
     2: navigateProjects,
-    3: navigateTransactions,
-    4: navigateConfiguration,
+    3: navigateCategories,
+    4: navigateWithdrawRequests,
   };
 
   const DrawerList = (
@@ -80,7 +79,7 @@ function AdminLayout() {
 
   return (
     <Grid container sx={{ height: "100%", overflow: "hidden" }} spacing={4}>
-      <Grid xs={2} item sx={{ height: "100%" }}>
+      <Grid xs={2} item sx={{ height: "100%", pt: '0 !important' }}>
         <Drawer
           variant="permanent"
           open={true}
@@ -88,7 +87,7 @@ function AdminLayout() {
             "& .MuiDrawer-paper": {
               position: "relative",
               width: 250,
-              height: "100vh", // Ensures the Drawer takes up full height
+              height: "100vh",
               backgroundColor: "white",
               boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
               zIndex: 1,

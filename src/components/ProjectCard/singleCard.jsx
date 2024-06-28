@@ -15,6 +15,8 @@ function SingleCard({ id, category, imageLink, title, po, amount, progress, days
   const formattedAmount = new Intl.NumberFormat('vi-VN').format(amount);
   const formattedGoal = new Intl.NumberFormat('vi-VN').format(goal);
 
+  const numericProgress = Number(progress);
+
   const navigate = useNavigate();
 
   const handleClickDetail = () => {
@@ -22,10 +24,10 @@ function SingleCard({ id, category, imageLink, title, po, amount, progress, days
   }
 
   return (
-    <Card sx={{ width: '18rem', height: 'fit-content', padding: '20px', boxShadow: '0', borderRadius: '0.8rem', transition: 'all 0.2s', backgroundColor: 'transparent' }} className='project-card'>
+    <Card sx={{ width: '18rem', height: 'fit-content', padding: '16px', boxShadow: '0', borderRadius: '0.8rem', transition: 'all 0.2s', backgroundColor: 'transparent' }} className='project-card'>
       <CardMedia
         sx={{
-          height: '12rem', width: '15.5rem', borderRadius: '0.4rem', mb: '1.2rem', position: 'relative', mx: 'auto',
+          height: '12rem', borderRadius: '0.4rem', mb: '1.2rem', position: 'relative', mx: 'auto',
           '&:hover .image-overlay': {
             opacity: '0.5 !important',
           },
@@ -136,7 +138,7 @@ function SingleCard({ id, category, imageLink, title, po, amount, progress, days
             {progress} %
           </Typography>
         </div>
-        <LinearProgress className='progressBar' variant="determinate" value={progress} sx={{ borderRadius: '0.4rem', height: '0.4rem', marginBottom: '0.4rem' }} />
+        <LinearProgress className='progressBar' variant="determinate" value={numericProgress} sx={{ borderRadius: '0.4rem', height: '0.4rem', marginBottom: '0.4rem' }} />
         <Typography variant="h6" sx={{ textAlign: "left", fontSize: '1rem', marginBottom: '0', fontWeight: 'bold' }}>
           Mục tiêu: {formattedGoal} VND
         </Typography>

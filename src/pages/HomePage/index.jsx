@@ -1,9 +1,9 @@
-import AddIcon from '@mui/icons-material/Add';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CircleIcon from '@mui/icons-material/Circle';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import StarIcon from '@mui/icons-material/Star';
-import { Button } from '@mui/material';
+import { Backdrop, Button, CircularProgress } from '@mui/material';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -18,31 +18,43 @@ import { FaHandsHelping } from "react-icons/fa";
 import { IoIosSettings } from "react-icons/io";
 import { RiPieChart2Fill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
+import { TypeAnimation } from 'react-type-animation';
 import FSUAppBar from '../../components/AppBar';
 import BannerCarousel from '../../components/BannerCarousel';
 import Footer from '../../components/Footer';
 import ProjectCard from '../../components/ProjectCard';
+import { ToastContainer, toast } from 'react-toastify';
 import './index.css';
+import axios from 'axios';
+import useSignIn from 'react-auth-kit/hooks/useSignIn';
+import userApiInstace from '../../utils/apiInstance/userApiInstace';
+import { Troubleshoot } from '@mui/icons-material';
 
 function HomePage() {
 	const [checkIsLogin, setCheckIsLogin] = useState(false);
-
+	// const [isLoadingLogin, setIsLoadingLogin] = useState(false);
 	const swiperPopularProjectRef = useRef(null);
 	const swiperNewProjectRef = useRef(null);
-
 
 	useEffect(() => {
 		Aos.init({ duration: 2000 });
 		const isLogined = Cookies.get('_auth') !== undefined;
 		setCheckIsLogin(isLogined);
-
 	}, []);
+
 	const navigate = useNavigate();
-	console.log(Cookies.get('_auth'));
+
+	if (location.hash) {
+		checkIfRedirectedFromOAuth();
+	}
 
 	return (
 		<div className="home">
 			<FSUAppBar isLogined={checkIsLogin} />
+			<Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={(location.hash)}>
+				<CircularProgress color="inherit" />
+			</Backdrop>
+			<ToastContainer />
 			<BannerCarousel />
 			<div data-aos="fade-up">
 				<div className='project-section'>
@@ -155,7 +167,7 @@ function HomePage() {
 							</div>
 						</div>
 						<ProjectCard setSwiperRef={(ref) => { swiperPopularProjectRef.current = ref.current }} type={"popular"} />
-						<Button sx={{ px: '2.4rem !important', color: '#44494D', display: 'block', height: '3.2rem', borderRadius: '0.4rem !important', fontSize: '1rem', fontWeight: 600, mx: 'auto', mt: '1.6rem', letterSpacing: '1px', textTransform: 'none' }} className="all-project-btn">
+						<Button onClick={() => navigate('/all-projects')} sx={{ px: '2.4rem !important', color: '#44494D', display: 'block', height: '3.2rem', borderRadius: '0.4rem !important', fontSize: '1rem', fontWeight: 600, mx: 'auto', mt: '1.6rem', letterSpacing: '1px', textTransform: 'none' }} className="all-project-btn">
 							Xem toàn bộ dự án
 						</Button>
 					</div>
@@ -220,7 +232,7 @@ function HomePage() {
 							</div>
 						</div>
 						<ProjectCard setSwiperRef={(ref) => { swiperNewProjectRef.current = ref.current }} type={"new"} />
-						<Button sx={{ px: '2.4rem !important', color: '#44494D', display: 'block', height: '3.2rem', borderRadius: '0.4rem !important', fontSize: '1rem', fontWeight: 600, mx: 'auto', mt: '1.6rem', letterSpacing: '1px', textTransform: 'none' }} className="all-project-btn">
+						<Button onClick={() => navigate('/all-projects')} sx={{ px: '2.4rem !important', color: '#44494D', display: 'block', height: '3.2rem', borderRadius: '0.4rem !important', fontSize: '1rem', fontWeight: 600, mx: 'auto', mt: '1.6rem', letterSpacing: '1px', textTransform: 'none' }} className="all-project-btn">
 							Xem toàn bộ dự án
 						</Button>
 					</div>
@@ -239,7 +251,7 @@ function HomePage() {
 										Làm thế nào chúng tôi có thể giúp bạn?
 									</Typography>
 									<Typography variant="h3" sx={{ fontSize: { lg: '1.2rem', xs: '0.8rem' }, color: 'white', fontWeight: 600, textAlign: 'justify', mr: '40px', lineHeight: '2.4rem', mb: '2.4rem' }}>
-										Chúng tôi rất vui được giải đáp những thắc mắc phổ biến mà quý khách có thể gặp phải khi sử dụng dịch vụ của chúng tôi
+										Chúng tôi rất vui được giải đáp những thắc mắc phổ biến mà bạn có thể gặp phải khi sử dụng dịch vụ của chúng tôi
 									</Typography>
 								</Box>
 								<Button sx={{ px: '2.4rem !important', color: '#44494D', backgroundColor: '#FFFFFF !important', border: '2px solid transparent !important', display: 'block', height: '3.2rem', borderRadius: '0.4rem !important', fontSize: '1rem', fontWeight: 600, letterSpacing: '1px', textTransform: 'none', ml: '20px' }} className="all-project-btn">
@@ -250,7 +262,7 @@ function HomePage() {
 								<Box sx={{ px: '20px' }}>
 									<Accordion sx={{ mb: '2.4rem', borderRadius: '0.4rem' }}>
 										<AccordionSummary
-											expandIcon={<AddIcon />}
+											expandIcon={<ExpandMoreIcon />}
 											aria-controls="panel1-content"
 											id="panel1-header"
 											sx={{ textAlign: 'left' }}
@@ -263,7 +275,7 @@ function HomePage() {
 									</Accordion>
 									<Accordion sx={{ mb: '2.4rem', borderRadius: '0.4rem', outline: 'none !important' }}>
 										<AccordionSummary
-											expandIcon={<AddIcon />}
+											expandIcon={<ExpandMoreIcon />}
 											aria-controls="panel1-content"
 											id="panel1-header"
 											sx={{ textAlign: 'left' }}
@@ -276,7 +288,7 @@ function HomePage() {
 									</Accordion>
 									<Accordion sx={{ mb: '2.4rem', borderRadius: '0.4rem' }}>
 										<AccordionSummary
-											expandIcon={<AddIcon />}
+											expandIcon={<ExpandMoreIcon />}
 											aria-controls="panel1-content"
 											id="panel1-header"
 											sx={{ textAlign: 'left' }}
@@ -289,7 +301,7 @@ function HomePage() {
 									</Accordion>
 									<Accordion sx={{ mb: '2.4rem', borderRadius: '0.4rem' }}>
 										<AccordionSummary
-											expandIcon={<AddIcon />}
+											expandIcon={<ExpandMoreIcon />}
 											aria-controls="panel1-content"
 											id="panel1-header"
 											sx={{ textAlign: 'left' }}
@@ -302,7 +314,7 @@ function HomePage() {
 									</Accordion>
 									<Accordion sx={{ borderRadius: '0.4rem' }}>
 										<AccordionSummary
-											expandIcon={<AddIcon />}
+											expandIcon={<ExpandMoreIcon />}
 											aria-controls="panel1-content"
 											id="panel1-header"
 											sx={{ textAlign: 'left' }}
@@ -321,39 +333,50 @@ function HomePage() {
 			</div>
 			<div data-aos="fade-up" className="p-3 max-h-fit">
 				<div className='project-section'>
-					<Typography variant="h1" sx={{ fontSize: { lg: '2.4rem', xs: '1.5rem' }, color: '#FBB03B', fontWeight: 600, textAlign: 'center', mb: '1.6rem' }}>
-						Làm sao để có được dự án crowdfunding thành công?
-					</Typography>
-					<Typography variant="h3" sx={{ fontSize: { lg: '1.2rem', xs: '0.8rem' }, color: '#44494D', fontWeight: 600, textAlign: 'center', mb: '5.6rem' }}>
-						Một vài bí kíp nho nhỏ để tạo được một dự án kêu gọi thành công
-					</Typography>
+					<div className='flex justify-center'>
+						<Typography variant="h2" sx={{
+							fontSize: { lg: '2.4rem', xs: '1.5rem' }, color: '#FBB03B', fontWeight: 600, textAlign: 'center', mb: '4rem', width: '75%'
+						}}>
+							<TypeAnimation
+								sequence={[
+									'Làm sao để có được dự án crowdfunding thành công?',
+									2000,
+									'Một vài bí kíp nho nhỏ để kêu gọi được một dự án thành công',
+									2000,
+								]}
+								speed={60}
+								wrapper="span"
+								repeat={Infinity}
+							/>
+						</Typography>
+					</div>
 					<Grid container rowSpacing={4}>
 						<Grid item xs={12} lg={6}>
 							<Typography component="div" sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
 								<FaHandsHelping style={{ color: '#FCAE3D', fontSize: '50px' }} />
-								<Typography variant="h1" sx={{ fontSize: '1.2rem', my: 2, fontWeight: 'bold', color: '#44494D' }}>Chi tiết về chi tiêu</Typography>
-								<Typography variant="body2" sx={{ fontSize: '0.8rem', textAlign: 'center', color: '#44494D' }}>Thông tin cụ thể về cách sử dụng nguồn vốn</Typography>
+								<Typography variant="h1" sx={{ fontSize: '1.6rem', my: 2, fontWeight: 'bold', color: '#44494D' }}>Chi tiết về chi tiêu</Typography>
+								<Typography variant="body2" sx={{ fontSize: '1rem', textAlign: 'center', color: '#44494D' }}>Thông tin cụ thể về cách sử dụng nguồn vốn</Typography>
 							</Typography>
 						</Grid>
 						<Grid item xs={12} lg={6}>
 							<Typography component="div" sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
 								<RiPieChart2Fill style={{ color: '#FCAE3D', fontSize: '50px' }} />
-								<Typography component="h1" sx={{ fontSize: '1.2rem', my: 2, fontWeight: 'bold', color: '#44494D' }}>Hợp tác và Hỗ trợ</Typography>
-								<Typography component="span" sx={{ fontSize: '0.8rem', textAlign: 'center', color: '#44494D' }}>Hãy xem những người ủng hộ như những đối tác tiềm năng của bạn</Typography>
+								<Typography component="h1" sx={{ fontSize: '1.6rem', my: 2, fontWeight: 'bold', color: '#44494D' }}>Hợp tác và Hỗ trợ</Typography>
+								<Typography component="span" sx={{ fontSize: '1rem', textAlign: 'center', color: '#44494D' }}>Hãy xem những người ủng hộ như những đối tác tiềm năng của bạn</Typography>
 							</Typography>
 						</Grid>
 						<Grid item xs={12} lg={6}>
 							<Typography component="div" sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
 								<IoIosSettings style={{ color: '#FCAE3D', fontSize: '50px' }} />
-								<Typography component="h1" sx={{ fontSize: '1.2rem', my: 2, fontWeight: 'bold', color: '#44494D' }}>Tập trung sản xuất</Typography>
-								<Typography component="span" sx={{ fontSize: '0.8rem', textAlign: 'center', color: '#44494D' }}>Dành hết thời gian cho đứa con tinh thần của mình</Typography>
+								<Typography component="h1" sx={{ fontSize: '1.6rem', my: 2, fontWeight: 'bold', color: '#44494D' }}>Tập trung sản xuất</Typography>
+								<Typography component="span" sx={{ fontSize: '1rem', textAlign: 'center', color: '#44494D' }}>Dành hết thời gian cho đứa con tinh thần của mình</Typography>
 							</Typography>
 						</Grid>
 						<Grid item xs={12} lg={6}>
 							<Typography component="div" sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
 								<FaHandsHelping style={{ color: '#FCAE3D', fontSize: '50px' }} />
-								<Typography component="h1" sx={{ fontSize: '1.2rem', my: 2, fontWeight: 'bold', color: '#44494D' }}>Bàn giao đúng hạn</Typography>
-								<Typography component="span" sx={{ fontSize: '0.8rem', textAlign: 'center', color: '#44494D' }}>Đúng hạn giúp bạn tăng uy tín và nhận được sự tin tưởng</Typography>
+								<Typography component="h1" sx={{ fontSize: '1.6rem', my: 2, fontWeight: 'bold', color: '#44494D' }}>Bàn giao đúng hạn</Typography>
+								<Typography component="span" sx={{ fontSize: '1rem', textAlign: 'center', color: '#44494D' }}>Đúng hạn giúp bạn tăng uy tín và nhận được sự tin tưởng</Typography>
 							</Typography>
 						</Grid>
 					</Grid>
@@ -362,6 +385,93 @@ function HomePage() {
 			<Footer />
 		</div >
 	);
+}
+
+const checkIfRedirectedFromOAuth = () => {
+	var fragmentString = location.hash.substring(1);
+	var params = {};
+	var regex = /([^&=]+)=([^&]*)/g,
+		m;
+	while ((m = regex.exec(fragmentString))) {
+		params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+	}
+	if (Object.keys(params).length > 0 && params["state"]) {
+		// const { setIsLoading } = useOutletContext();
+		// setIsLoading(true);
+		if (params["state"] == "d8b5390695d765a6f2f7bf59b4134d751e21588b464153b44d68eda52c4dc1b2%7C838e080b0a4f8816524cb68c72ab63c193cc01e9624614080acc13833ebe1d13") {
+			localStorage.setItem("oauth2-test-params", JSON.stringify(params));
+
+			GetGoogleUser();
+			// setIsLoading(false)
+		} else {
+			console.log("State mismatch. Possible CSRF attack");
+		}
+	}
+}
+
+const GetGoogleUser = async () => {
+	// const { setIsLoading } = useOutletContext();
+	const signIn = useSignIn();
+	const navigate = useNavigate();
+	const params = JSON.parse(localStorage.getItem("oauth2-test-params"));
+	const notify = (mess) => {
+		toast.warn(mess, {
+			position: "bottom-left"
+		});
+	}
+	if (params && params["access_token"]) {
+		axios
+			.get("https://www.googleapis.com/oauth2/v3/userinfo", {
+				params: {
+					access_token: params["access_token"],
+				},
+			})
+			.then((response) => {
+				userApiInstace.post("/google-login", {
+					email: response.data.email,
+					name: response.data.name,
+					avatarUrl: response.data.picture
+				}).then((res) => {
+					if (res.data._isSuccess) {
+						signIn({
+							auth: {
+								token: res.data._data.token,
+								type: "Bearer"
+							},
+							expiresIn: 3600 * 24 * 5,
+							tokenType: "Bearer",
+							authState: { email: response.data.email }
+						});
+						window.location.href = import.meta.env.VITE_APP_URL.toString();
+					} else {
+						notify(res.data._message);
+					}
+				}).catch((error) => {
+					if (error.response && error.response.data) {
+						notify(error.response.data[0]);
+					} else {
+						console.error("Error during Google login:", error);
+						notify("An error occurred during Google login. Please try again.");
+					}
+					setTimeout(() => {
+						navigate('/')
+					}, 5000)
+				});
+			})
+			.catch((error) => {
+				if (error.response && error.response.status === 401) {
+					// invalid token => prompt for user permission.
+					handleGoogleLogin();
+				} else {
+					console.error("Error fetching user data:", error);
+				}
+			})
+		// setIsLoading(false)
+
+	} else {
+		handleGoogleLogin();
+		// setIsLoading(false);
+	}
 }
 
 export default HomePage;

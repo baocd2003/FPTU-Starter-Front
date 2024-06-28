@@ -17,8 +17,20 @@ import Tab from "@mui/material/Tab";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import Grid from "@mui/material/Grid";
+import LinearProgress from "@mui/material/LinearProgress";
+import Chip from "@mui/material/Chip";
+import Stack from "@mui/material/Stack";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import Divider from "@mui/material/Divider";
+import Popover from "@mui/material/Popover";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import IconButton from "@mui/material/IconButton";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
+import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
 import { visuallyHidden } from "@mui/utils";
 import dayjs from "dayjs";
 import Cookies from "js-cookie";
@@ -26,6 +38,7 @@ import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import SearchBarProjects from "../../components/SearchBarProjects";
+import BackerList from "../../components/BackerList";
 import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
 import transactionApiInstance from "../../utils/apiInstance/transactionApiInstance";
 import "./index.css";
@@ -39,6 +52,27 @@ const statuses = [
   "Từ chối",
   "Đã duyệt",
 ];
+
+const backgroundColor = [
+  "#C6C6C6",
+  "#3F51B5",
+  "#FBB03B",
+  "#368D59",
+  "#DB3700",
+  "#9E9E9E",
+  "#00CED1",
+];
+
+const currentDate = Date.parse(new Date().toString());
+
+const formatDate = (date) => dayjs(date).format("DD-MM-YYYY HH:mm");
+
+const progressPercentage = (startDate, endDate) => {
+  const totalDuration = endDate - startDate;
+  const elapsedDuration = currentDate - startDate;
+
+  return Math.min(Math.max((elapsedDuration / totalDuration) * 100, 0), 100);
+};
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -158,25 +192,36 @@ function AdminProjects() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [tabValue, setTabValue] = useState(0);
   const [open, setOpen] = useState(false);
+  const [progressValue, setProgressValue] = useState(0);
+  const [progressText, setProgressText] = useState("");
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [currentRewardItems, setCurrentRewardItems] = useState([]);
+  const [openPopover, setOpenPopover] = useState(false);
+  const [backerList, setBackerList] = useState([]);
 
   const token = Cookies.get("_auth");
 
-  console.log(projectList);
+  const timeLineProgress = (selectedProject) => {
+    if (selectedProject) {
+      const startDate = Date.parse(selectedProject.startDate);
+      const endDate = Date.parse(selectedProject.endDate);
 
-  useEffect(() => {
-    fetchProjects();
-  }, [token]);
+      const totalDuration = endDate - startDate;
+      const elapsedDuration = currentDate - startDate;
+      const progressPercentage = Math.min(
+        Math.max((elapsedDuration / totalDuration) * 100, 0),
+        100
+      );
 
-  const fetchProjects = async () => {
-    if (token) {
-      try {
-        const response = await projectApiInstance.get("", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const projects = response.data._data;
-        setProjectList(projects);
-      } catch (error) {
-        console.error("Error fetching project list:", error);
+      if (startDate > currentDate) {
+        setProgressValue(null);
+        setProgressText("Chưa bắt đầu");
+      } else if (endDate < currentDate) {
+        setProgressValue(100);
+        setProgressText("Đã kết thúc");
+      } else {
+        setProgressValue(progressPercentage);
+        setProgressText(`${progressPercentage.toFixed(2)}%`);
       }
     }
   };
@@ -199,6 +244,7 @@ function AdminProjects() {
   const handleRowClick = (project) => {
     setSelectedProject(project);
     setOpenModal(true);
+    timeLineProgress(project);
   };
 
   const handleCloseModal = () => {
@@ -211,8 +257,19 @@ function AdminProjects() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const handlePopoverOpen = (event, rewardItems) => {
+    setAnchorEl(event.currentTarget);
+    setCurrentRewardItems(rewardItems);
+    setOpenPopover(true);
+  };
+
+  const handlePopoverClose = () => {
+    setOpenPopover(false);
+    setAnchorEl(null);
+  };
+
   const setProject = (projectList) => {
-    // console.log("Hihi");
+    setProjectList(projectList);
   };
 
   const handleChangeTab = (event, newValue) => {
@@ -315,17 +372,39 @@ function AdminProjects() {
 
   const visibleRows = React.useMemo(
     () =>
-      stableSort(projectList, getComparator(order, orderBy)).slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage
-      ),
+      Array.isArray(projectList) && projectList.length > 0
+        ? stableSort(projectList, getComparator(order, orderBy)).slice(
+            page * rowsPerPage,
+            page * rowsPerPage + rowsPerPage
+          )
+        : [],
     [order, orderBy, page, rowsPerPage, projectList]
   );
+
+  //get backers
+  const getBackers = (projectId) => {
+    projectApiInstance
+      .get(`/get-project-backer?projectId=${projectId}`)
+      .then((res) => {
+        if (res.data) {
+          setBackerList(res.data.result._data);
+        }
+      });
+  };
+
+  useEffect(() => {
+    if (tabValue === 4 && selectedProject) {
+      console.log(selectedProject);
+      getBackers(selectedProject.id);
+    }
+  }, [tabValue, selectedProject]);
 
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar projectsCount={projectList.length} />
+        <EnhancedTableToolbar
+          projectsCount={Array.isArray(projectList) ? projectList.length : 0}
+        />
         <Box sx={{ padding: 2, display: "flex", justifyContent: "center" }}>
           <Box sx={{ width: "100%", maxWidth: "1200px" }}>
             <SearchBarProjects
@@ -373,7 +452,7 @@ function AdminProjects() {
           sx={{ margin: 4 }}
           rowsPerPageOptions={[10, 20]}
           component="div"
-          count={projectList.length}
+          count={Array.isArray(projectList) ? projectList.length : 0}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -407,6 +486,8 @@ function AdminProjects() {
             <Tab label="Tổng quan" className="tab-project" />
             <Tab label="Video demo" className="tab-project" />
             <Tab label="Hình ảnh" className="tab-project" />
+            <Tab label="Gói" className="tab-project" />
+            <Tab label="Danh sách ủng hộ" className="tab-project" />
           </Tabs>
 
           {tabValue === 0 && selectedProject && (
@@ -447,8 +528,52 @@ function AdminProjects() {
                       <ZoomInIcon fontSize="large" />
                     </IconButton>
                   </Box>
+                  <Box
+                    sx={{
+                      backgroundColor: `${
+                        backgroundColor[selectedProject.projectStatus]
+                      }`,
+                    }}
+                    className="text-center mt-4 p-1 text-slate-100 font-medium rounded"
+                  >
+                    {statuses[selectedProject.projectStatus]}
+                  </Box>
                 </Grid>
                 <Grid item xs={12} md={8} sx={{ mt: "16px !important" }}>
+                  <Box
+                    sx={{
+                      marginBottom: 2,
+                      textAlign: "right",
+                    }}
+                  >
+                    <Typography className="!text-sm italic ">
+                      Tạo ngày{" "}
+                      <span style={{ color: "#FBB03B" }}>
+                        {dayjs(selectedProject.createdDate).format(
+                          "DD-MM-YYYY HH:mm"
+                        )}
+                      </span>{" "}
+                      bởi{" "}
+                      <span style={{ color: "#FBB03B" }}>
+                        {selectedProject.projectOwnerName}
+                      </span>
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      marginBottom: 1,
+                    }}
+                  >
+                    <Stack direction="row" spacing={1}>
+                      <Chip
+                        label={selectedProject.categories[0].name}
+                        sx={{ backgroundColor: "#FBB03B", color: "white" }}
+                      />
+                      {selectedProject.subCategories.map((subCategory) => (
+                        <Chip key={subCategory.id} label={subCategory.name} />
+                      ))}
+                    </Stack>
+                  </Box>
                   <Box
                     sx={{
                       marginBottom: 1,
@@ -457,50 +582,129 @@ function AdminProjects() {
                       alignItems: "center",
                     }}
                   >
-                    <Typography variant="h6" component="h2">
+                    <Typography
+                      variant="h6"
+                      component="h2"
+                      className="!font-bold"
+                    >
                       {selectedProject.projectName}
                     </Typography>
                   </Box>
                   <Box>
                     <Typography sx={{ mt: 1 }}>
-                      Miêu tả: {selectedProject.projectDescription}
-                    </Typography>
-                    <Typography>
-                      Chủ dự án: {selectedProject.projectOwnerName}
-                    </Typography>
-                    <Typography>
-                      Mục tiêu: {selectedProject.projectTarget}
-                    </Typography>
-                    <Typography>
-                      Ngày tạo:{" "}
-                      {dayjs(selectedProject.createdDate).format(
-                        "DD-MM-YYYY HH:mm"
-                      )}
-                    </Typography>
-                    <Typography>
-                      Ngày bắt đầu:{" "}
-                      {dayjs(selectedProject.startDate).format(
-                        "DD-MM-YYYY HH:mm"
-                      )}
-                    </Typography>
-                    <Typography>
-                      Ngày kết thúc:{" "}
-                      {dayjs(selectedProject.endDate).format(
-                        "DD-MM-YYYY HH:mm"
-                      )}
-                    </Typography>
-                    <Typography>
-                      Số dư: {selectedProject.projectBalance}
-                    </Typography>
-                    <Typography>
-                      Tài khoản ngân hàng: {selectedProject.projectBankAccount}
-                    </Typography>
-                    <Typography>
-                      Trạng thái: {statuses[selectedProject.projectStatus]}
+                      {selectedProject.projectDescription}
                     </Typography>
                   </Box>
                 </Grid>
               </Grid>
+              <Box>
+                <Typography
+                  sx={{ color: "#FBB03B" }}
+                  className="!font-semibold text-base"
+                >
+                  <AccessTimeIcon fontSize="small" /> Thời gian
+                </Typography>
+                <Box display="flex" justifyContent="space-between" mt={1}>
+                  <Typography variant="body2" color="textSecondary">
+                    {formatDate(selectedProject.startDate)}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    {formatDate(selectedProject.endDate)}
+                  </Typography>
+                </Box>
+                <LinearProgress
+                  sx={{
+                    backgroundColor: "#f0f0f0",
+                    "& .MuiLinearProgress-barColorPrimary": {
+                      backgroundColor: "#FBB03B",
+                    },
+                  }}
+                  variant={
+                    selectedProject.startDate > currentDate
+                      ? "indeterminate"
+                      : "determinate"
+                  }
+                  value={progressValue}
+                />
+                <Box display="flex" justifyContent="center" mt={1}>
+                  <Typography variant="body2" color="textSecondary">
+                    {progressText}
+                  </Typography>
+                </Box>
+              </Box>
+              <Box>
+                <Typography
+                  sx={{ color: "#FBB03B" }}
+                  className="!font-semibold text-base"
+                >
+                  <MonetizationOnOutlinedIcon fontSize="small" /> Mục tiêu
+                </Typography>
+                <Box display="flex" justifyContent="space-between" mt={1}>
+                  <Typography variant="body2" color="textSecondary">
+                    0
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    {selectedProject.projectTarget}
+                  </Typography>
+                </Box>
+                <LinearProgress
+                  sx={{
+                    backgroundColor: "#f0f0f0",
+                    "& .MuiLinearProgress-barColorPrimary": {
+                      backgroundColor: "#FBB03B",
+                    },
+                  }}
+                  variant={"determinate"}
+                  value={
+                    selectedProject.projectBalance <
+                    selectedProject.projectTarget
+                      ? Math.min(
+                          Math.max(
+                            (selectedProject.projectBalance /
+                              selectedProject.projectTarget) *
+                              100,
+                            0
+                          ),
+                          100
+                        )
+                      : 100
+                  }
+                />
+                <Box display="flex" justifyContent="center" mt={1}>
+                  <Typography variant="body2" color="textSecondary">
+                    {selectedProject.projectBalance} đã được ủng hộ
+                  </Typography>
+                </Box>
+              </Box>
+              <Box>
+                <Typography
+                  sx={{ color: "#FBB03B" }}
+                  className="!font-semibold text-base"
+                >
+                  <AccountBalanceOutlinedIcon fontSize="small" /> Tài khoản ngân
+                  hàng
+                </Typography>
+                <Box display="flex" flexDirection={"column"} mt={1}>
+                  <Typography variant="body2" mb={1}>
+                    Ngân hàng:{" "}
+                    <span className="!font-medium">
+                      {selectedProject.bankAccountName}
+                    </span>
+                  </Typography>
+                  <Typography variant="body2" mb={1}>
+                    Số tài khoản:{" "}
+                    <span className="!font-medium">
+                      {selectedProject.bankAccountNumber}
+                    </span>
+                  </Typography>
+                  <Typography variant="body2" mb={1}>
+                    Tên người thụ hưởng:{" "}
+                    <span className="!font-medium">
+                      {selectedProject.bankOwnerName}
+                    </span>
+                  </Typography>
+                </Box>
+              </Box>
 
               <Modal
                 open={open}
@@ -559,6 +763,169 @@ function AdminProjects() {
                   </ImageListItem>
                 ))}
               </ImageList>
+            </Box>
+          )}
+
+          {tabValue === 3 && selectedProject && (
+            <Box
+              sx={{ marginTop: "16px", gap: 2 }}
+              display={"flex"}
+              flexWrap={"wrap"}
+            >
+              {selectedProject.packageViewResponses.map(
+                (projectPackage, index) => (
+                  <Card
+                    sx={{ maxWidth: 220, position: "relative" }}
+                    key={index}
+                  >
+                    <CardMedia
+                      component="img"
+                      alt="package image"
+                      height="160"
+                      image="https://t4.ftcdn.net/jpg/03/03/46/39/360_F_303463981_i1CiZU5VYclryudt7VI7YSEDw9mgkSqJ.jpg"
+                    />
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: "25%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          fontSize: "1rem",
+                          fontWeight: "bold",
+                          color: "white",
+                        }}
+                      >
+                        {projectPackage.requiredAmount
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}{" "}
+                      </Typography>
+                    </Box>
+                    <CardContent>
+                      <Typography
+                        gutterbottom="true"
+                        sx={{ textAlign: "left", fontSize: "1rem" }}
+                      >
+                        {projectPackage.packageName}
+                      </Typography>
+                      <Typography
+                        gutterbottom="true"
+                        sx={{
+                          fontWeight: "bold",
+                          textAlign: "left",
+                          fontSize: "1.2rem",
+                        }}
+                      >
+                        {projectPackage.requiredAmount
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}{" "}
+                        VND
+                      </Typography>
+                      <Typography
+                        gutterbottom="true"
+                        sx={{ textAlign: "left", fontSize: ".8rem" }}
+                      >
+                        {projectPackage.packageDescription}
+                      </Typography>
+                      <Divider gutterbottom="true" sx={{ marginTop: 1 }} />
+                    </CardContent>
+                    <CardActions sx={{ justifyContent: "center" }}>
+                      <Button
+                        size="small"
+                        sx={{ color: "#FFB30B" }}
+                        onMouseEnter={(e) =>
+                          handlePopoverOpen(e, projectPackage.rewardItems)
+                        }
+                        onMouseLeave={handlePopoverClose}
+                      >
+                        Xem quà
+                      </Button>
+                      <Popover
+                        sx={{
+                          pointerEvents: "none",
+                        }}
+                        open={openPopover}
+                        anchorEl={anchorEl}
+                        anchorOrigin={{
+                          vertical: "top",
+                          horizontal: "right",
+                        }}
+                        transformOrigin={{
+                          vertical: "bottom",
+                          horizontal: "left",
+                        }}
+                        onClose={handlePopoverClose}
+                        disableRestoreFocus
+                      >
+                        {currentRewardItems.length > 0 ? (
+                          currentRewardItems.map((reward, index) => (
+                            <Box
+                              sx={{
+                                p: 2,
+                                display: "flex",
+                              }}
+                              key={index}
+                            >
+                              <Box
+                                sx={{
+                                  width: "100px",
+                                  height: "100px",
+                                  overflow: "hidden",
+                                  flexShrink: 0,
+                                }}
+                              >
+                                <CardMedia
+                                  component="img"
+                                  alt="reward image"
+                                  height="140"
+                                  image="https://atlas-content-cdn.pixelsquid.com/stock-images/giftbox-yellow-gift-box-ZeaGEQ7-600.jpg"
+                                  sx={{
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "cover",
+                                  }}
+                                />
+                              </Box>
+                              <Box sx={{ ml: 2 }}>
+                                <Typography variant="h6">
+                                  {reward.name}
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                >
+                                  {reward.description}
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                >
+                                  Số lượng: {reward.quantity}
+                                </Typography>
+                              </Box>
+                            </Box>
+                          ))
+                        ) : (
+                          <Box sx={{ padding: 2 }}>
+                            <Typography variant="body2" color="text.secondary">
+                              Không có quà
+                            </Typography>
+                          </Box>
+                        )}
+                      </Popover>
+                    </CardActions>
+                  </Card>
+                )
+              )}
+            </Box>
+          )}
+
+          {tabValue === 4 && (
+            <Box>
+              <BackerList data={backerList} />
             </Box>
           )}
 

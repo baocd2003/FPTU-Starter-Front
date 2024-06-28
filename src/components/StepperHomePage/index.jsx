@@ -85,7 +85,7 @@ function StepperHomePage({ setSwiperRef, type }) {
 
     return (
         <div className="swiper-container">
-            {projects && projects.length > 0 ? (
+            {projects && projects != undefined && projects.length > 0 ? (
                 <Swiper
                     spaceBetween={25}
                     slidesPerView={4}

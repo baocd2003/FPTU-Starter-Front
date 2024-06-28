@@ -100,7 +100,7 @@ const StepFive = () => {
     // get thumbnail url
     const api_url = import.meta.env.VITE_REACT_APP_API_URL
     const thumbnailUrl = await fetch(
-      `${api_url}api/projects/add-thumbnail`,
+      `${api_url}/api/projects/add-thumbnail`,
       {
         method: "POST",
         body: thumbnailFormData,
@@ -112,7 +112,7 @@ const StepFive = () => {
 
     // get livedemo url
     const liveDemoUrl = await fetch(
-      `${api_url}api/projects/add-live-demo`,
+      `${api_url}/api/projects/add-live-demo`,
       {
         method: "POST",
         body: liveDemoFormData,
@@ -153,7 +153,7 @@ const StepFive = () => {
         endDate: allStepData.stepOneData.endDate,
         projectTarget: allStepData.stepOneData.ProjectTarget,
         projectBalance: 0,
-        projectStatus: 0,
+        projectStatus: 1,
         projectThumbnail: thumbnailData,
         projectLiveDemo: liveDemoData,
         ProjectOwnerEmail: userEmail,
@@ -177,7 +177,8 @@ const StepFive = () => {
           "Content-Type": "application/json"
         }
       }).then((res) => {
-        console.log(res)
+        // console.log(res)
+        navigate('projects')
       })
 
     } catch (err) {

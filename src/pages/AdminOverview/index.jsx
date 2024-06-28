@@ -29,16 +29,16 @@ function AdminOverview() {
                     setData(sortedData);
                 }
             })
-            // await projectApiInstance.get("/").then(res => {
-            //     console.log(res.data);
+            await projectApiInstance.get("/").then(res => {
+                console.log(res.data);
 
-            //     if (res.data) {
-            //         const num = res.data._data.length;
-            //         setProjectCount(num);
-            //         setIsLoading(false);
-            //     }
-            // })
-            await cateApiInstance.get("/count-subCates").then(res => {
+                if (res.data) {
+                    const num = res.data._data.length;
+                    setProjectCount(num);
+                    setIsLoading(false);
+                }
+            })
+            await cateApiInstance.get("/count-subCates?top=5").then(res => {
                 console.log(res.data);
                 if (res.data.result._isSuccess) {
                     setCountData(res.data.result._data)

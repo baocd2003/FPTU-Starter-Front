@@ -8,26 +8,26 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { alpha, styled } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import categoryApiInstance from "../../utils/apiInstance/categoryApiInstance";
 import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
-import './index.css';
+import "./index.css";
 
 const filteredStatues = [
-  { label: 'Chờ duyệt', statusIndex: 1 },
-  { label: 'Đang tiến hành', statusIndex: 2 },
-  { label: 'Từ chối', statusIndex: 5 },
-  { label: 'Thành công', statusIndex: 3 },
-  { label: 'Thất bại', statusIndex: 4 },
-  { label: 'Đã xóa', statusIndex: 0 },
+  { label: "Chờ duyệt", statusIndex: 1 },
+  { label: "Đang tiến hành", statusIndex: 2 },
+  { label: "Từ chối", statusIndex: 5 },
+  { label: "Thành công", statusIndex: 3 },
+  { label: "Thất bại", statusIndex: 4 },
+  { label: "Đã xóa", statusIndex: 0 },
 ];
 
 const filteredTarget = [
-  { label: 'Từ 0 - 1 triệu', statusIndex: 1 },
-  { label: 'Từ 1 triệu - 10 triệu', statusIndex: 2 },
-  { label: 'Từ 10 triệu - 100 triệu', statusIndex: 3 },
-  { label: '100 triệu trở lên', statusIndex: 4 },
+  { label: "Từ 0 - 1 triệu", statusIndex: 1 },
+  { label: "Từ 1 triệu - 10 triệu", statusIndex: 2 },
+  { label: "Từ 10 triệu - 100 triệu", statusIndex: 3 },
+  { label: "100 triệu trở lên", statusIndex: 4 },
 ];
 
 const Search = styled("div")(() => ({
@@ -95,9 +95,12 @@ const SearchBarProjects = ({ setProject, searchType }) => {
   const fetchProjects = async (searchValue, status, target, categoryName) => {
     if (token) {
       try {
-        const response = await projectApiInstance.get(`user-project?searchType=${searchType}&searchName=${searchValue}&projectStatus=${status}&moneyTarget=${target}&categoryName=${categoryName}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await projectApiInstance.get(
+          `user-project?searchType=${searchType}&searchName=${searchValue}&projectStatus=${status}&moneyTarget=${target}&categoryName=${categoryName}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         if (response.data._data != null) {
           const projects = response.data._data;
           setProjectList(projects);
@@ -108,7 +111,9 @@ const SearchBarProjects = ({ setProject, searchType }) => {
       }
     } else {
       try {
-        const response = await projectApiInstance.get(`user-project?searchType=${searchType}&searchName=${searchValue}&projectStatus=${status}&moneyTarget=${target}&categoryName=${categoryName}`);
+        const response = await projectApiInstance.get(
+          `user-project?searchType=${searchType}&searchName=${searchValue}&projectStatus=${status}&moneyTarget=${target}&categoryName=${categoryName}`
+        );
         if (response.data._data != null) {
           const projects = response.data._data;
           setProjectList(projects);
@@ -130,7 +135,7 @@ const SearchBarProjects = ({ setProject, searchType }) => {
     } catch (error) {
       console.error("Error fetching category list:", error);
     }
-  }
+  };
 
   const handleCancel = () => {
     setSearchValue("");
@@ -138,7 +143,7 @@ const SearchBarProjects = ({ setProject, searchType }) => {
   };
 
   const handleKeyUp = (e) => {
-    if (e.keyCode === 13 || (e.code === "Enter")) {
+    if (e.keyCode === 13 || e.code === "Enter") {
       handleSearchChange(e);
     } else if (e.keyCode === 27 || e.code === "Escape") {
       handleCancel();
@@ -174,7 +179,11 @@ const SearchBarProjects = ({ setProject, searchType }) => {
       width="100%"
       gap={isSmallScreen ? 0 : 8}
     >
-      <Box flex="1" mb={isSmallScreen ? 2 : 0} width={isSmallScreen ? "100%" : "50%"}>
+      <Box
+        flex="1"
+        mb={isSmallScreen ? 2 : 0}
+        width={isSmallScreen ? "100%" : "50%"}
+      >
         <Search
           key={"SearchBarComponent-root"}
           style={{
@@ -191,7 +200,7 @@ const SearchBarProjects = ({ setProject, searchType }) => {
               onChange: handleSearchChange,
               value: searchValue,
             }}
-            placeholder={"Bạn đang tìm dự án gì?"}
+            placeholder={"Bạn đang tìm dự án nào?"}
             onKeyUp={handleKeyUp}
           />
           {searchValue ? (
@@ -202,15 +211,13 @@ const SearchBarProjects = ({ setProject, searchType }) => {
         </Search>
       </Box>
       <div className="flex gap-6 searchSelection">
-        <Box
-          width={isSmallScreen ? "100%" : "auto"}
-        >
+        <Box width={isSmallScreen ? "100%" : "auto"}>
           <FormControl
             size="small"
             fullWidth={isSmallScreen}
             sx={{
-              width: '160px',
-              minWidth: 120
+              width: "160px",
+              minWidth: 120,
             }}
           >
             <InputLabel id="select-small-label">Trạng thái</InputLabel>
@@ -219,9 +226,11 @@ const SearchBarProjects = ({ setProject, searchType }) => {
               id="select-small"
               defaultValue={0}
               label="Trạng thái"
-              sx={{ textAlign: 'left' }}
+              sx={{ textAlign: "left" }}
             >
-              <MenuItem value={0} sx={{ width: '100%', height: '54px' }}
+              <MenuItem
+                value={0}
+                sx={{ width: "100%", height: "54px" }}
                 onClick={() => handleSearchStatus("")}
               >
                 Tất cả
@@ -229,7 +238,7 @@ const SearchBarProjects = ({ setProject, searchType }) => {
               {filteredStatues.map((item, index) => (
                 <MenuItem
                   key={index}
-                  sx={{ width: '100%', height: '54px' }}
+                  sx={{ width: "100%", height: "54px" }}
                   value={index + 1}
                   onClick={() => handleSearchStatus(item.statusIndex)}
                 >
@@ -239,11 +248,9 @@ const SearchBarProjects = ({ setProject, searchType }) => {
             </Select>
           </FormControl>
         </Box>
-        <Box
-          width={isSmallScreen ? "100%" : "auto"}
-        >
+        <Box width={isSmallScreen ? "100%" : "auto"}>
           <FormControl
-            sx={{ minWidth: 120, width: '160px' }}
+            sx={{ minWidth: 120, width: "160px" }}
             size="small"
             fullWidth={isSmallScreen}
           >
@@ -253,17 +260,15 @@ const SearchBarProjects = ({ setProject, searchType }) => {
               id="select-small-2"
               defaultValue={0}
               label="Mục tiêu"
-              sx={{ textAlign: 'left' }}
+              sx={{ textAlign: "left" }}
             >
-              <MenuItem value={0}
-                onClick={() => handleSearchTarget("")}
-              >
+              <MenuItem value={0} onClick={() => handleSearchTarget("")}>
                 Tất cả
               </MenuItem>
               {filteredTarget.map((item, index) => (
                 <MenuItem
                   key={index}
-                  sx={{ width: '100%', height: '54px' }}
+                  sx={{ width: "100%", height: "54px" }}
                   value={index + 1}
                   onClick={() => handleSearchTarget(item.statusIndex)}
                 >
@@ -273,9 +278,7 @@ const SearchBarProjects = ({ setProject, searchType }) => {
             </Select>
           </FormControl>
         </Box>
-        <Box
-          width={isSmallScreen ? "100%" : "auto"}
-        >
+        <Box width={isSmallScreen ? "100%" : "auto"}>
           <FormControl
             sx={{ minWidth: 120 }}
             size="small"
@@ -287,10 +290,11 @@ const SearchBarProjects = ({ setProject, searchType }) => {
               id="select-small-3"
               label="Thể loại"
               defaultValue={0}
-              sx={{ textAlign: 'left' }}
+              sx={{ textAlign: "left" }}
             >
-              <MenuItem value={0}
-                sx={{ width: '100%', height: '54px' }}
+              <MenuItem
+                value={0}
+                sx={{ width: "100%", height: "54px" }}
                 onClick={() => handleSearchCategory("")}
               >
                 Tất cả
@@ -298,7 +302,7 @@ const SearchBarProjects = ({ setProject, searchType }) => {
               {categories.map((item, index) => (
                 <MenuItem
                   key={index}
-                  sx={{ width: '100%', height: '54px' }}
+                  sx={{ width: "100%", height: "54px" }}
                   value={index + 1}
                   onClick={() => handleSearchCategory(item.name)}
                 >
@@ -308,8 +312,8 @@ const SearchBarProjects = ({ setProject, searchType }) => {
             </Select>
           </FormControl>
         </Box>
-      </div >
-    </Box >
+      </div>
+    </Box>
   );
 };
 

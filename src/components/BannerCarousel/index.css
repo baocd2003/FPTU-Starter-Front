@@ -25,20 +25,15 @@
 	font-family: "Barlow" !important;
 }
 
-.caroulsel {
-	height: 100vh;
-}
-
 .carouselImg {
 	-webkit-filter: grayscale(100%) !important;
 	filter: grayscale(100%) !important;
 }
 
-
 .bannerImg {
 	filter: grayscale(100%) !important;
-	width: 100%;
-	height: 100vh;
+	width: 100% !important;
+	height: 100vh !important;
 	object-fit: cover;
 	box-shadow: 0 0 8px 8px white inset;
 }

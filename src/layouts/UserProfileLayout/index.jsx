@@ -1,6 +1,4 @@
-import BallotIcon from '@mui/icons-material/Ballot';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
-import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import { Button, CircularProgress, Divider } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Backdrop from '@mui/material/Backdrop';
@@ -420,7 +418,7 @@ function UserProfileLayout() {
                             >
                                 <Tab label="Thông tin cá nhân" onClick={navigateUserProfile} className='userProfleTab' sx={{ fontWeight: 'bold', width: { lg: '20%', xs: '100%' } }} />
                                 <Tab label="Dự án của tôi" className='userProfleTab' onClick={() => navigate("/projects")} sx={{ fontWeight: 'bold', width: { lg: '20%', xs: '100%' } }} />
-                                <Tab label="Dự án lưu trữ" onClick={navigateUserBookmarkProject} className='userProfleTab' sx={{ fontWeight: 'bold', width: { lg: '20%', xs: '100%' } }} />
+                                <Tab label="Đóng góp" disabled onClick={navigateUserBookmarkProject} className='userProfleTab' sx={{ fontWeight: 'bold', width: { lg: '20%', xs: '100%' } }} />
                                 <Tab label="Dự án yêu thích" disabled className='userProfleTab' sx={{ fontWeight: 'bold', width: { lg: '20%', xs: '100%' } }} />
                                 {/* <Tab label="Ví điện tử" onClick={navigateToWallet} className='userProfleTab' sx={{ fontWeight: 'bold', fontSize: '16px', width: { lg: '25%', xs: '100%' } }} /> */}
                             </Tabs>

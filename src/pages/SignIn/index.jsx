@@ -22,8 +22,8 @@ function setCookie(name, value, expiresIn) {
   var time = now.getTime() + (7 * 60 * 60 * 1000);
   var expireTime = time + 1000 * expiresIn;
   now.setTime(expireTime);
-  console.log(now);
-  console.log(now.toUTCString());
+  // console.log(now);
+  // console.log(now.toUTCString());
   const cookieString = `${name}=${value}; expires=${now.toUTCString()}; path=/`;
   document.cookie = cookieString;
 }
@@ -34,11 +34,11 @@ function SignIn() {
   const { setIsLoading } = useOutletContext();
 
   if (location.hash) {
-    console.log("Yes");
+    setIsLoading(true);
     checkIfRedirectedFromOAuth();
   }
   else {
-    console.log("No");
+    // console.log("No");
   }
 
   const signIn = useSignIn();
@@ -55,7 +55,6 @@ function SignIn() {
 
   var now = new Date();
   var time = now.getTime();
-  console.log(time)
   const handleSubmit = (event) => {
     setIsLoading(true);
     event.preventDefault();
@@ -64,13 +63,7 @@ function SignIn() {
       email: data.get('email'),
       password: data.get('password'),
     }
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-    //Save token to cookie
-    userApiInstace.post("/login", jsonData).then(res => {
-      console.log(res.data);
+    userApiInstace.post("login", jsonData).then(res => {
       if (res.data._data == null) {
         notify(`${res.data._message[0]}`);
       } else {
@@ -306,8 +299,7 @@ const handleGoogleLogin = () => {
   const oauth2Endpoint = "https://accounts.google.com/o/oauth2/v2/auth";
   const CLIENT_ID =
     "252559592629-ccrsf6knt2jcvo4b706geb6ubrcn4ojk.apps.googleusercontent.com";
-  const REDIRECTED_URL = "http://localhost:5173/login";
-
+  const REDIRECTED_URL = import.meta.env.VITE_APP_URL.toString() + 'login';
   const form = document.createElement("form");
   form.setAttribute("method", "GET");
   form.setAttribute("action", oauth2Endpoint);
@@ -318,7 +310,7 @@ const handleGoogleLogin = () => {
     response_type: "token",
     scope: "openid profile email",
     include_granted_scopes: "true",
-    state: "somerandomstatevalue",
+    state: "d8b5390695d765a6f2f7bf59b4134d751e21588b464153b44d68eda52c4dc1b2%7C838e080b0a4f8816524cb68c72ab63c193cc01e9624614080acc13833ebe1d13",
     prompt: "consent"
   };
 
@@ -343,22 +335,29 @@ const checkIfRedirectedFromOAuth = () => {
     params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
   }
   if (Object.keys(params).length > 0 && params["state"]) {
-    const { setIsLoading } = useOutletContext();
-    setIsLoading(true);
-    if (params["state"] == "somerandomstatevalue") {
+    // const { setIsLoading } = useOutletContext();
+    // setIsLoading(true);
+    if (params["state"] == "d8b5390695d765a6f2f7bf59b4134d751e21588b464153b44d68eda52c4dc1b2%7C838e080b0a4f8816524cb68c72ab63c193cc01e9624614080acc13833ebe1d13") {
       localStorage.setItem("oauth2-test-params", JSON.stringify(params));
 
       GetGoogleUser();
+      // setIsLoading(false)
     } else {
       console.log("State mismatch. Possible CSRF attack");
     }
   }
 }
 
-const GetGoogleUser = () => {
+const GetGoogleUser = async () => {
+  const { setIsLoading } = useOutletContext();
   const signIn = useSignIn();
   const navigate = useNavigate();
   const params = JSON.parse(localStorage.getItem("oauth2-test-params"));
+  const notify = (mess) => {
+    toast.warn(mess, {
+      position: "bottom-left"
+    });
+  }
   if (params && params["access_token"]) {
     axios
       .get("https://www.googleapis.com/oauth2/v3/userinfo", {
@@ -367,71 +366,33 @@ const GetGoogleUser = () => {
         },
       })
       .then((response) => {
-        console.log("Google data: " + JSON.stringify(response.data, null, 2));
-
-        userApiInstace
-          .get("check-user-exist", {
-            params: { email: response.data.email },
-          })
-          .then((res) => {
-            console.log(res);
-            if (res.data == false) {
-              const jsonData = {
-                accountName: response.data.email.split('@')[0],
-                name: response.data.email.split('@')[0],
-                email: response.data.email,
-                password: response.data.email.toUpperCase() + "a1",
-                confirmPassword: response.data.email.toUpperCase() + "a1",
-              };
-              const notify = (mess) => {
-                toast.warn(mess, {
-                  position: "bottom-left"
-                });
-              }
-              userApiInstace.post(`/register-google?avatarUrl=${response.data.picture}`, jsonData).then((res) => {
-                if (res.data._data == null) {
-                  notify(`${res.data._message[0]}`);
-                } else {
-                  signIn({
-                    auth: {
-                      token: res.data._data.token,
-                      type: "Bearer",
-                    },
-                    expiresIn: 3600 * 24 * 5,
-                    tokenType: "Bearer",
-                    authState: { email: jsonData.email },
-                  });
-                  setCookie("_auth", Cookies.get("_auth"), 3600);
-                  navigate("/home");
-                }
-              });
-            } else {
-              const jsonData = {
-                email: response.data.email,
-                password: response.data.email.toUpperCase() + "a1",
-              };
-              userApiInstace.post("/login", jsonData).then((res) => {
-                console.log(res.data);
-                if (res.data._data == null) {
-                  notify(`${res.data._message[0]}`);
-                } else {
-                  signIn({
-                    auth: {
-                      token: res.data._data.token,
-                      type: "Bearer",
-                    },
-                    expiresIn: 3600,
-                    tokenType: "Bearer",
-                    authState: { email: jsonData.email },
-                  });
-                  console.log(Cookies.get("_auth"));
-                  if (Cookies.get("_auth") != undefined) {
-                    navigate("/");
-                  }
-                }
-              });
-            }
-          });
+        userApiInstace.post("/google-login", {
+          email: response.data.email,
+          name: response.data.name,
+          avatarUrl: response.data.picture
+        }).then((res) => {
+          if (res.data._isSuccess) {
+            signIn({
+              auth: {
+                token: res.data._data.token,
+                type: "Bearer"
+              },
+              expiresIn: 3600 * 24 * 5,
+              tokenType: "Bearer",
+              authState: { email: response.data.email }
+            });
+            navigate("/home");
+          } else {
+            notify(res.data._message);
+          }
+        }).catch((error) => {
+          if (error.response && error.response.data) {
+            notify(error.response.data[0]);
+          } else {
+            console.error("Error during Google login:", error);
+            notify("An error occurred during Google login. Please try again.");
+          }
+        });
       })
       .catch((error) => {
         if (error.response && error.response.status === 401) {
@@ -440,9 +401,12 @@ const GetGoogleUser = () => {
         } else {
           console.error("Error fetching user data:", error);
         }
-      });
+      })
+    setIsLoading(false)
+
   } else {
     handleGoogleLogin();
+    // setIsLoading(false);
   }
 }
 

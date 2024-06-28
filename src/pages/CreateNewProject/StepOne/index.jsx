@@ -10,10 +10,16 @@ import { setFormData } from '../../../redux/projectFormSlice';
 
 
 const StepOne = () => {
+  const existingData = useSelector((state) => state.projectForm.projectForm.stepOneData)
+
   const [categories, setCategories] = useState([]);
   const [subCates, setSubCates] = useState([]);
-  const [selectedSubcate, setSelectedSubcate] = useState([])
-  const { register, watch, formState: { errors }, handleSubmit } = useForm();
+  const [selectedSubcate, setSelectedSubcate] = useState(existingData.SubCategory || [])
+  const { register, watch, formState: { errors }, handleSubmit } = useForm(
+    {
+      defaultValues: existingData ? existingData : null
+    }
+  );
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -24,15 +30,9 @@ const StepOne = () => {
 
   dispatch(setStepOne());
 
-  // connect(
-  //   ({ Category, SubCategory }) => ({ Category, SubCategory }),
-  //   updateAction
-  // )(YourForm)
-
-  const isFormData = useSelector((state) => state.projectForm.projectForm.stepOneData)
 
   // TODO: replace with redux query
-  const [selectedCateId, setSelectedCateId] = useState()
+  const [selectedCateId, setSelectedCateId] = useState(existingData.Category || '')
   useEffect(() => {
     if (selectedCateId) {
       categoryApiInstance.get(`/getSubCates?cateId=${selectedCateId}`)
@@ -130,7 +130,7 @@ const StepOne = () => {
                   label='Danh mục chính'
                   fullWidth
                   error={errors.Category?.type === 'required' ? true : false}
-                  defaultValue={''} {...register('Category', { required: true })}
+                  defaultValue={existingData ? existingData.Category : ''} {...register('Category', { required: true })}
                   onChange={(e) => setSelectedCateId(e.target.value)}
                 >
                   {categories.map((item, index) => (

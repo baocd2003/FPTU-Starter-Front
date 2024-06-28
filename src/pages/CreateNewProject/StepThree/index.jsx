@@ -136,7 +136,7 @@ const StepThree = () => {
                 name="files"
                 labelIdle='Kéo hoặc thả file vào đây hoặc <span class="filepond--label-action">Tải từ máy</span>'
               />
-              {liveDemoFile.lenth > 0 && (
+              {liveDemoFile.length > 0 && (
                 <Box>
                   <ReactPlayer
                     url={URL.createObjectURL(liveDemoFile[0].file)}

@@ -1,0 +1,35 @@
+.authTab:hover {
+    outline: none !important;
+    background-color: white !important;
+    border-color: #44494D !important;
+    color: #44494D !important;
+}
+
+.authTab:focus {
+    outline: none !important;
+    background-color: white !important;
+    border-color: #44494D !important;
+    color: #44494D !important;
+}
+
+.authTab {
+    text-transform: none !important;
+    color: #a7a7a7 !important;
+    font-weight: bold !important;
+    width: 8rem;
+    transition: color 0.3s;
+}
+
+.authenSwiper {
+    height: 100%;
+}
+
+.react-swipeable-view-container {
+    height: 100%;
+}
+
+@media (max-width: 1199px) {
+    .right-section {
+        margin-bottom: 2.4rem !important;
+    }
+}

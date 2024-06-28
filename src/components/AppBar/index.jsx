@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
 import HeaderLogo2 from "../../assets/HeaderLogo2.png";
 import logo from "../../assets/logo-transparent.png";
+import AuthenticationModal from '../../layouts/AuthenticationModal';
 import userManagementApiInstance from '../../utils/apiInstance/userManagementApiInstance';
 import "./index.css";
 
@@ -39,6 +40,26 @@ function FSUAppBar({ isLogined, refetchData }) {
   const [isLoading, setIsLoading] = React.useState(false);
   const [logoSrc, setLogoSrc] = React.useState(logo);
   const [classHeader, setClassHeader] = React.useState("scrolled");
+  const [tabValue, setTabValue] = React.useState(0);
+
+  //Open Authentication Modal
+  const [openModal, setOpenModal] = React.useState(false);
+
+  //Login Modal
+  const handleOpenLoginModal = () => {
+    setTabValue(0);
+    setOpenModal(true);
+  };
+
+  const handleOpenRegisterModal = () => {
+    setTabValue(1);
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setTabValue(0);
+  }
 
   const navigate = useNavigate();
 
@@ -173,11 +194,11 @@ function FSUAppBar({ isLogined, refetchData }) {
                   <NotificationsIcon className='notiIcon' fontSize='large' sx={{ color: '#44494D', cursor: 'pointer', transition: 'color 0.3s', '&:hover': { color: '#FBB03B' } }} />
                 </Badge>
                 <Tooltip title="Tài khoản">
-                  <IconButton sx={{ p: 0, mr: '16px' }} onClick={handleOpenProfileMenu} aria-controls="menu-appbar" aria-haspopup="true" className='focusedMenuItem'>
+                  <IconButton sx={{ p: 0, mr: '16px' }} onMouseOver={handleOpenProfileMenu} aria-controls="menu-appbar" aria-haspopup="true" className='focusedMenuItem'>
                     <Avatar alt="User" src={user.userAvatarUrl} />
                   </IconButton>
                 </Tooltip>
-                <Menu anchorEl={anchorElProfile} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} transformOrigin={{ vertical: 'top', horizontal: 'left' }} open={Boolean(anchorElProfile)} onClose={handleCloseProfileMenu} sx={{ display: 'block', '& .MuiPaper-root': { borderRadius: '10px', marginTop: '8px' } }}>
+                <Menu disableScrollLock={true} anchorEl={anchorElProfile} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} transformOrigin={{ vertical: 'top', horizontal: 'center' }} open={Boolean(anchorElProfile)} onClose={handleCloseProfileMenu} sx={{ display: 'block', '& .MuiPaper-root': { borderRadius: '10px', marginTop: '8px' } }} MenuListProps={{ onMouseLeave: handleCloseProfileMenu }}>
                   <MenuItem sx={{ width: '30vh', height: '54px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', pointerEvents: 'none' }}>
                     <h1 className='text-[1rem] font-bold mb-1.5 text-ellipsis overflow-hidden whitespace-nowrap max-w-full'>{user.accountName}</h1>
                     <h2 className='text-[0.8rem] text-[#44494D]-600/25 text-ellipsis overflow-hidden whitespace-nowrap max-w-full'>{user.userEmail}</h2>
@@ -193,11 +214,11 @@ function FSUAppBar({ isLogined, refetchData }) {
               </Box>
               :
               <div className='flex flex-row login-register'>
-                <Typography variant="h6" noWrap onClick={handleClick} component="a" sx={{ textDecoration: 'none', fontSize: '1rem', cursor: 'pointer', fontWeight: 600, transition: 'all 0.3s' }} className='focusedMenuItem'>
+                <Typography variant="h6" noWrap onClick={handleOpenLoginModal} component="a" sx={{ textDecoration: 'none', fontSize: '1rem', cursor: 'pointer', fontWeight: 600, transition: 'all 0.3s' }} className='focusedMenuItem'>
                   Đăng nhập
                 </Typography>
                 <div className='text-[#FFFFFF] font-bold text-[1rem] mx-[0.3rem] slash select-none'>/</div>
-                <Typography variant="h6" noWrap onClick={handleClick} component="a" sx={{ textDecoration: 'none', fontSize: '1rem', cursor: 'pointer', fontWeight: 600, transition: 'all 0.3s' }} className='focusedMenuItem'>
+                <Typography variant="h6" noWrap onClick={handleOpenRegisterModal} component="a" sx={{ textDecoration: 'none', fontSize: '1rem', cursor: 'pointer', fontWeight: 600, transition: 'all 0.3s' }} className='focusedMenuItem'>
                   Đăng ký
                 </Typography>
               </div>
@@ -205,6 +226,7 @@ function FSUAppBar({ isLogined, refetchData }) {
           </Toolbar>
         </Container>
       </AppBar>
+      <AuthenticationModal open={openModal} handleCloseModal={handleCloseModal} tabValue={tabValue} />
     </>
   );
 }
