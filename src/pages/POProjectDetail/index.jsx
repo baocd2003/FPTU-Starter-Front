@@ -19,7 +19,7 @@ import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
 import userManagementApiInstance from "../../utils/apiInstance/userManagementApiInstance";
 import './index.css';
 import walletApiInstance from "../../utils/apiInstance/walletApiInstance.jsx";
-
+import withdrawApiInstance from "../../utils/apiInstance/withdrawApiInstance.jsx";
 function POProjectDetail() {
   const [project, setProject] = useState(null);
   const { projectId } = useParams();
@@ -34,6 +34,7 @@ function POProjectDetail() {
   const navigate = useNavigate();
   const [backerList, setBackerList] = useState([]);
   const containerRef = useRef(null);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleScroll = () => {
     if (containerRef.current) {
@@ -44,6 +45,24 @@ function POProjectDetail() {
 
   console.log(userWallet)
 
+  const checkEnoughWallet = (amount) => {
+    if(userWallet.balance < amount){
+      Swal.fire({
+        title: "Số dư trong ví của bạn không đủ!",
+        html: '<span id="my-wallet-link" style="color: #FCAE3D; cursor: pointer;">Ví của bạn</span>',
+        icon: "warning",
+        didOpen: () => {
+          document.getElementById('my-wallet-link').addEventListener('click', () => {
+            navigate('/my-wallet');
+            Swal.close();
+          });
+        }
+      });
+      return false;
+    }else{
+      return true;
+    }
+  }
   const fetchUserWallet = (token) => {
     walletApiInstance.get("/user-wallet", {
       headers: { Authorization: `Bearer ${token}` },
@@ -89,26 +108,29 @@ function POProjectDetail() {
   //donate
   const handleFreeDonate = () => {
     try {
-      const data = {
-        projectId: project.id,
-        amountDonate: freeDonateAmount
-      }
-      setIsLoading(true)
-      const token = Cookies.get("_auth");
-      projectApiInstance.post("/free-backer-donate", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-        .then((res) => {
-          getProjectDetail()
-          Swal.fire({
-            title: "Bạn đã giao dịch thành công!",
-            text: `Bạn đã ủng hộ nhanh cho của dự án ${project.projectName}`,
-            icon: "success"
+      if(checkEnoughWallet(freeDonateAmount)){
+        const data = {
+          projectId: project.id,
+          amountDonate: freeDonateAmount
+        }
+        setIsLoading(true)
+        const token = Cookies.get("_auth");
+        projectApiInstance.post("/free-backer-donate", data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((res) => {
+            getProjectDetail()
+            Swal.fire({
+              title: "Bạn đã giao dịch thành công!",
+              text: `Bạn đã ủng hộ nhanh cho của dự án ${project.projectName}`,
+              icon: "success"
+            });
+            // navigate('/my-wallet')
           });
-          // navigate('/my-wallet')
-        });
+      }
+      
     } catch (err) {
       console.log(err)
     } finally {
@@ -118,25 +140,28 @@ function POProjectDetail() {
 
   const confirmDonatePackage = () => {
     try {
-      const data = {
-        packageId: selectedPackage.id,
-      }
-      setIsLoading(true)
-      const token = Cookies.get("_auth");
-      projectApiInstance.post("/package-backer-donate", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-        .then((res) => {
-          getProjectDetail()
-          Swal.fire({
-            title: "Bạn đã giao dịch thành công!",
-            text: `Bạn đã ủng hộ gói ${selectedPackage.packageName} của dự án ${project.projectName}`,
-            icon: "success"
+      if(checkEnoughWallet(selectedPackage.requiredAmount)){
+        const data = {
+          packageId: selectedPackage.id,
+        }
+        setIsLoading(true)
+        const token = Cookies.get("_auth");
+        projectApiInstance.post("/package-backer-donate", data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((res) => {
+            getProjectDetail()
+            Swal.fire({
+              title: "Bạn đã giao dịch thành công!",
+              text: `Bạn đã ủng hộ gói ${selectedPackage.packageName} của dự án ${project.projectName}`,
+              icon: "success"
+            });
+            // navigate('/my-wallet')
           });
-          // navigate('/my-wallet')
-        });
+      }
+      
     } catch (err) {
       console.log(err)
     } finally {
@@ -206,6 +231,9 @@ function POProjectDetail() {
           userManagementApiInstance.get(`/user-profile/${res.data._data.ownerId}`).then((userRes) => {
             setProjectUser(userRes.data._data);
           })
+          if(res.data._data.projectStatus == 3){
+            setIsSuccess(true);
+          }
         }
       })
       .catch((err) => {
@@ -246,6 +274,23 @@ function POProjectDetail() {
     return `${day}/${month}/${year}`;
 
   };
+
+  //handel cash out
+  const handleCashOut = async () =>{
+    const token = Cookies.get("_auth");
+    await withdrawApiInstance.post('/create-project-request',{
+      projectId : project.id
+    },{
+      headers: { Authorization: `Bearer ${token}` }
+    }).then(res => {
+      console.log(res);
+      Swal.fire({
+        title: "Bạn đã tạo yêu cầu rút thành công!",
+        text: `Vui lòng chờ admin xử lí yêu cầu của bạn, có thể mất từ 1-3 ngày!!`,
+        icon: "success"
+      });
+    })
+  }
 
   return (
     <>
@@ -488,7 +533,7 @@ function POProjectDetail() {
                   <ProjectDetailStat numb={remainingDays} stat={"ngày còn lại"} />
                   <Stack spacing={1} direction="column" sx={{ my: 4 }}>
                     {checkOwner ?
-                      <Button variant="contained" disabled sx={{ width: "100%", whiteSpace: "nowrap", background: "#FCAE3D", fontWeight: "bold", py: 1 }}>Rút tiền</Button>
+                      <Button onClick={handleCashOut} variant="contained" disabled={!isSuccess} sx={{ width: "100%", whiteSpace: "nowrap", background: "#FCAE3D", fontWeight: "bold", py: 1 }}>Rút tiền</Button>
                       : <>
                         <Button variant="contained"
                           sx={{

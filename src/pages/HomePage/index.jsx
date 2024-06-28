@@ -3,7 +3,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CircleIcon from '@mui/icons-material/Circle';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import StarIcon from '@mui/icons-material/Star';
-import { Button } from '@mui/material';
+import { Backdrop, Button, CircularProgress } from '@mui/material';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -23,26 +23,38 @@ import FSUAppBar from '../../components/AppBar';
 import BannerCarousel from '../../components/BannerCarousel';
 import Footer from '../../components/Footer';
 import ProjectCard from '../../components/ProjectCard';
+import { ToastContainer, toast } from 'react-toastify';
 import './index.css';
+import axios from 'axios';
+import useSignIn from 'react-auth-kit/hooks/useSignIn';
+import userApiInstace from '../../utils/apiInstance/userApiInstace';
+import { Troubleshoot } from '@mui/icons-material';
 
 function HomePage() {
 	const [checkIsLogin, setCheckIsLogin] = useState(false);
-
+	// const [isLoadingLogin, setIsLoadingLogin] = useState(false);
 	const swiperPopularProjectRef = useRef(null);
 	const swiperNewProjectRef = useRef(null);
-
 
 	useEffect(() => {
 		Aos.init({ duration: 2000 });
 		const isLogined = Cookies.get('_auth') !== undefined;
 		setCheckIsLogin(isLogined);
-
 	}, []);
+
 	const navigate = useNavigate();
+
+	if (location.hash) {
+		checkIfRedirectedFromOAuth();
+	}
 
 	return (
 		<div className="home">
 			<FSUAppBar isLogined={checkIsLogin} />
+			<Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={(location.hash)}>
+				<CircularProgress color="inherit" />
+			</Backdrop>
+			<ToastContainer />
 			<BannerCarousel />
 			<div data-aos="fade-up">
 				<div className='project-section'>
@@ -373,6 +385,93 @@ function HomePage() {
 			<Footer />
 		</div >
 	);
+}
+
+const checkIfRedirectedFromOAuth = () => {
+	var fragmentString = location.hash.substring(1);
+	var params = {};
+	var regex = /([^&=]+)=([^&]*)/g,
+		m;
+	while ((m = regex.exec(fragmentString))) {
+		params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+	}
+	if (Object.keys(params).length > 0 && params["state"]) {
+		// const { setIsLoading } = useOutletContext();
+		// setIsLoading(true);
+		if (params["state"] == "d8b5390695d765a6f2f7bf59b4134d751e21588b464153b44d68eda52c4dc1b2%7C838e080b0a4f8816524cb68c72ab63c193cc01e9624614080acc13833ebe1d13") {
+			localStorage.setItem("oauth2-test-params", JSON.stringify(params));
+
+			GetGoogleUser();
+			// setIsLoading(false)
+		} else {
+			console.log("State mismatch. Possible CSRF attack");
+		}
+	}
+}
+
+const GetGoogleUser = async () => {
+	// const { setIsLoading } = useOutletContext();
+	const signIn = useSignIn();
+	const navigate = useNavigate();
+	const params = JSON.parse(localStorage.getItem("oauth2-test-params"));
+	const notify = (mess) => {
+		toast.warn(mess, {
+			position: "bottom-left"
+		});
+	}
+	if (params && params["access_token"]) {
+		axios
+			.get("https://www.googleapis.com/oauth2/v3/userinfo", {
+				params: {
+					access_token: params["access_token"],
+				},
+			})
+			.then((response) => {
+				userApiInstace.post("/google-login", {
+					email: response.data.email,
+					name: response.data.name,
+					avatarUrl: response.data.picture
+				}).then((res) => {
+					if (res.data._isSuccess) {
+						signIn({
+							auth: {
+								token: res.data._data.token,
+								type: "Bearer"
+							},
+							expiresIn: 3600 * 24 * 5,
+							tokenType: "Bearer",
+							authState: { email: response.data.email }
+						});
+						window.location.href = import.meta.env.VITE_APP_URL.toString();
+					} else {
+						notify(res.data._message);
+					}
+				}).catch((error) => {
+					if (error.response && error.response.data) {
+						notify(error.response.data[0]);
+					} else {
+						console.error("Error during Google login:", error);
+						notify("An error occurred during Google login. Please try again.");
+					}
+					setTimeout(() => {
+						navigate('/')
+					}, 5000)
+				});
+			})
+			.catch((error) => {
+				if (error.response && error.response.status === 401) {
+					// invalid token => prompt for user permission.
+					handleGoogleLogin();
+				} else {
+					console.error("Error fetching user data:", error);
+				}
+			})
+		// setIsLoading(false)
+
+	} else {
+		handleGoogleLogin();
+		// setIsLoading(false);
+	}
 }
 
 export default HomePage;

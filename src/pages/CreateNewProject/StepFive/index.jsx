@@ -177,7 +177,8 @@ const StepFive = () => {
           "Content-Type": "application/json"
         }
       }).then((res) => {
-        console.log(res)
+        // console.log(res)
+        navigate('projects')
       })
 
     } catch (err) {
