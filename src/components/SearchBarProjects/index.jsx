@@ -128,9 +128,7 @@ const SearchBarProjects = ({ setProject, searchType }) => {
   const getCategories = async () => {
     try {
       const response = await categoryApiInstance.get("");
-      console.log(response);
       if (response.data.result._data != null) {
-        console.log(response.data.result._data);
         const category = response.data.result._data;
         setCategories(category);
       }
