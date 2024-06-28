@@ -52,7 +52,7 @@ function AdminLayout() {
     navigate("/admin/projects");
   };
   const navigateCategories = () => {
-    navigate("/admin/categories");
+
   };
   const navigateWithdrawRequests = () => {
     navigate("/admin/withdraw-request");
@@ -70,8 +70,8 @@ function AdminLayout() {
     1: navigateAccounts,
     2: navigateProjects,
     3: navigateTransactions,
-    4: navigateWithdrawRequests,
-    5: navigateCategories,
+    4: navigateCategories,
+    5: navigateWithdrawRequests,
     6: navigateConfiguration,
   };
 

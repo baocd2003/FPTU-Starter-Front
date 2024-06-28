@@ -3,12 +3,13 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Cookies from 'js-cookie';
 import { MuiOtpInput } from 'mui-one-time-password-input';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import Countdown from 'react-countdown';
 import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
 import userApiInstace from '../../utils/apiInstance/userApiInstace';
+import userManagementApiInstance from '../../utils/apiInstance/userManagementApiInstance';
 import './index.css';
 
 function setCookie(name, value, expiresIn) {
@@ -23,6 +24,7 @@ function setCookie(name, value, expiresIn) {
 }
 
 function OTPVerificationModal({ userName, email }) {
+    const [name, setName] = useState(userName);
     const [otp, setOTP] = useState("");
     const [buttonDisable, setButtonDisable] = useState(false);
     const [buttonLoading, setButtonLoading] = useState(false);
@@ -31,6 +33,21 @@ function OTPVerificationModal({ userName, email }) {
 
     // Define targetTime using useRef to ensure it stays constant
     const targetTime = useRef(Date.now() + 6 * 60 * 1000);
+
+    useEffect(() => {
+        if (userName == undefined || userName == null) {
+            userManagementApiInstance.get(`get-user-by-email?userEmail=${email}`).then(res => {
+                if (res.data._data == null) {
+                    notify(`${res.data._message[0]}`);
+                } else {
+                    userName = res.data._data.userName;
+                    setName(res.data._data.userName);
+                }
+            })
+        }
+    }, [userName])
+
+    console.log(userName);
 
     const handleChange = (newValue) => {
         setOTP(newValue);
@@ -44,8 +61,7 @@ function OTPVerificationModal({ userName, email }) {
         setButtonDisable(true);
         setButtonLoading(true);
         event.preventDefault();
-        userApiInstace.post(`/login-2FA?code=${otp}&userName=${userName}`).then(res => {
-            console.log(res.data);
+        userApiInstace.post(`/login-2FA?code=${otp}&userName=${name}`).then(res => {
             if (res.data._data == null) {
                 notify(`${res.data._message[0]}`);
             } else {

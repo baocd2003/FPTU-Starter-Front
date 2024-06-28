@@ -1,7 +1,8 @@
+import CloseIcon from '@mui/icons-material/Close';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import { CircularProgress, Grid, Modal, Paper } from "@mui/material";
 import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -11,7 +12,7 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from 'react';
-import withdrawRequestApiInstance from '../../utils/apiInstance/withdrawRequestApiInstance';
+import withdrawApiInstance from '../../utils/apiInstance/withdrawApiInstance';
 import './index.css';
 
 const status = ['Đang chờ', 'Đã tiếp nhận', 'Từ chối', 'Thành công'];
@@ -22,7 +23,8 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '40%',
+    width: 'fit-content',
+    minWidth: '40%',
     bgcolor: 'background.paper',
     boxShadow: '0.4rem',
     px: '4rem',
@@ -37,7 +39,6 @@ function AdminWithdrawRequest() {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [selectedRow, setSelectedRow] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
-    const [modalGrid, setModalGrid] = useState(12);
 
     const token = Cookies.get("_auth");
 
@@ -49,7 +50,7 @@ function AdminWithdrawRequest() {
         setIsLoading(true);
         if (token) {
             try {
-                const response = await withdrawRequestApiInstance.get("", {
+                const response = await withdrawApiInstance.get("", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 if (Array.isArray(response.data._data)) {
@@ -169,14 +170,6 @@ function AdminWithdrawRequest() {
 
     const handleOpenModal = async (rowData) => {
         setSelectedRow(rowData);
-        // try {
-        //     const response = await withdrawRequestApiInstance.post("admin-project-request", rowData.id, {
-        //         headers: { Authorization: `Bearer ${token}` },
-        //     });
-        //     setSelectedRow(response);
-        // } catch (error) {
-        //     console.error("Error fetching withdraw request:", error);
-        // }
         setModalOpen(true);
     };
 
@@ -185,6 +178,18 @@ function AdminWithdrawRequest() {
         setModalOpen(false);
     };
 
+    const handleProcessingRequest = (id) => {
+
+    }
+
+    const handleApproveRequest = (id) => {
+
+    }
+
+    const handleRejectRequest = (id) => {
+
+    }
+
     return (
         <div className='mx-[3.2rem] my-[1.2rem]'>
             <h1 className='text-[1.6rem] font-bold mb-[4rem]'>Yêu cầu rút tiền</h1>
@@ -192,7 +197,7 @@ function AdminWithdrawRequest() {
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell align="left" className='table-header'>Tên người rút</TableCell>
+                            <TableCell align="left" className='table-header'>Email người rút</TableCell>
                             <TableCell align="left" className='table-header'>Số tiền rút</TableCell>
                             <TableCell align="left" className='table-header'>Ngày hết hạn</TableCell>
                             <TableCell align="left" className='table-header'>Trạng thái</TableCell>
@@ -215,24 +220,24 @@ function AdminWithdrawRequest() {
                                 : withdrawRequest
                             ).map((withdrawRequestItem) => (
                                 <TableRow
-                                    key={withdrawRequestItem.id}
+                                    key={withdrawRequestItem.withdrawRequest.id}
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
                                     <TableCell align="left">
-                                        Hihi
+                                        {withdrawRequestItem.withdrawRequest.wallet.backer.email}
                                     </TableCell>
-                                    <TableCell align="left" className='table-row'>{formatAmount(withdrawRequestItem.amount)} VND</TableCell>
+                                    <TableCell align="left" className='table-row'>{formatAmount(withdrawRequestItem.withdrawRequest.amount)} vnd</TableCell>
                                     <TableCell align="left" className='table-row' style={{
                                         fontWeight: 'bold',
-                                        color: isWithinTwoDays(withdrawRequestItem.expiredDate) ? 'red' : 'green',
+                                        color: isWithinTwoDays(withdrawRequestItem.withdrawRequest.expiredDate) && (withdrawRequestItem.withdrawRequest.status != 3) ? 'red' : 'green',
                                     }}>
-                                        {formatDate(withdrawRequestItem.expiredDate)}
+                                        {formatDate(withdrawRequestItem.withdrawRequest.expiredDate)}
                                     </TableCell>
                                     <TableCell align="left" className='table-row'>
-                                        <div style={getStatusStyle(withdrawRequestItem.status)}>{status[withdrawRequestItem.status]}</div>
+                                        <div style={getStatusStyle(withdrawRequestItem.withdrawRequest.status)}>{status[withdrawRequestItem.withdrawRequest.status]}</div>
                                     </TableCell>
                                     <TableCell align="left" className='table-row'>
-                                        <div style={getRequestTypeStyle(withdrawRequestItem.requestType)}>{requestType[withdrawRequestItem.requestType]}</div>
+                                        <div style={getRequestTypeStyle(withdrawRequestItem.withdrawRequest.requestType)}>{requestType[withdrawRequestItem.withdrawRequest.requestType]}</div>
                                     </TableCell>
                                     <TableCell align="center" style={{ width: '4rem', padding: '8px' }}>
                                         <ModeEditOutlineIcon onClick={() => handleOpenModal(withdrawRequestItem)} fontSize='small' sx={{ fontSize: '1.2rem', color: '#44494D', cursor: 'pointer' }} />
@@ -260,42 +265,111 @@ function AdminWithdrawRequest() {
                 style={{ zIndex: '100000' }}
             >
                 <Paper sx={style}>
+                    <IconButton
+                        onClick={handleCloseModal}
+                        sx={{
+                            position: 'absolute',
+                            right: 12,
+                            top: 12,
+                            width: 40,
+                            height: 40,
+                            paddingTop: 0,
+                            borderRadius: '50%',
+                            display: { lg: 'block', xs: 'none' },
+                            color: (theme) => theme.palette.grey[500],
+                            '&:focus': {
+                                outline: 'none !important',
+                            },
+                            '&:hover': {
+                                color: '#44494D',
+                            },
+                            zIndex: 2
+                        }}
+                    >
+                        <CloseIcon />
+                    </IconButton>
                     <div className='flex flex-col h-fit mx-auto'>
-                        <h2 className='text-[2.4rem] font-bold text-[#44494D] text-center'>Chi tiết yêu cầu</h2>
+                        <h2 className='text-[1.6rem] font-bold text-[#44494D] text-center'>Chi tiết yêu cầu</h2>
                         {selectedRow && (
                             <div>
-                                <Grid container>
-                                    <Grid item xs={12} lg={modalGrid}>
-                                        <div className='text-[1.2rem] text-[#44494D] mb-[1rem]'><strong>Tên người rút:</strong> Hihi</div>
-                                        <div className='text-[1.2rem] text-[#44494D] mb-[1rem]'><strong>Số tiền rút:</strong> {formatAmount(selectedRow.amount)} VND</div>
-                                        <div className='text-[1.2rem] text-[#44494D] font-bold mb-[1rem]' style={{ color: isWithinTwoDays(selectedRow.expiredDate) ? 'red' : 'green' }}><strong style={{ color: '#44494D', fontWeight: 'bold' }}>Ngày hết hạn:</strong> {formatDate(selectedRow.expiredDate)}</div>
-                                        <div className='text-[1.2rem] text-[#44494D] mb-[1rem]'><strong>Trạng thái:</strong> {status[selectedRow.status]}</div>
-                                        <div className='text-[1.2rem] text-[#44494D] mb-[1rem]'><strong>Loại giao dịch:</strong> {requestType[selectedRow.requestType]}</div>
-                                    </Grid>
-                                    {selectedRow.status === 1 && (
-                                        <>
-                                            <Divider orientation="vertical" flexItem />
-                                            <Grid>
-
-                                            </Grid>
-                                        </>
+                                <Grid container columnSpacing={2}>
+                                    {selectedRow.withdrawRequest.status === 1 && (
+                                        <Grid item xs={6} lg={6} sx={{ display: 'flex', my: 'auto' }}>
+                                            <img src="https://img.vietqr.io/image/vietcombank-996116407-compact2.jpg?amount=600000&addInfo=dong%20qop%20quy%20vac%20xin&accountName=Quy%20Vac%20Xin%20Covid" title="W3Schools Free Online Web Tutorials" />
+                                        </Grid>
                                     )}
+                                    <Grid item xs={12} lg={selectedRow.withdrawRequest.status === 1 ? 6 : 12} sx={{ display: 'flex', my: 'auto', flexDirection: 'column' }}>
+                                        <div className='flex items-center h-full'>
+                                            <Grid container rowSpacing={0}>
+                                                <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
+                                                    <div className='text-[1rem] text-[#44494D]'>
+                                                        <strong>Tên ngân hàng:</strong><br />
+                                                        {selectedRow.bankAccount.bankAccountName}
+                                                    </div>
+                                                </Grid>
+                                                <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
+                                                    <div className='text-[1rem] text-[#44494D]'>
+                                                        <strong>Số tài khoản:</strong><br />
+                                                        {selectedRow.bankAccount.bankAccountNumber}
+                                                    </div>
+                                                </Grid>
+                                                <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
+                                                    <div className='text-[1rem] text-[#44494D]'>
+                                                        <strong>Số tiền rút:</strong><br />
+                                                        {formatAmount(selectedRow.withdrawRequest.amount)} vnd
+                                                    </div>
+                                                </Grid>
+                                                <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
+                                                    <div className='text-[1rem] text-[#44494D]'>
+                                                        <strong>Ngày hết hạn:</strong><br />
+                                                        <span style={{ color: isWithinTwoDays(selectedRow.withdrawRequest.expiredDate) ? 'red' : 'green', fontWeight: 'bold' }}>
+                                                            {formatDate(selectedRow.withdrawRequest.expiredDate)}
+                                                        </span>
+                                                    </div>
+                                                </Grid>
+                                                <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
+                                                    <div className='text-[1rem] text-[#44494D]'>
+                                                        <strong>Trạng thái:</strong><br />
+                                                        {status[selectedRow.withdrawRequest.status]}
+                                                    </div>
+                                                </Grid>
+                                                <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
+                                                    <div className='text-[1rem] text-[#44494D]'>
+                                                        <strong>Loại giao dịch:</strong><br />
+                                                        {requestType[selectedRow.withdrawRequest.requestType]}
+                                                    </div>
+                                                </Grid>
+                                                <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
+                                                    <div className='text-[1rem] text-[#44494D]'>
+                                                        <strong>Trạng thái:</strong><br />
+                                                        {status[selectedRow.withdrawRequest.status]}
+                                                    </div>
+                                                </Grid>
+                                                <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
+                                                    <div className='text-[1rem] text-[#44494D]'>
+                                                        <strong>Loại giao dịch:</strong><br />
+                                                        {requestType[selectedRow.withdrawRequest.requestType]}
+                                                    </div>
+                                                </Grid>
+                                            </Grid>
+                                        </div>
+                                    </Grid>
                                 </Grid>
-                                {selectedRow.status === 0 ? (
-                                    <div className='flex justify-center flex-row'>
-                                        <Button variant="contained" sx={{ mr: '2rem', backgroundColor: '#4CAF50', textTransform: 'none', fontWeight: 'bold' }}>
+                                {selectedRow.withdrawRequest.status === 0 ? (
+                                    <div className='flex justify-center flex-row mt-[1.2rem]'>
+                                        <Button onClick={handleProcessingRequest(selectedRow.id)} variant="contained" sx={{ mr: '2rem', backgroundColor: '#4CAF50', textTransform: 'none', fontWeight: 'bold' }}>
                                             Đồng ý
                                         </Button>
-                                        <Button variant="contained" sx={{ backgroundColor: '#ed1c24', textTransform: 'none', fontWeight: 'bold' }}>
+                                        <Button onClick={handleRejectRequest(selectedRow.id)} variant="contained" sx={{ backgroundColor: '#ed1c24', textTransform: 'none', fontWeight: 'bold' }}>
                                             Từ chối
                                         </Button>
                                     </div>
-                                ) : selectedRow.status == 1 ? (
-                                    <div className='flex justify-center flex-row'>
-                                        <Button variant="contained" sx={{ mr: '2rem', backgroundColor: '#4CAF50', textTransform: 'none', fontWeight: 'bold' }}>
+                                ) : selectedRow.withdrawRequest.status == 1 ? (
+                                    <div className='flex justify-center flex-row mt-[1.2rem]'>
+                                        <Button onClick={handleApproveRequest(selectedRow.id)} variant="contained" sx={{ mr: '2rem', backgroundColor: '#4CAF50', textTransform: 'none', fontWeight: 'bold' }}>
                                             Xác nhận
                                         </Button>
-                                        <Button variant="contained" sx={{ backgroundColor: '#ed1c24', textTransform: 'none', fontWeight: 'bold' }}>
+                                        <Button onClick={handleRejectRequest(selectedRow.id)} variant="contained" sx={{ backgroundColor: '#ed1c24', textTransform: 'none', fontWeight: 'bold' }}>
                                             Hủy bỏ
                                         </Button>
                                     </div>
