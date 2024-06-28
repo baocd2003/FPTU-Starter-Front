@@ -12,3 +12,7 @@
         width: 50% !important;
     }
 }
+
+.btn-add-cate:focus {
+    outline: none !important;
+}

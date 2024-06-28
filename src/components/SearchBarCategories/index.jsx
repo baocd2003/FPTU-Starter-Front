@@ -86,9 +86,17 @@ const CategoryModal = ({ open, handleClose, handleSave }) => {
     setSubcategories(newSubcategories);
   };
 
-  const handleSaveClick = () => {
-    handleSave(categoryName, subcategories);
-    handleClose();
+  const handleSaveClick = async () => {
+    try {
+      await handleSave(categoryName, subcategories);
+      handleClose();
+
+      setCategoryName("");
+      setSubcategories([""]);
+    } catch (error) {
+      console.error("Error saving category:", error);
+      // Handle error (e.g., show error message)
+    }
   };
 
   return (
@@ -108,7 +116,7 @@ const CategoryModal = ({ open, handleClose, handleSave }) => {
         }}
         className="rounded"
       >
-        <h2>Thêm danh mục</h2>
+        <h2 className="text-center font-semibold">Thêm danh mục</h2>
         <TextField
           fullWidth
           label="Tên danh mục"
@@ -230,10 +238,20 @@ const SearchBarCategories = ({ setCategories }) => {
     setModalOpen(false);
   };
 
-  const handleSaveCategory = (categoryName, subcategories) => {
-    console.log("Category Name:", categoryName);
-    console.log("Subcategories:", subcategories);
-    // Handle saving category and subcategories
+  const handleSaveCategory = async (categoryName, subcategories) => {
+    try {
+      const response = await categoryApiInstance.post("", {
+        name: categoryName,
+        subCategories: subcategories.map((subcat) => ({ name: subcat })),
+      });
+
+      fetchCategories("");
+
+      handleCloseModal();
+    } catch (error) {
+      console.error("Error creating category:", error);
+      throw error; // Rethrow to propagate the error for handling in the modal or parent component
+    }
   };
 
   return (
@@ -307,6 +325,7 @@ const SearchBarCategories = ({ setCategories }) => {
                 },
               }}
               onClick={handleOpenModal}
+              className="btn-add-cate"
             >
               Thêm danh mục
             </Button>

@@ -754,13 +754,36 @@ function AdminProjects() {
             >
               {selectedProject.packageViewResponses.map(
                 (projectPackage, index) => (
-                  <Card sx={{ maxWidth: 240 }} key={index}>
+                  <Card
+                    sx={{ maxWidth: 220, position: "relative" }}
+                    key={index}
+                  >
                     <CardMedia
                       component="img"
-                      alt="green iguana"
+                      alt="package image"
                       height="160"
-                      image={projectPackage.packageImage}
+                      image="https://t4.ftcdn.net/jpg/03/03/46/39/360_F_303463981_i1CiZU5VYclryudt7VI7YSEDw9mgkSqJ.jpg"
                     />
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: "25%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          fontSize: "1rem",
+                          fontWeight: "bold",
+                          color: "white",
+                        }}
+                      >
+                        {projectPackage.requiredAmount
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}{" "}
+                      </Typography>
+                    </Box>
                     <CardContent>
                       <Typography
                         gutterbottom="true"
@@ -836,9 +859,9 @@ function AdminProjects() {
                               >
                                 <CardMedia
                                   component="img"
-                                  alt={reward.imageUrl}
+                                  alt="reward image"
                                   height="140"
-                                  image={reward.imageUrl}
+                                  image="https://atlas-content-cdn.pixelsquid.com/stock-images/giftbox-yellow-gift-box-ZeaGEQ7-600.jpg"
                                   sx={{
                                     width: "100%",
                                     height: "100%",
