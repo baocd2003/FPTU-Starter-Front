@@ -74,7 +74,7 @@ function POProjectDetail() {
         console.error('Error fetching user wallet:', error);
       })
       .finally(() => {
-        setIsLoading(false);
+        // setIsLoading(false);
       });
   }
 
@@ -216,7 +216,6 @@ function POProjectDetail() {
   }
 
   const getProjectDetail = async () => {
-    setIsLoading(true);
     projectApiInstance.get(`${projectId}`)
       .then((res) => {
         if (res.data._statusCode === 200) {
