@@ -14,6 +14,7 @@ const TextEditor = ({ aboutUsData, setAboutUsData }) => {
         value={aboutUsData}
         onChange={handleChange}
         modules={modules}
+        placeholder='Hãy chia sẻ câu chuyện khởi nghiệp của bạn với mọi người nhé!'
         formats={formats}
         style={{ height: '20rem' }}
       />

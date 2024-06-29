@@ -36,17 +36,17 @@ const StepFour = () => {
   }, [])
 
   const onSubmit = () => {
-    const bankName = (banks.find((bank) => bank.bin == selectedBank)).name
-    const data = {
-      ownerName: bankOwner,
-      bankAccountNumber: accountNumber,
-      bankAccountName: bankName
-    }
+    // const bankName = (banks.find((bank) => bank.bin == selectedBank)).name
     // const data = {
-    //   ownerName: 'CAO KHA SUONG',
-    //   bankAccountNumber: 24489267,
-    //   bankAccountName: 'Ngân hàng TMCP Á Châu'
+    //   ownerName: bankOwner,
+    //   bankAccountNumber: accountNumber,
+    //   bankAccountName: bankName
     // }
+    const data = {
+      ownerName: 'CAO KHA SUONG',
+      bankAccountNumber: 24489267,
+      bankAccountName: 'Ngân hàng TMCP Á Châu'
+    }
     dispatch(setFormData({ step: 'stepFourData', data }))
     navigate('/init-project/step-five')
   }
@@ -154,7 +154,8 @@ const StepFour = () => {
                     disabled={(selectedBank && accountNumber) ? false : true}
                     onClick={() => confirmBank()}
                     sx={{
-                      background: '#FBB03B', fontWeight: 'bold',
+                      background: loading ? '#F0F0F0' : '#FBB03B',
+                      fontWeight: 'bold',
                       '&:hover': {
                         background: '#CC9847'
                       },

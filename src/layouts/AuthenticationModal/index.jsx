@@ -10,6 +10,7 @@ import React, { useEffect, useState } from 'react';
 import { animated, useSpring } from 'react-spring';
 import SignInModal from '../../pages/SignInModal';
 import SignUpModal from '../../pages/SignUpModal';
+import LoginBanner from '../../assets/loginBanner.jpg'
 import './index.css';
 
 function AuthenticationModal(props) {
@@ -78,7 +79,7 @@ function AuthenticationModal(props) {
               <Grid item xs={12} lg={6} sx={{ margin: '0 !important', paddingLeft: '0 !important' }}>
                 <div className='w-full h-full bg-white rounded-[1rem] flex justify-center items-center p-[2rem]'>
                   <img
-                    src='https://i.ibb.co/DrsJDbF/00d73641-11ea-43c0-a843-097b3eb62409.jpg'
+                    src={LoginBanner}
                     alt='AuthenBanner'
                     style={{
                       objectFit: 'cover',

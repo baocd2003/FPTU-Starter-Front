@@ -77,8 +77,29 @@ const StepOne = () => {
     )
   }
 
+  const today = new Date();
+  const minStartDate = new Date(today.setDate(today.getDate() + 7)).toISOString().split('T')[0];
+  console.log(minStartDate)
+  const validateProjectTarget = (value) => value >= 100000 && value % 10000 === 0;
+  const validateEndDate = (endDate) => {
+    const startDate = watch('startDate');
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      const diffDays = (end - start) / (1000 * 60 * 60 * 24);
+      return end > start && diffDays >= 7;
+    }
+    return false;
+  };
 
-  // todo: format code
+  const [formattedProjectTarget, setFormattedProjectTarget] = useState('');
+  const handleProjectTargetChange = (e) => {
+    const inputValue = e.target.value.replace(/\D/g, '');
+    const formattedValue = inputValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+    setFormattedProjectTarget(formattedValue);
+  };
+
   return (
     <>
       <Box
@@ -98,7 +119,6 @@ const StepOne = () => {
 
         <Box
           sx={{
-            // minHeight: '100vh',
             px: 6,
             pr: 10,
           }}
@@ -238,17 +258,31 @@ const StepOne = () => {
                 }}
               >Đặt ra mục tiêu cho dự án của bạn</Typography>
             </Grid>
-            <Grid item xs={9} sx={{ textAlign: 'left' }}>
-              <TextField {...register('ProjectTarget', { required: true })}
+            <Grid item xs={9} sx={{ textAlign: 'left', display: 'flex', justifyContent: 'space-between' }}>
+              <TextField {...register('ProjectTarget', {
+                required: true,
+                validate: validateProjectTarget
+              })}
                 type='number'
                 placeholder='Nhập số tiền'
                 sx={{ width: '48%' }}
-                error={errors.ProjectTarget?.type === 'required' ? true : false}
-                helperText={errors.ProjectTarget?.type === 'required' && 'Hãy nhập số tiền'}
+                onChange={handleProjectTargetChange}
+                error={!!errors.ProjectTarget}
+                helperText={errors.ProjectTarget?.type === 'required'
+                  ? 'Hãy nhập số tiền'
+                  : errors.ProjectTarget?.type === 'validate'
+                    ? 'Số tiền kêu gọi phải lớn hơn hoặc bằng 100.000đ và chia hết cho 10.000đ'
+                    : ''}
                 InputProps={{
                   endAdornment: <InputAdornment position='end'>VND</InputAdornment>,
+                  inputProps: { min: '0' },
                 }}
               />
+              {formattedProjectTarget && (
+                <Box sx={{ width: '48%', mt: 2 }}>
+                  <Typography sx={{ fontSize: '.8rem' }}>{formattedProjectTarget} vnđ (định dạng số tiền)</Typography>
+                </Box>
+              )}
             </Grid>
             <Grid item xs={3} sx={styleLeftGridForm}>
               <Typography
@@ -268,13 +302,34 @@ const StepOne = () => {
               >Chọn khoảng thời gian mà bạn sẽ kêu gọi sự ủng hộ</Typography>
             </Grid>
             <Grid item xs={9} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-              <TextField {...register('startDate', { required: true })}
-                type='datetime-local'
+              <TextField {...register('startDate', {
+                required: true,
+                min: minStartDate
+              })}
+                type='date'
                 sx={{ width: '48%' }}
+                error={!!errors.startDate}
+                helperText={errors.startDate?.type === 'required'
+                  ? 'Hãy chọn ngày bắt đầu'
+                  : errors.startDate?.type === 'min'
+                    ? 'Ngày bắt đầu phải sau 7 ngày từ hôm nay'
+                    : ''}
+                InputProps={{
+                  inputProps: { min: minStartDate },
+                }}
               />
-              <TextField {...register('endDate', { required: true })}
-                type='datetime-local'
+              <TextField {...register('endDate', {
+                required: true,
+                validate: validateEndDate
+              })}
+                type='date'
                 sx={{ width: '48%' }}
+                error={!!errors.endDate}
+                helperText={errors.endDate?.type === 'required'
+                  ? 'Hãy chọn ngày kết thúc'
+                  : errors.endDate?.type === 'validate'
+                    ? 'Ngày kết thúc phải sau ngày bắt đầu và khoảng cách phải lớn hơn hoặc bằng 7 ngày'
+                    : ''}
               />
             </Grid>
           </Grid>
@@ -306,12 +361,10 @@ const StepOne = () => {
                 }
               }}>Tiếp theo</Button>
           </Box>
-        </Box >
-      </Box >
-
-
+        </Box>
+      </Box>
     </>
-  )
-}
+  );
+};
 
 export default StepOne;

@@ -28,6 +28,8 @@ import './index.css';
 import axios from 'axios';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import userApiInstace from '../../utils/apiInstance/userApiInstace';
+import StudentImg1 from '../../assets/banner-carousel-1.png'
+import StudentImg2 from '../../assets/sinhvienfpt2.jpg'
 import { Troubleshoot } from '@mui/icons-material';
 
 function HomePage() {
@@ -62,10 +64,10 @@ function HomePage() {
 						<Grid item lg={6} xs={12}>
 							<Box sx={{ mx: '20px', height: '100%', display: { lg: 'block', xs: 'none' } }}>
 								<div className='mr-[2rem] h-[75%] rounded-[0.4rem] relative'>
-									<img src={"https://i.ibb.co/8K7BwCX/sinhvien-fpt-khoinghiep.png"} className='object-cover w-[75%] h-[100%] rounded-[0.4rem]'></img>
+									<img src={StudentImg1} className='object-cover w-[75%] h-[100%] rounded-[0.4rem]'></img>
 									<div className='rounded-[0.4rem] flex justify-end absolute left-0 bottom-0'>
 										<img
-											src={"https://i.ibb.co/8K7BwCX/sinhvien-fpt-khoinghiep.png"}
+											src={StudentImg2}
 											className='object-cover w-[75%] h-[50%] rounded-[0.4rem] translate-y-[50%]'
 											alt="Teamwork"
 										/>
