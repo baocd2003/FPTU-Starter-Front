@@ -1,5 +1,5 @@
 .cardBox{
-  background-color: #FBB03B;
+  background: linear-gradient(to right, #ffbf96, #FCAE3D) !important;
   border-radius: 12px;
   color: #FFFFFF
 }
@@ -25,4 +25,14 @@
   .light .circle h1,
   .light .circle p {
     color: #000;
+  }
+
+  .card-wrapper{
+    position: relative;
+  }
+  .circle-decor{
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
   }
