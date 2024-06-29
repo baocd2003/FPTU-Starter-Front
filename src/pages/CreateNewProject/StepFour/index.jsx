@@ -154,7 +154,8 @@ const StepFour = () => {
                     disabled={(selectedBank && accountNumber) ? false : true}
                     onClick={() => confirmBank()}
                     sx={{
-                      background: '#FBB03B', fontWeight: 'bold',
+                      background: loading ? '#F0F0F0' : '#FBB03B',
+                      fontWeight: 'bold',
                       '&:hover': {
                         background: '#CC9847'
                       },
@@ -199,7 +200,7 @@ const StepFour = () => {
               }}>Quay lại</Button>
             <Button onClick={onSubmit} variant='contained'
               disableElevation
-              // disabled={!bankOwner && !bankState}
+              disabled={!bankOwner && !bankState}
               sx={{
                 background: '#FBB03B', fontWeight: 'bold',
                 '&:hover': {

@@ -5,6 +5,8 @@ import { Carousel } from "react-responsive-carousel";
 import { useNavigate } from "react-router-dom";
 import { animated, useSpring } from 'react-spring';
 import Swal from 'sweetalert2';
+import Banner1 from '../../assets/banner-carousel-1.png'
+import Banner2 from '../../assets/banner-carousel-2.png'
 import './index.css';
 
 function BannerCarousel() {
@@ -16,7 +18,6 @@ function BannerCarousel() {
       setExistedAuth(token);
     }
   });
-  
   const navigate = useNavigate();
   const checkAuth = () => {
     if (existedAuth !== undefined) {
@@ -24,14 +25,15 @@ function BannerCarousel() {
     } else {
       Swal.fire({
         title: "Cần đăng nhập",
-        text: "Bạn cần có tài khoản để tạo dự án",
+        text: "Bạn cần đăng nhập để tạo dự án",
         icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Về trang đăng nhập",
-        cancelButtonText: "Ở lại trang",
+        // showCancelButton: true,
+        confirmButtonText: "Đã hiểu",
+        // cancelButtonText: "Ở lại trang",
       }).then((result) => {
         if (result.isConfirmed) {
-          navigate("/login");
+          // navigate("/login");
+
         }
       });
     }
@@ -74,19 +76,19 @@ function BannerCarousel() {
         animationHandler="slide"
         interval={5000}
       >
-        <ParallaxImage src={"https://i.ibb.co/8K7BwCX/sinhvien-fpt-khoinghiep.png"}>
+        <ParallaxImage src={Banner1}>
           <Typography className="bannerTitle" sx={{
             position: "absolute", top: "40%", left: "10%", color: "white", fontWeight: "bold",
             textAlign: "left", zIndex: 2, textTransform: "uppercase", userSelect: 'none',
             fontSize: "5rem", whiteSpace: "nowrap", letterSpacing: '2px !important',
           }}>
-            Vươn tới những <span className='text-[#FBB03B]'>vì sao</span><br /> dự án khởi nghiệp của bạn <br /> sẽ <span className='text-[#FBB03B]'>tỏa sáng!</span>
+            Nền tảng <span className='text-[#FBB03B]'><br />gây quỹ cộng đồng</span><br /> cho dự án <span className='text-[#FBB03B]'>khởi nghiệp</span> của bạn
           </Typography>
           <div className="absolute top-[70%] left-[10%]" style={{ zIndex: 2 }}>
-            <Button onClick={checkAuth} sx={{ my: 4, color: '#FFF', display: 'block', width: '16rem', height: '4rem', borderRadius: '0.4rem !important', fontSize: '1rem', fontWeight: 900, letterSpacing: '1px !important', }} className="c-btn">Hiện thực hóa giấc mơ</Button>
+            <Button onClick={checkAuth} sx={{ my: 4, color: '#FFF', display: 'block', width: '16rem', height: '4rem', borderRadius: '0.4rem !important', fontSize: '1rem', fontWeight: 900, letterSpacing: '1px !important', }} className="c-btn">Hiện thực hóa ý tưởng</Button>
           </div>
         </ParallaxImage>
-        <ParallaxImage src={"https://i.ibb.co/w4DyqHq/banner-Carousel2.jpg"}>
+        <ParallaxImage src={Banner2}>
           <Typography className="bannerTitle" sx={{
             position: "absolute", top: "40%", right: "10%", color: "white", fontWeight: "bold",
             textAlign: "right", zIndex: 2, textTransform: "uppercase", userSelect: 'none',

@@ -215,7 +215,7 @@ function POProjectDetail() {
     })
   }
 
-  const getProjectDetail = () => {
+  const getProjectDetail = async () => {
     projectApiInstance.get(`${projectId}`)
       .then((res) => {
         if (res.data._statusCode === 200) {
@@ -763,7 +763,7 @@ function POProjectDetail() {
                   )
                   : (
                     <>
-                      <Grid item xs={9} sx={{ mt: '0 !important', pr: 5 }}>
+                      <Grid item xs={9} sx={{ mt: '0 !important', pr: 12 }}>
                         <TabPanel value="2">
                           <div dangerouslySetInnerHTML={{ __html: project.aboutUs?.content }} />
                         </TabPanel>
@@ -780,9 +780,23 @@ function POProjectDetail() {
                           fontWeight: "bold", fontSize: "1.5rem",
                           color: "rgba(0, 0, 0, 0.8)", px: 1, position: "sticky", top: "4.5rem"
                         }}>Ủng hộ ngay</Typography>
-                        <Box sx={{ height: "80vh", overflowY: "scroll", position: "sticky", top: "6rem !important" }}>
+                        <Box sx={{
+                          height: "80vh", overflowY: "scroll", position: "sticky", top: "7rem !important",
+                          '&::-webkit-scrollbar': {
+                            width: '5px'
+                          },
+                          '&::-webkit-scrollbar-track': {
+                            borderRadius: '2rem',
+                            background: '#e7e7e7',
+                            border: '1px solid #cacaca'
+                          },
+                          '&::-webkit-scrollbar-thumb': {
+                            borderRadius: '2rem',
+                            background: 'rgba(0, 0, 0, 0.3)',
+                          },
+                        }}>
                           {project && project.packageViewResponses.filter(projectPackage => projectPackage.packageType !== 'Free').map((projectPackage, index) => (
-                            <Card key={index} sx={{ borderRadius: 0, border: ".1rem solid rgba(0, 0, 0, 0.12)", mt: 3, mx: 1, position: 'relative' }}>
+                            <Card key={index} sx={{ borderRadius: 0, border: ".1rem solid rgba(0, 0, 0, 0.12)", mb: 3, mx: 1, position: 'relative' }}>
                               <CardMedia
                                 component="img"
                                 alt="green iguana"
@@ -839,10 +853,10 @@ function POProjectDetail() {
                     </>
                   )
                 }
-              </Grid>
-            </Container>
+              </Grid >
+            </Container >
 
-          </TabContext>
+          </TabContext >
 
         </Box >
 

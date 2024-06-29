@@ -199,6 +199,7 @@ const StepThree = () => {
               }}>Quay lại</Button>
             <Button onClick={() => onSubmit()} variant='contained'
               disableElevation
+              disabled={!(liveDemoFile.length > 0 && thumbnailFile.length > 0 && images.length > 0)}
               sx={{
                 background: '#FBB03B', fontWeight: 'bold',
                 '&:hover': {

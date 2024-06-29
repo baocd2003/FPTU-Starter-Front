@@ -9,7 +9,9 @@ import { Add, Delete, Height } from "@mui/icons-material";
 import projectApiInstance from "../../../utils/apiInstance/projectApiInstance";
 import { useForm } from "react-hook-form";
 import { styled } from '@mui/material/styles';
+import EmptyImg from "../../../assets/empty.png"
 import userManagementApiInstance from "../../../utils/apiInstance/userManagementApiInstance";
+import Swal from "sweetalert2";
 
 
 const StepFive = () => {
@@ -71,6 +73,14 @@ const StepFive = () => {
     setAddPerk(false);
   }
 
+  const handleRemovePerk = (index) => {
+    setNewPackage((prevPackage) => ({
+      ...prevPackage,
+      rewardItems: prevPackage.rewardItems.filter((_, i) => i !== index)
+    }));
+  };
+
+
   const handleAddPackage = () => {
     setPackages([...packages, newPackage]);
     setNewPackage({
@@ -81,6 +91,7 @@ const StepFive = () => {
       packageType: 'Package',
       rewardItems: []
     });
+    setOpen(false)
   };
 
   const handleRemovePackage = (index) => {
@@ -178,7 +189,16 @@ const StepFive = () => {
         }
       }).then((res) => {
         // console.log(res)
-        navigate('projects')
+        Swal.fire({
+          title: "Khởi tạo thành công",
+          text: "Dự án của bạn sẽ được xét duyệt trong 3-5 ngày, hãy kiên nhẫn nhé!",
+          icon: "success",
+          confirmButtonText: "Đến dự án",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/projects");
+          }
+        });
       })
 
     } catch (err) {
@@ -234,7 +254,8 @@ const StepFive = () => {
                   fullWidth
                   type='number'
                   size="small"
-                  label='Giá tiền'
+                  label='Giá gói'
+                  helperText='Nhập số tiền chẵn >= 10.000'
                   value={newPackage.requiredAmount}
                   onChange={handleNewPackageInput('requiredAmount')} />
 
@@ -277,7 +298,7 @@ const StepFive = () => {
                       </StyledTableCell>
                       <StyledTableCell align="center">{value.description}</StyledTableCell>
                       <StyledTableCell align="center">{value.quantity}</StyledTableCell>
-                      <StyledTableCell align="center"><Delete sx={{ color: '#800000' }} /></StyledTableCell>
+                      <StyledTableCell align="center"><Delete onClick={() => handleRemovePerk(index)} sx={{ color: '#800000' }} /></StyledTableCell>
                     </StyledTableRow>
                   ))}
                   {addPerk ? (
@@ -310,6 +331,14 @@ const StepFive = () => {
                       <StyledTableCell align="right">
                         <Button variant="contained"
                           onClick={() => handleAddPerk()}
+                          disabled={
+                            !(
+                              packagePerk.name &&
+                              packagePerk.description &&
+                              packagePerk.quantity &&
+                              packagePerk.quantity > 0
+                            )
+                          }
                           sx={{ width: '1rem', py: 0, fontSize: '.8rem', mb: .2 }}>Thêm</Button>
                         <Button variant="contained"
                           onClick={() => setAddPerk(false)}
@@ -320,7 +349,7 @@ const StepFive = () => {
                     (
                       <TableRow>
                         <TableCell onClick={() => setAddPerk(true)} align="center" colSpan={4} sx={{ py: .5, cursor: 'pointer' }}>
-                          <Add /> Thêm
+                          <Add /> Thêm vật phẩm
                         </TableCell>
                       </TableRow>
                     )
@@ -329,20 +358,38 @@ const StepFive = () => {
                 </TableBody>
               </Table>
             </TableContainer>
-            <Button variant='contained'
+            <Button
+              variant='contained'
               disableElevation
-              onClick={() => handleAddPackage()}
+              onClick={handleAddPackage}
+              disabled={
+                !(
+                  newPackage.packageName &&
+                  newPackage.requiredAmount &&
+                  newPackage.limitQuantity &&
+                  newPackage.packageDescription &&
+                  newPackage.requiredAmount >= 10000 &&
+                  newPackage.requiredAmount % 1000 === 0 &&
+                  newPackage.limitQuantity > 0 &&
+                  newPackage.rewardItems.length > 0
+                )
+              }
               sx={{
                 display: 'flex',
                 margin: '0 auto',
-                background: '#FBB03B', fontWeight: 'bold',
+                background: '#FBB03B',
+                fontWeight: 'bold',
                 '&:hover': {
                   background: '#CC9847'
                 },
                 '&:focus': {
                   outline: 'none'
                 }
-              }}>Tạo gói</Button>
+              }}
+            >
+              Tạo gói
+            </Button>
+
 
           </Box>
         </Modal >
@@ -370,7 +417,7 @@ const StepFive = () => {
                   background: 'rgba(0, 0, 0, 0.05)', display: 'flex', flexDirection: 'column',
                   justifyContent: 'center', alignItems: 'center', borderRadius: '.5rem', py: 3
                 }}>
-                  <img className="w-[10rem]" src='https://i.ibb.co/gP8Wr7G/empty-1-1.png' />
+                  <img className="w-[10rem]" src={EmptyImg} />
                   <Typography sx={{ fontSize: '1.2rem', color: 'rgba(0, 0, 0, 0.4)', fontWeight: 'bold' }}>Chưa có gì ở đây cả!</Typography>
                   <Button variant='contained' onClick={() => setOpen(true)}
                     disableElevation
@@ -454,6 +501,7 @@ const StepFive = () => {
           <Button variant='contained'
             disableElevation
             onClick={() => handleCreateProject()}
+            disabled={!(packages.length > 0)}
             sx={{
               background: '#FBB03B', fontWeight: 'bold',
               '&:hover': {

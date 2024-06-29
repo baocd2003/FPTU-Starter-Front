@@ -14,6 +14,7 @@ const StepTwo = () => {
   const [aboutUsData, setAboutUsData] = useState(existingData)
 
 
+  console.log(aboutUsData)
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -81,9 +82,9 @@ const StepTwo = () => {
               }}>Quay lại</Button>
             <Button onClick={onSubmit} variant='contained'
               disableElevation
+              disabled={(typeof aboutUsData == 'object') || (aboutUsData == '<p><br></p>')}
               sx={{
                 background: '#FBB03B', fontWeight: 'bold',
-                textShadow: '.1rem .1rem .5rem rgba(0, 0, 0, 0.3)',
                 '&:hover': {
                   background: '#CC9847'
                 },
