@@ -36,17 +36,17 @@ const StepFour = () => {
   }, [])
 
   const onSubmit = () => {
-    // const bankName = (banks.find((bank) => bank.bin == selectedBank)).name
-    // const data = {
-    //   ownerName: bankOwner,
-    //   bankAccountNumber: accountNumber,
-    //   bankAccountName: bankName
-    // }
+    const bankName = (banks.find((bank) => bank.bin == selectedBank)).name
     const data = {
-      ownerName: 'CAO KHA SUONG',
-      bankAccountNumber: 24489267,
-      bankAccountName: 'Ngân hàng TMCP Á Châu'
+      ownerName: bankOwner,
+      bankAccountNumber: accountNumber,
+      bankAccountName: bankName
     }
+    // const data = {
+    //   ownerName: 'CAO KHA SUONG',
+    //   bankAccountNumber: 24489267,
+    //   bankAccountName: 'Ngân hàng TMCP Á Châu'
+    // }
     dispatch(setFormData({ step: 'stepFourData', data }))
     navigate('/init-project/step-five')
   }
@@ -200,7 +200,7 @@ const StepFour = () => {
               }}>Quay lại</Button>
             <Button onClick={onSubmit} variant='contained'
               disableElevation
-              // disabled={!bankOwner && !bankState}
+              disabled={!bankOwner && !bankState}
               sx={{
                 background: '#FBB03B', fontWeight: 'bold',
                 '&:hover': {
