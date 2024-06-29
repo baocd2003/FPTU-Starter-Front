@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import ReactApexChart from "react-apexcharts"
 import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
 import cateApiInstance from "../../utils/apiInstance/categoryApiInstance";
+import transactionApiInstance from "../../utils/apiInstance/transactionApiInstance";
 import CardData from '../../components/CardData';
 import Grid from '@mui/material/Grid';
 import './index.css';
@@ -12,6 +13,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
 import TableAdmin from '../../components/TableAdmin';
 import BarCountDonate from '../../components/BarCountDonate';
+import { GrTransaction } from "react-icons/gr";
 function AdminOverview() {
     const [data, setData] = useState([]);
     const [projectsCount, setProjectCount] = useState(0);
@@ -19,6 +21,8 @@ function AdminOverview() {
     const [isLoading, setIsLoading] = useState(false);
     const [option, setOption] = useState(0);
     const [donateData, setDonateData] = useState([]);
+    const [donateStat, setDonateStat] = useState(0);
+    const [projectRate, setProjectRate] = useState([]);
     useEffect(() => {
         setIsLoading(true);
         const fetchTrans = async () => {
@@ -51,6 +55,22 @@ function AdminOverview() {
                 if(res.data){
                     if(res.data.result._isSuccess){
                         setDonateData(res.data.result._data);
+                    }
+                }
+            })
+
+            await transactionApiInstance.get("get-donation-stats").then(res => {
+                if(res.data){
+                    if(res.data.result._isSuccess){
+                        setDonateStat(res.data.result._data)
+                    }
+                }
+            })
+
+            await projectApiInstance.get("/get-success-rate").then(res => {
+                if(res.data){
+                    if(res.data.result._isSuccess){
+                        setProjectRate(res.data.result._data)
                     }
                 }
             })
@@ -219,6 +239,18 @@ function AdminOverview() {
             }
         }
     };
+
+    //format number
+    function formatNumber(number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    //calculate rate
+    const calculateAverageRate = () => {
+        const totalRate = projectRate.reduce((sum, project) => sum + project.successRate, 0);
+        const averageRate = totalRate / projectRate.length;
+        return averageRate.toFixed(2); // Format to 2 decimal places
+    };
     return (
         <div className='container bg-[#F0F0F0]'>
             <div className='chart-wrap'>
@@ -229,19 +261,23 @@ function AdminOverview() {
                     <CircularProgress color="inherit" />
                 </Backdrop>
                 <Box sx={{ flexGrow: 1 }}>
-                    <Grid container spacing={2} >
-                        <Grid item xs={8} >
-                            <Grid container spacing={2} className='mb-4'>
-                                <Grid item xs={4} >
-                                    <CardData title={'Số lượng giao dịch'} figure={data.length} kpi={100} />
+                <Grid container spacing={4} className='mb-4'>
+                                <Grid item xs={3} >
+                                    <CardData title={'Số lượng giao dịch'} figure={formatNumber(data.length)} kpi={100} icon={<GrTransaction/>}  />
                                 </Grid>
-                                <Grid item xs={4} >
-                                    <CardData title={'Số lượng dự án'} figure={projectsCount} kpi={100} />
+                                <Grid item xs={3} >
+                                    <CardData title={'Số lượng dự án'} figure={formatNumber(projectsCount)} kpi={100} />
                                 </Grid>
-                                <Grid item xs={4} >
-                                    <CardData title={'Số lượng giao dịch'} figure={data.length} kpi={100} />
+                                <Grid item xs={3} >
+                                    <CardData title={'Tổng tiền ủng hộ'} figure={`VND ${formatNumber(donateStat)}`} kpi={100} />
+                                </Grid>
+                                <Grid item xs={3} >
+                                    <CardData title={'Tỉ lệ thành công'} figure={`% ${calculateAverageRate()}`} kpi={100} />
                                 </Grid>
                             </Grid>
+                    <Grid container spacing={2} >
+                        <Grid item xs={8} >
+                            
                             <Box className='bg-[#FFFFFF]'>
                                 <Button onClick={() => setOption(1)}>This week</Button>
                                 <Button onClick={() => setOption(2)}>This month</Button>
