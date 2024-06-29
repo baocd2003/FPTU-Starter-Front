@@ -367,12 +367,12 @@ function AdminWithdrawRequest() {
                                 <Grid container columnSpacing={2}>
                                     {selectedRow.withdrawRequest.status === 1 && (
                                         <Grid item xs={6} lg={6} sx={{ display: 'flex', my: 'auto' }}>
-                                            <img src={`https://img.vietqr.io/image/vietcombank-${selectedRow.bankAccount.bankAccountNumber}-compact2.jpg?amount=${selectedRow.withdrawRequest.amount}&addInfo=Chuyen%20tien%20&accountName=Quy%20Vac%20Xin%20Covid`} style={{ width: '24rem', height: '20rem' }} />
+                                            <img src={`https://img.vietqr.io/image/vcb-${selectedRow.bankAccount.bankAccountNumber}-compact2.jpg?amount=${selectedRow.withdrawRequest.amount}&addInfo=${"Rút tiền dự án"}`} style={{ width: '24rem', height: '20rem' }} />
                                         </Grid>
                                     )}
                                     <Grid item xs={12} lg={selectedRow.withdrawRequest.status === 1 ? 6 : 12} sx={{ display: 'flex', my: 'auto', flexDirection: 'column' }}>
                                         <div className='flex items-center h-full'>
-                                            <Grid container rowSpacing={0}>
+                                            <Grid container rowSpacing={0} columnSpacing={2}>
                                                 <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
                                                     <div className='text-[1rem] text-[#44494D]'>
                                                         <strong>Tên ngân hàng:</strong><br />
@@ -413,14 +413,14 @@ function AdminWithdrawRequest() {
                                                 </Grid>
                                                 <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
                                                     <div className='text-[1rem] text-[#44494D]'>
-                                                        <strong>Trạng thái:</strong><br />
-                                                        {status[selectedRow.withdrawRequest.status]}
+                                                        <strong>Người nhận tiền:</strong><br />
+                                                        {selectedRow.backerName}
                                                     </div>
                                                 </Grid>
                                                 <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
                                                     <div className='text-[1rem] text-[#44494D]'>
-                                                        <strong>Loại giao dịch:</strong><br />
-                                                        {requestType[selectedRow.withdrawRequest.requestType]}
+                                                        <strong>Email:</strong><br />
+                                                        {selectedRow.withdrawRequest.wallet.backer.email}
                                                     </div>
                                                 </Grid>
                                             </Grid>
