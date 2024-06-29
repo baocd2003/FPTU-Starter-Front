@@ -415,45 +415,42 @@ function AdminWithdrawRequest() {
                                                     <div className='text-[1rem] text-[#44494D]'>
                                                         <strong>Người nhận tiền:</strong><br />
                                                         {selectedRow.backerName}
-                                                    </div >
-                                                </Grid >
+                                                    </div>
+                                                </Grid>
                                                 <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
                                                     <div className='text-[1rem] text-[#44494D]'>
                                                         <strong>Email:</strong><br />
                                                         {selectedRow.withdrawRequest.wallet.backer.email}
-                                                    </div >
-                                                </Grid >
-                                            </Grid >
-                                        </div >
-                                    </Grid >
-                                </Grid >
-                                {
-                                    selectedRow.withdrawRequest.status === 0 ? (
-                                        <div className='flex justify-center flex-row mt-[1.2rem]'>
-                                            <Button onClick={() => handleProcessingRequest(selectedRow)} variant="contained" sx={{ mr: '2rem', backgroundColor: '#4CAF50', textTransform: 'none', fontWeight: 'bold' }}>
-                                                Đồng ý
-                                            </Button>
-                                            <Button onClick={() => handleRejectRequest(selectedRow)} variant="contained" sx={{ backgroundColor: '#ed1c24', textTransform: 'none', fontWeight: 'bold' }}>
-                                                Từ chối
-                                            </Button>
+                                                    </div>
+                                                </Grid>
+                                            </Grid>
                                         </div>
-                                    ) : selectedRow.withdrawRequest.status == 1 ? (
-                                        <div className='flex justify-center flex-row mt-[1.2rem]'>
-                                            <Button onClick={() => handleApproveRequest(selectedRow)} variant="contained" sx={{ mr: '2rem', backgroundColor: '#4CAF50', textTransform: 'none', fontWeight: 'bold' }}>
-                                                Xác nhận
-                                            </Button>
-                                            <Button onClick={() => handleRejectRequest(selectedRow)} variant="contained" sx={{ backgroundColor: '#ed1c24', textTransform: 'none', fontWeight: 'bold' }}>
-                                                Hủy bỏ
-                                            </Button>
-                                        </div>
-                                    ) : null
-                                }
-                            </div >
-                        )
-                        }
-                    </div >
-                </Paper >
-            </Modal >
+                                    </Grid>
+                                </Grid>
+                                {selectedRow.withdrawRequest.status === 0 ? (
+                                    <div className='flex justify-center flex-row mt-[1.2rem]'>
+                                        <Button onClick={() => handleProcessingRequest(selectedRow)} variant="contained" sx={{ mr: '2rem', backgroundColor: '#4CAF50', textTransform: 'none', fontWeight: 'bold' }}>
+                                            Đồng ý
+                                        </Button>
+                                        <Button onClick={() => handleRejectRequest(selectedRow)} variant="contained" sx={{ backgroundColor: '#ed1c24', textTransform: 'none', fontWeight: 'bold' }}>
+                                            Từ chối
+                                        </Button>
+                                    </div>
+                                ) : selectedRow.withdrawRequest.status == 1 ? (
+                                    <div className='flex justify-center flex-row mt-[1.2rem]'>
+                                        <Button onClick={() => handleApproveRequest(selectedRow)} variant="contained" sx={{ mr: '2rem', backgroundColor: '#4CAF50', textTransform: 'none', fontWeight: 'bold' }}>
+                                            Xác nhận
+                                        </Button>
+                                        <Button onClick={() => handleRejectRequest(selectedRow)} variant="contained" sx={{ backgroundColor: '#ed1c24', textTransform: 'none', fontWeight: 'bold' }}>
+                                            Hủy bỏ
+                                        </Button>
+                                    </div>
+                                ) : null}
+                            </div>
+                        )}
+                    </div>
+                </Paper>
+            </Modal>
         </div >
     );
 }

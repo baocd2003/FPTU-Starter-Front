@@ -216,6 +216,7 @@ function POProjectDetail() {
   }
 
   const getProjectDetail = async () => {
+    setIsLoading(true);
     projectApiInstance.get(`${projectId}`)
       .then((res) => {
         if (res.data._statusCode === 200) {
@@ -853,10 +854,10 @@ function POProjectDetail() {
                     </>
                   )
                 }
-              </Grid >
-            </Container >
+              </Grid>
+            </Container>
 
-          </TabContext >
+          </TabContext>
 
         </Box >
 
