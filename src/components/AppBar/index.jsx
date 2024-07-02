@@ -20,7 +20,7 @@ import "./index.css";
 const pages = [
   { label: 'Trang chủ', route: '/home' },
   { label: 'Toàn bộ dự án', route: '/all-projects' },
-  { label: 'Về chúng tôi', route: '' },
+  { label: 'Về chúng tôi', route: '/about-us' },
   { label: 'Hỗ trợ', route: '' }
 ];
 const profileMenu = [

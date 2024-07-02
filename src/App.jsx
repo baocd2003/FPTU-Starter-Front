@@ -8,10 +8,11 @@ import AdminLayout from "./layouts/AdminLayout";
 import AuthenticationLayout from "./layouts/AuthenticationLayout";
 import CreateProjectLayout from "./layouts/CreateProjectLayout";
 import UserProfileLayout from "./layouts/UserProfileLayout";
+import AboutUs from "./pages/AboutUs";
+import AdminCategories from "./pages/AdminCategories";
 import AdminOverview from "./pages/AdminOverview";
 import AdminProjects from "./pages/AdminProjects";
 import AdminUsers from "./pages/AdminUsers";
-import AdminCategories from "./pages/AdminCategories";
 import AdminWithdrawRequest from "./pages/AdminWithdrawRequest";
 import AllProjects from "./pages/AllProjects";
 import ChangePassword from "./pages/ChangePassword";
@@ -30,6 +31,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import HomePage from "./pages/HomePage";
 import OTPVerification from "./pages/OTPVerification";
 import POProjectDetail from "./pages/POProjectDetail";
+import PageError from "./pages/PageError";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import UserBookmarkProject from "./pages/UserBookmarkProject";
@@ -50,6 +52,8 @@ function App() {
         <Route>
           <Route path="/" element={<Navigate to="/home" />} />
           <Route path="/home" element={<HomePage />} />
+          <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/all-projects" element={<AllProjects />} />
         </Route>
         <Route element={<AuthenticationLayout />}>
           <Route path="/login" element={<SignIn />} />
@@ -88,7 +92,7 @@ function App() {
         <Route path="/project-detail/:projectId" element={<POProjectDetail />} />
         <Route path="/profile/projects" element={<UserProjects />} />
         <Route path="/my-wallet" element={<AccountWallet />} />
-        <Route path="/all-projects" element={<AllProjects />} />
+
         <Route element={<CreateProjectLayout />}>
           <Route path="init-project/step-one" element={<StepOne />} />
           <Route path="init-project/step-two" element={<StepTwo />} />
@@ -96,6 +100,9 @@ function App() {
           <Route path="init-project/step-four" element={<StepFour />} />
           <Route path="init-project/step-five" element={<StepFive />} />
         </Route>
+
+        <Route path="/error" element={<PageError />} />
+        <Route path="*" element={<Navigate to="/error" />} />
       </Routes>
     </ThemeProvider>
   );

@@ -1,9 +1,11 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import Logo from "../../assets/logo-footer.png";
 import "./index.css";
 
 function Footer() {
+  const navigate = useNavigate();
   return (
     <footer className="bg-[#44494D] w-full bottom-0 left-0 right-0 h-[350px] mt-[8rem] flex flex-col items-center justify-center relative"
     >
@@ -45,10 +47,30 @@ function Footer() {
             >
               Giới thiệu
             </Typography>
-            <Typography variant="body2" sx={{ marginBottom: '0.4rem' }}>Về chúng tôi</Typography>
-            <Typography variant="body2" sx={{ marginBottom: '0.4rem' }}>Điều khoản sử dụng</Typography>
-            <Typography variant="body2" sx={{ marginBottom: '0.4rem' }}>Bảo vệ khách hàng</Typography>
-            <Typography variant="body2" sx={{ marginBottom: '0.4rem' }}>
+            <Typography onClick={() => window.location.href = '/about-us'} variant="body2" sx={{
+              marginBottom: '0.4rem', cursor: 'pointer', width: 'fit-content',
+              ":hover": {
+                textDecoration: 'underline'
+              }
+            }}>Về chúng tôi</Typography>
+            <Typography variant="body2" sx={{
+              marginBottom: '0.4rem', cursor: 'pointer', width: 'fit-content',
+              ":hover": {
+                textDecoration: 'underline'
+              }
+            }}>Điều khoản sử dụng</Typography>
+            <Typography variant="body2" sx={{
+              marginBottom: '0.4rem', cursor: 'pointer', width: 'fit-content',
+              ":hover": {
+                textDecoration: 'underline'
+              }
+            }}>Bảo vệ khách hàng</Typography>
+            <Typography variant="body2" sx={{
+              marginBottom: '0.4rem', cursor: 'pointer', width: 'fit-content',
+              ":hover": {
+                textDecoration: 'underline'
+              }
+            }}>
               Phí nền tảng và các loại phí khác
             </Typography>
           </Grid>
@@ -62,9 +84,24 @@ function Footer() {
             >
               Trợ giúp
             </Typography>
-            <Typography variant="body2" sx={{ marginBottom: '0.4rem' }}>Trung tâm trợ giúp</Typography>
-            <Typography variant="body2" sx={{ marginBottom: '0.4rem' }}>Tài nguyên dành cho dự án</Typography>
-            <Typography variant="body2" sx={{ marginBottom: '0.4rem' }}>Tài sản thương hiệu</Typography>
+            <Typography variant="body2" sx={{
+              marginBottom: '0.4rem', cursor: 'pointer', width: 'fit-content',
+              ":hover": {
+                textDecoration: 'underline'
+              }
+            }}>Trung tâm trợ giúp</Typography>
+            <Typography variant="body2" sx={{
+              marginBottom: '0.4rem', cursor: 'pointer', width: 'fit-content',
+              ":hover": {
+                textDecoration: 'underline'
+              }
+            }}>Tài nguyên dành cho dự án</Typography>
+            <Typography variant="body2" sx={{
+              marginBottom: '0.4rem', cursor: 'pointer', width: 'fit-content',
+              ":hover": {
+                textDecoration: 'underline'
+              }
+            }}>Tài sản thương hiệu</Typography>
           </Grid>
           <Grid item xs={3} className="text-neutral-100 text-left !pl-0 !p-1">
             <Typography
@@ -76,9 +113,24 @@ function Footer() {
             >
               Thông tin thêm
             </Typography>
-            <Typography variant="body2" sx={{ marginBottom: '0.4rem' }}>Báo chí nói về Crowdfunding</Typography>
-            <Typography variant="body2" sx={{ marginBottom: '0.4rem' }}>Các vấn đề pháp lý</Typography>
-            <Typography variant="body2" sx={{ marginBottom: '0.4rem' }}>Điều khoản sử dụng</Typography>
+            <Typography variant="body2" sx={{
+              marginBottom: '0.4rem', cursor: 'pointer', width: 'fit-content',
+              ":hover": {
+                textDecoration: 'underline'
+              }
+            }}>Báo chí nói về Crowdfunding</Typography>
+            <Typography variant="body2" sx={{
+              marginBottom: '0.4rem', cursor: 'pointer', width: 'fit-content',
+              ":hover": {
+                textDecoration: 'underline'
+              }
+            }}>Các vấn đề pháp lý</Typography>
+            <Typography variant="body2" sx={{
+              marginBottom: '0.4rem', cursor: 'pointer', width: 'fit-content',
+              ":hover": {
+                textDecoration: 'underline'
+              }
+            }}>Điều khoản sử dụng</Typography>
           </Grid>
         </Grid>
       </Container>

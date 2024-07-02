@@ -1,0 +1,64 @@
+.error-background {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    padding-left: 32px;
+    padding-right: 32px;
+    background-image: url('../../assets/ErrorBackground.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.error-text,
+.error-title {
+    color: #44494D;
+    margin-top: 1.6rem;
+}
+
+@media (max-width: 899px) {
+    .error-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+    }
+
+    .error-text {
+        font-size: 1rem;
+        font-weight: 500;
+    }
+}
+
+@media (min-width: 900px) {
+    .error-title {
+        font-size: 2rem;
+        font-weight: 700;
+    }
+
+    .error-text {
+        font-size: 1.2rem;
+        font-weight: 500;
+    }
+}
+
+.error-button:focus {
+    outline: none !important;
+    border: none !important;
+    border: 2px solid #44494D !important;
+    color: #44494D;
+}
+
+.error-button:hover {
+    outline: none !important;
+    border: 2px solid #44494D !important;
+    background-color: transparent !important;
+    color: #44494D;
+}
+
+.error-button {
+    background-color: #FBB03B !important;
+    border: 2px solid #FBB03B !important;
+    border-radius: 10px !important;
+    padding: 10px !important;
+}
