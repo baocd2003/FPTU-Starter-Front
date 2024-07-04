@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Cookies from 'js-cookie';
+import { jwtDecode } from "jwt-decode";
 import React, { useState } from 'react';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import GoogleButton from 'react-google-button';
@@ -114,11 +115,6 @@ function LoginModal() {
                 password: data.get('password'),
             };
 
-            console.log({
-                email: data.get('email'),
-                password: data.get('password'),
-            });
-
             userApiInstace.post("/login", jsonData).then(res => {
                 console.log(res);
                 if (res.data._data == null) {
@@ -127,6 +123,8 @@ function LoginModal() {
                     if (res.data._message[0] === "otp_sent") {
                         setShowOTPVerification(true);
                     } else if (res.data._message[0] === "token_generated") {
+                        const decodedToken = jwtDecode(res.data._data.token);
+                        const userRole = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
                         signIn({
                             auth: {
                                 token: res.data._data.token,
@@ -134,7 +132,7 @@ function LoginModal() {
                             },
                             expiresIn: 3600,
                             tokenType: "Bearer",
-                            authState: { email: jsonData.email }
+                            userState: { email: jsonData.email, role: userRole }
                         });
                         Swal.fire({
                             title: "Thành công",
@@ -148,7 +146,11 @@ function LoginModal() {
                         }).then(() => {
                             setTimeout(() => {
                                 if (Cookies.get("_auth") !== undefined) {
-                                    navigate("/");
+                                    if (userRole === 'Administrator') {
+                                        navigate("/admin");
+                                    } else {
+                                        navigate("/");
+                                    }
                                 }
                             }, 0);
                         });

@@ -124,7 +124,6 @@ function StepperHomePage({ setSwiperRef, type }) {
                     Không có dự án nào cho mục này
                 </Typography>
             </div>}
-
         </div>
     );
 }

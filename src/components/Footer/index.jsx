@@ -6,6 +6,11 @@ import "./index.css";
 
 function Footer() {
   const navigate = useNavigate();
+
+  const handleRedirect = (tabValue) => {
+    window.location.href = `/help-and-support?tab=${tabValue}`;
+  };
+
   return (
     <footer className="bg-[#44494D] w-full bottom-0 left-0 right-0 h-[350px] mt-[8rem] flex flex-col items-center justify-center relative"
     >
@@ -59,13 +64,13 @@ function Footer() {
                 textDecoration: 'underline'
               }
             }}>Điều khoản sử dụng</Typography>
-            <Typography variant="body2" sx={{
+            <Typography onClick={() => handleRedirect(1)} variant="body2" sx={{
               marginBottom: '0.4rem', cursor: 'pointer', width: 'fit-content',
               ":hover": {
                 textDecoration: 'underline'
               }
             }}>Bảo vệ khách hàng</Typography>
-            <Typography variant="body2" sx={{
+            <Typography onClick={() => handleRedirect(2)} variant="body2" sx={{
               marginBottom: '0.4rem', cursor: 'pointer', width: 'fit-content',
               ":hover": {
                 textDecoration: 'underline'
@@ -84,19 +89,19 @@ function Footer() {
             >
               Trợ giúp
             </Typography>
-            <Typography variant="body2" sx={{
+            <Typography onClick={() => window.location.href = '/help-and-support'} variant="body2" sx={{
               marginBottom: '0.4rem', cursor: 'pointer', width: 'fit-content',
               ":hover": {
                 textDecoration: 'underline'
               }
             }}>Trung tâm trợ giúp</Typography>
-            <Typography variant="body2" sx={{
+            <Typography onClick={() => handleRedirect(3)} variant="body2" sx={{
               marginBottom: '0.4rem', cursor: 'pointer', width: 'fit-content',
               ":hover": {
                 textDecoration: 'underline'
               }
             }}>Tài nguyên dành cho dự án</Typography>
-            <Typography variant="body2" sx={{
+            <Typography onClick={() => handleRedirect(4)} variant="body2" sx={{
               marginBottom: '0.4rem', cursor: 'pointer', width: 'fit-content',
               ":hover": {
                 textDecoration: 'underline'
@@ -125,7 +130,7 @@ function Footer() {
                 textDecoration: 'underline'
               }
             }}>Các vấn đề pháp lý</Typography>
-            <Typography variant="body2" sx={{
+            <Typography variant="body2" onClick={() => handleRedirect(5)} sx={{
               marginBottom: '0.4rem', cursor: 'pointer', width: 'fit-content',
               ":hover": {
                 textDecoration: 'underline'
