@@ -1,0 +1,23 @@
+.help-and-support-banner {
+    background-image: url('../../assets/HelpSupportBanner.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.help-and-support-tab {
+    margin-bottom: 1.6rem !important;
+    text-transform: none !important;
+    font-size: 1.2rem !important;
+    text-align: left !important;
+    align-items: flex-start !important;
+    padding-right: 2.4rem !important;
+    font-weight: bold !important;
+    color: #44494D !important;
+}
+
+.help-and-support-tab:focus,
+.help-and-support-tab:active {
+    outline: none !important;
+    color: #FBB03B !important;
+}

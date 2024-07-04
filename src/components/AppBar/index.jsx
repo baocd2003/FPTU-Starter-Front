@@ -21,7 +21,7 @@ const pages = [
   { label: 'Trang chủ', route: '/home' },
   { label: 'Toàn bộ dự án', route: '/all-projects' },
   { label: 'Về chúng tôi', route: '/about-us' },
-  { label: 'Hỗ trợ', route: '' }
+  { label: 'Hỗ trợ', route: '/help-and-support' }
 ];
 const profileMenu = [
   { label: 'Tài khoản', route: '/profile', icon: <AccountCircleIcon /> },

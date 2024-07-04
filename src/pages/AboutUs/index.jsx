@@ -58,7 +58,7 @@ function AboutUs() {
                     </Grid>
                     <Grid container columnGap={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: '4rem' }}>
                         <Grid item xs={12} md={3} sx={{ display: { xs: 'none', md: 'block' } }}>
-                            <MemberCard imgUrl={Bao} name={"Cao Duy Bảo"} role={"Lập trình viên"} description={"Phát triển và duy trì mã nguồn nền tảng crowdfunding để đảm bảo ổn định, bảo mật và tiên tiến."} />
+                            <MemberCard imgUrl={Diem} name={"Lê Quý Điềm"} role={"Lập trình viên"} description={"Phát triển và duy trì mã nguồn nền tảng crowdfunding để đảm bảo ổn định, bảo mật và tiên tiến."} />
                         </Grid>
                         <Grid item xs={12} md={3}>
                             <MemberCard imgUrl={CTO} name={"Cao Khả Sương"} role={"Giám đốc công nghệ"} description={"Dẫn dắt đội ngũ kỹ thuật, đảm bảo nền tảng crowdfunding luôn ổn định, bảo mật và tiên tiến."} />
@@ -72,7 +72,7 @@ function AboutUs() {
                             <MemberCard name={"Đào Hương Thảo"} role={"Lập trình viên"} description={"Phát triển và duy trì mã nguồn nền tảng crowdfunding để đảm bảo ổn định, bảo mật và tiên tiến."} />
                         </Grid>
                         <Grid item xs={12} md={3} sx={{ display: { xs: 'none', md: 'block' } }}>
-                            <MemberCard imgUrl={Diem} name={"Lê Quý Điềm"} role={"Lập trình viên"} description={"Phát triển và duy trì mã nguồn nền tảng crowdfunding để đảm bảo ổn định, bảo mật và tiên tiến."} />
+                            <MemberCard imgUrl={Bao} name={"Cao Duy Bảo"} role={"Lập trình viên"} description={"Phát triển và duy trì mã nguồn nền tảng crowdfunding để đảm bảo ổn định, bảo mật và tiên tiến."} />
                         </Grid>
                     </Grid>
                 </div>
@@ -103,7 +103,7 @@ function AboutUs() {
                         <Typography variant="body1" sx={{ fontSize: { lg: '2.4rem', xs: '1.6rem' }, mt: '1.5rem', textAlign: 'left', color: '#44494D', fontWeight: 600, textShadow: '.12rem .12rem .3rem rgba(0, 0, 0, 0.2)' }}>
                             Tầm nhìn - Vision
                         </Typography>
-                        <Typography variant="h1" sx={{ fontSize: { lg: '1.2rem', xs: '0.8rem' }, color: '#44494D', fontWeight: 600, textAlign: 'justify', mt: '2.4rem' }}>
+                        <Typography variant="h1" sx={{ fontSize: { lg: '1.2rem', xs: '0.8rem' }, color: '#44494D', fontWeight: 600, textAlign: 'justify', mt: '2.4rem', lineHeight: '1.625' }}>
                             FPTU Starter trở thành nền tảng huy động vốn cộng đồng lớn nhất và được biết đến nhiều nhất trong cộng đồng Việt Nam, không chỉ mang lại cơ hội tài trợ cho những dự án đầy sáng tạo mà còn gắn kết cộng đồng lại gần nhau hơn thông qua sự hợp tác và hỗ trợ lẫn nhau.
                         </Typography>
                     </Grid>
@@ -119,7 +119,7 @@ function AboutUs() {
                         <Typography variant="body1" sx={{ fontSize: { lg: '2.4rem', xs: '1.6rem' }, mt: '1.5rem', textAlign: 'left', color: '#44494D', fontWeight: 600, textShadow: '.12rem .12rem .3rem rgba(0, 0, 0, 0.2)' }}>
                             Sứ mệnh - Mission
                         </Typography>
-                        <Typography variant="h1" sx={{ fontSize: { lg: '1.2rem', xs: '0.8rem' }, color: '#44494D', fontWeight: 600, textAlign: 'justify', mt: '2.4rem' }}>
+                        <Typography variant="h1" sx={{ fontSize: { lg: '1.2rem', xs: '0.8rem' }, color: '#44494D', fontWeight: 600, textAlign: 'justify', mt: '2.4rem', lineHeight: '1.625' }}>
                             FPTU Starter trở thành nền tảng huy động vốn cộng đồng lớn nhất và nổi tiếng nhất trong cộng đồng Việt Nam. Không chỉ tạo ra cơ hội tài trợ cho những dự án sáng tạo, FPT Starter còn gắn kết mọi người lại gần nhau hơn thông qua sự hợp tác và hỗ trợ lẫn nhau. Chúng tôi tự hào đóng góp vào sự phát triển của các ý tưởng và giấc mơ, thúc đẩy tinh thần khởi nghiệp và đổi mới sáng tạo trong cộng đồng.
                         </Typography>
                     </Grid>
