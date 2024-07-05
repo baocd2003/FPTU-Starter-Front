@@ -91,7 +91,6 @@ function SignIn() {
             }
           }, 0);
         });
-        console.log(Cookies.get("_auth"));
         setCookie("_auth", Cookies.get("_auth"), 3600);
       }
       setIsLoading(false);
@@ -373,6 +372,8 @@ const GetGoogleUser = async () => {
           avatarUrl: response.data.picture
         }).then((res) => {
           if (res.data._isSuccess) {
+            const decodedToken = jwtDecode(res.data._data.token);
+            const userRole = decodedToken.role;
             signIn({
               auth: {
                 token: res.data._data.token,
@@ -380,7 +381,7 @@ const GetGoogleUser = async () => {
               },
               expiresIn: 3600 * 24 * 5,
               tokenType: "Bearer",
-              authState: { email: response.data.email }
+              userState: { email: response.data.email, role: userRole }
             });
             navigate("/home");
           } else {

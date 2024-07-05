@@ -26,7 +26,7 @@ const pages = [
 const profileMenu = [
   { label: 'Tài khoản', route: '/profile', icon: <AccountCircleIcon /> },
   { label: 'Ví của tôi', route: '/my-wallet', icon: <AccountBalanceWalletIcon /> },
-  { label: 'Dự án của tôi', route: '/projects', icon: <BallotIcon /> },
+  { label: 'Dự án của tôi', route: '/profile/projects', icon: <BallotIcon /> },
   { label: 'Đăng xuất', route: 'logout', icon: <LogoutIcon /> }
 ];
 

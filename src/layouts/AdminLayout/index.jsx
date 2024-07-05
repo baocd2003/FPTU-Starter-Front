@@ -2,7 +2,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CategoryIcon from "@mui/icons-material/Category";
 import ProjectIcon from "@mui/icons-material/Folder";
 import QueryStatsIcon from "@mui/icons-material/QueryStats";
-import { Grid } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
@@ -11,12 +11,15 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import React from "react";
+import useSignOut from 'react-auth-kit/hooks/useSignOut';
 import { PiHandWithdrawBold } from "react-icons/pi";
 import { Outlet, useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2';
 import logo from "../../assets/logo.png";
 
 function AdminLayout() {
   const navigate = useNavigate();
+  const signOut = useSignOut();
 
   //title list
   const titleList = [
@@ -62,6 +65,25 @@ function AdminLayout() {
     4: navigateWithdrawRequests,
   };
 
+  const handleLogout = () => {
+    Swal.fire({
+      title: "Cảnh báo?",
+      text: "Bạn có muốn đăng xuất?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#FBB03B",
+      cancelButtonColor: "D8D8D8",
+      confirmButtonText: "Đăng xuất!",
+      cancelButtonText: "Ở lại!",
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        signOut();
+        window.location.href = "/home";
+      }
+    });
+  };
+
   const DrawerList = (
     <Box sx={{ width: 250 }}>
       <List>
@@ -74,6 +96,11 @@ function AdminLayout() {
           </ListItem>
         ))}
       </List>
+      <Box sx={{ p: 2 }}>
+        <Button variant="contained" color="primary" onClick={handleLogout} fullWidth sx={{ textTransform: 'none', fontWeight: 600, fontSize: '1.2rem' }}>
+          Đăng xuất
+        </Button>
+      </Box>
     </Box>
   );
 

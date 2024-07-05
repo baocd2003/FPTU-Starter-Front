@@ -14,6 +14,7 @@ import Aos from 'aos';
 import 'aos/dist/aos.css';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { jwtDecode } from "jwt-decode";
 import React, { useEffect, useRef, useState } from 'react';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import { FaHandsHelping } from "react-icons/fa";
@@ -433,6 +434,8 @@ const GetGoogleUser = async () => {
 					avatarUrl: response.data.picture
 				}).then((res) => {
 					if (res.data._isSuccess) {
+						const decodedToken = jwtDecode(res.data._data.token);
+						const userRole = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
 						signIn({
 							auth: {
 								token: res.data._data.token,
@@ -440,7 +443,7 @@ const GetGoogleUser = async () => {
 							},
 							expiresIn: 3600 * 24 * 5,
 							tokenType: "Bearer",
-							authState: { email: response.data.email }
+							userState: { email: response.data.email, role: userRole }
 						});
 						window.location.href = import.meta.env.VITE_APP_URL.toString();
 					} else {
@@ -460,17 +463,14 @@ const GetGoogleUser = async () => {
 			})
 			.catch((error) => {
 				if (error.response && error.response.status === 401) {
-					// invalid token => prompt for user permission.
 					handleGoogleLogin();
 				} else {
 					console.error("Error fetching user data:", error);
 				}
 			})
-		// setIsLoading(false)
 
 	} else {
 		handleGoogleLogin();
-		// setIsLoading(false);
 	}
 }
 
