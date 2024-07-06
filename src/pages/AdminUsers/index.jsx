@@ -186,10 +186,10 @@ function AdminUsers() {
   );
 
   const handleOnClickBlock = async (userId) => {
-    console.log(token);
     try {
       const res = await userManagementApiInstance.patch(
         `change-status?id=${userId}`,
+        {},
         {
           headers: { Authorization: `Bearer ${token}` },
         }
