@@ -349,8 +349,6 @@ function AdminProjects() {
         }
       );
 
-      console.log(response);
-
       if (response.data.result._isSuccess) {
         console.log(response.data);
         handleCloseModal();
