@@ -15,6 +15,7 @@ import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
 import "./index.css";
 
 const filteredStatues = [
+  { label: "Tất cả", statusIndex: -1 },
   { label: "Hoạt động", statusIndex: 0 },
   { label: "Đã chặn", statusIndex: 1 },
 ];
@@ -75,7 +76,7 @@ const SearchBarUsers = ({ setUsers }) => {
   const [userList, setUserList] = useState([]);
 
   const [searchValue, setSearchValue] = useState("");
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState(-1);
   const token = Cookies.get("_auth");
 
   useEffect(() => {
@@ -85,11 +86,36 @@ const SearchBarUsers = ({ setUsers }) => {
   const fetchUsers = async (searchValue, status) => {
     if (token) {
       try {
-        const response = await userManagementApiInstance.get(
+        let response;
+
+        response = await userManagementApiInstance.get(
           `?search=${searchValue}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
+        );
+
+        if (status !== -1) {
+          response = await userManagementApiInstance.get(
+            `get-user-by-status?types=${status}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+        }
+
+        if (response.data._data != null) {
+          const users = response.data._data;
+          setUserList(users);
+          setUsers(users);
+        }
+      } catch (error) {
+        console.error("Error fetching user list:", error);
+      }
+    } else {
+      try {
+        const response = await userManagementApiInstance.get(
+          `?search=${searchValue}`
         );
         if (response.data._data != null) {
           const users = response.data._data;
@@ -97,18 +123,7 @@ const SearchBarUsers = ({ setUsers }) => {
           setUsers(users);
         }
       } catch (error) {
-        console.error("Error fetching project list:", error);
-      }
-    } else {
-      try {
-        const response = await projectApiInstance.get(`?search=${searchValue}`);
-        if (response.data._data != null) {
-          const users = response.data._data;
-          setUserList(users);
-          setUsers(users);
-        }
-      } catch (error) {
-        console.error("Error fetching project list:", error);
+        console.error("Error fetching user list:", error);
       }
     }
   };
@@ -194,18 +209,11 @@ const SearchBarUsers = ({ setUsers }) => {
               label="Trạng thái"
               sx={{ textAlign: "left" }}
             >
-              <MenuItem
-                value={0}
-                sx={{ width: "100%", height: "54px" }}
-                onClick={() => handleSearchStatus("")}
-              >
-                Tất cả
-              </MenuItem>
               {filteredStatues.map((item, index) => (
                 <MenuItem
                   key={index}
                   sx={{ width: "100%", height: "54px" }}
-                  value={index + 1}
+                  value={index}
                   onClick={() => handleSearchStatus(item.statusIndex)}
                 >
                   {item.label}
@@ -214,36 +222,6 @@ const SearchBarUsers = ({ setUsers }) => {
             </Select>
           </FormControl>
         </Box>
-        {/* <Box width={isSmallScreen ? "100%" : "auto"}>
-          <FormControl
-            sx={{ minWidth: 120, width: "160px" }}
-            size="small"
-            fullWidth={isSmallScreen}
-          >
-            <InputLabel id="select-small-label-2">Vai trò</InputLabel>
-            <Select
-              labelId="select-small-label-2"
-              id="select-small-2"
-              defaultValue={0}
-              label="Vai trò"
-              sx={{ textAlign: "left" }}
-            >
-              <MenuItem value={0} onClick={() => handleSearchTarget("")}>
-                Tất cả
-              </MenuItem>
-              {filteredRole.map((item, index) => (
-                <MenuItem
-                  key={index}
-                  sx={{ width: "100%", height: "54px" }}
-                  value={index + 1}
-                  onClick={() => handleSearchTarget(item.roleName)}
-                >
-                  {item.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Box> */}
       </div>
     </Box>
   );

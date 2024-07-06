@@ -11,10 +11,10 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import React from "react";
-import useSignOut from 'react-auth-kit/hooks/useSignOut';
+import useSignOut from "react-auth-kit/hooks/useSignOut";
 import { PiHandWithdrawBold } from "react-icons/pi";
 import { Outlet, useNavigate } from "react-router-dom";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 import logo from "../../assets/logo.png";
 
 function AdminLayout() {
@@ -75,7 +75,7 @@ function AdminLayout() {
       cancelButtonColor: "D8D8D8",
       confirmButtonText: "Đăng xuất!",
       cancelButtonText: "Ở lại!",
-      reverseButtons: true
+      reverseButtons: true,
     }).then((result) => {
       if (result.isConfirmed) {
         signOut();
@@ -97,7 +97,17 @@ function AdminLayout() {
         ))}
       </List>
       <Box sx={{ p: 2 }}>
-        <Button variant="contained" color="primary" onClick={handleLogout} fullWidth sx={{ textTransform: 'none', fontWeight: 600, fontSize: '1.2rem' }}>
+        <Button
+          variant="text"
+          onClick={handleLogout}
+          fullWidth
+          sx={{
+            textTransform: "none",
+            fontWeight: 600,
+            fontSize: "1.2rem",
+            color: "#DD5746 !important",
+          }}
+        >
           Đăng xuất
         </Button>
       </Box>
@@ -106,7 +116,7 @@ function AdminLayout() {
 
   return (
     <Grid container sx={{ height: "100%", overflow: "hidden" }} spacing={4}>
-      <Grid xs={2} item sx={{ height: "100%", pt: '0 !important' }}>
+      <Grid xs={2} item sx={{ height: "100%", pt: "0 !important" }}>
         <Drawer
           variant="permanent"
           open={true}
