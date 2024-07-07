@@ -4,6 +4,7 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Typography from '@mui/material/Typography';
 import Aos from 'aos';
+import 'aos/dist/aos.css';
 import Cookies from 'js-cookie';
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -91,7 +92,7 @@ function HelpAndSupport() {
     return (
         <div className='mt-[5.2rem]'>
             <FSUAppBar isLogined={checkIsLogin} />
-            <div className='help-and-support-banner h-[40vh] select-none flex flex-col relative items-center justify-center'>
+            <div data-aos="fade-up" className='help-and-support-banner h-[40vh] select-none flex flex-col relative items-center justify-center'>
                 <div className='h-full flex flex-col items-center justify-center'>
                     <Typography variant="h1" sx={{ fontSize: { lg: '2.4rem', xs: '1.6rem' }, textAlign: 'center', color: '#44494D', fontWeight: 600, textShadow: '.12rem .12rem .3rem rgba(0, 0, 0, 0.2)', mx: '5rem' }}>
                         Hỗ trợ và trợ giúp
@@ -101,7 +102,7 @@ function HelpAndSupport() {
                     </Typography>
                 </div>
             </div>
-            <div className='mt-[2.4rem] mx-[6rem]'>
+            <div className='mt-[2.4rem] mx-[6rem]' data-aos="fade-up">
                 <Grid container columnSpacing={10} style={{ minHeight: "100vh" }}>
                     <Grid item xs={12} md={4}>
                         <Box sx={{ width: '100%', bgcolor: '#FFFFFF', position: 'sticky', top: '2.4rem' }}>

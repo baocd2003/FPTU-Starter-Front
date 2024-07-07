@@ -1,6 +1,7 @@
 import { Grid } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Aos from 'aos';
+import 'aos/dist/aos.css';
 import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
 import { TypeAnimation } from 'react-type-animation';
@@ -31,7 +32,7 @@ function AboutUs() {
         <div className='mt-[5.2rem]'>
             <FSUAppBar isLogined={checkIsLogin} />
             <div className='about-us-banner'>
-                <div className='h-[40vh] select-none flex flex-col items-center'>
+                <div className='h-[40vh] select-none flex flex-col items-center' data-aos="fade-up">
                     <div>
                         <Typography variant="h1" sx={{ fontSize: { lg: '1.2rem', xs: '1.4rem' }, color: '#A7A7A7', fontWeight: 600, textAlign: 'center', textShadow: '.12rem .12rem .3rem rgba(0, 0, 0, 0.2)', mt: '5rem' }}>
                             Về chúng tôi
@@ -44,7 +45,7 @@ function AboutUs() {
                         </Typography>
                     </div>
                 </div>
-                <div className='mx-[6rem] pt-[2rem] py-[4rem]'>
+                <div className='mx-[6rem] pt-[2rem] py-[4rem]' data-aos="fade-up">
                     <Grid container columnGap={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: '4rem' }}>
                         <Grid item xs={12} md={3}>
                             <MemberCard imgUrl={CMO} name={"Phạm Bùi Nhựt Minh"} role={"Giám đốc tiếp thị"} description={"Quản lý chiến lược tiếp thị và xây dựng thương hiệu. Tối ưu hóa chiến dịch quảng cáo để tăng tầm nhìn và thu hút người dùng."} />
@@ -77,7 +78,7 @@ function AboutUs() {
                     </Grid>
                 </div>
             </div>
-            <div className='hp-question h-[40vh] select-none flex flex-col items-center justify-center'>
+            <div className='hp-question h-[40vh] select-none flex flex-col items-center justify-center' data-aos="fade-up">
                 <Typography variant="h1" sx={{ fontSize: { lg: '1.4rem', xs: '1rem' }, color: '#FFFFFF', fontWeight: 600, textAlign: 'center', textShadow: '.12rem .12rem .3rem rgba(0, 0, 0, 0.2)', mb: '1rem' }}>
                     Mục tiêu của FPTU Starter:
                 </Typography>
@@ -98,7 +99,7 @@ function AboutUs() {
                 </Typography>
             </div>
             <div className='mx-[6rem] mt-[4rem]'>
-                <Grid container sx={{ mb: '2.4rem' }}>
+                <Grid container sx={{ mb: '2.4rem' }} data-aos="fade-up">
                     <Grid item xs={12} md={6}>
                         <Typography variant="body1" sx={{ fontSize: { lg: '2.4rem', xs: '1.6rem' }, mt: '1.5rem', textAlign: 'left', color: '#44494D', fontWeight: 600, textShadow: '.12rem .12rem .3rem rgba(0, 0, 0, 0.2)' }}>
                             Tầm nhìn - Vision
@@ -111,7 +112,7 @@ function AboutUs() {
                         <img src={Telescope} style={{ marginLeft: '8rem' }} />
                     </Grid>
                 </Grid>
-                <Grid container>
+                <Grid container data-aos="fade-up">
                     <Grid item xs={0} md={6} sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'center' }}>
                         <img src={Target} style={{ marginRight: '8rem' }} />
                     </Grid>

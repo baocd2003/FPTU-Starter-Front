@@ -1,7 +1,25 @@
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
+import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
+import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import Chip from "@mui/material/Chip";
+import Divider from "@mui/material/Divider";
+import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
+import ImageList from "@mui/material/ImageList";
+import ImageListItem from "@mui/material/ImageListItem";
+import LinearProgress from "@mui/material/LinearProgress";
 import Modal from "@mui/material/Modal";
 import Paper from "@mui/material/Paper";
+import Popover from "@mui/material/Popover";
+import Stack from "@mui/material/Stack";
+import Tab from "@mui/material/Tab";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -10,35 +28,17 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
+import Tabs from "@mui/material/Tabs";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import ImageList from "@mui/material/ImageList";
-import ImageListItem from "@mui/material/ImageListItem";
-import Grid from "@mui/material/Grid";
-import LinearProgress from "@mui/material/LinearProgress";
-import Chip from "@mui/material/Chip";
-import Stack from "@mui/material/Stack";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Divider from "@mui/material/Divider";
-import Popover from "@mui/material/Popover";
-import ZoomInIcon from "@mui/icons-material/ZoomIn";
-import IconButton from "@mui/material/IconButton";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
-import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
 import { visuallyHidden } from "@mui/utils";
 import dayjs from "dayjs";
 import Cookies from "js-cookie";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import SearchBarProjects from "../../components/SearchBarProjects";
 import BackerList from "../../components/BackerList";
+import SearchBarProjects from "../../components/SearchBarProjects";
 import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
 import transactionApiInstance from "../../utils/apiInstance/transactionApiInstance";
 import "./index.css";
@@ -125,7 +125,7 @@ function EnhancedTableHead(props) {
             align={headCell.numeric ? "right" : "left"}
           >
             {headCell.id !== "projectOwnerName" &&
-            headCell.id !== "projectStatus" ? (
+              headCell.id !== "projectStatus" ? (
               <TableSortLabel
                 active={orderBy === headCell.id}
                 direction={orderBy === headCell.id ? order : "asc"}
@@ -372,9 +372,9 @@ function AdminProjects() {
     () =>
       Array.isArray(projectList) && projectList.length > 0
         ? stableSort(projectList, getComparator(order, orderBy)).slice(
-            page * rowsPerPage,
-            page * rowsPerPage + rowsPerPage
-          )
+          page * rowsPerPage,
+          page * rowsPerPage + rowsPerPage
+        )
         : [],
     [order, orderBy, page, rowsPerPage, projectList]
   );
@@ -528,9 +528,8 @@ function AdminProjects() {
                   </Box>
                   <Box
                     sx={{
-                      backgroundColor: `${
-                        backgroundColor[selectedProject.projectStatus]
-                      }`,
+                      backgroundColor: `${backgroundColor[selectedProject.projectStatus]
+                        }`,
                     }}
                     className="text-center mt-4 p-1 text-slate-100 font-medium rounded"
                   >
@@ -655,16 +654,16 @@ function AdminProjects() {
                   variant={"determinate"}
                   value={
                     selectedProject.projectBalance <
-                    selectedProject.projectTarget
+                      selectedProject.projectTarget
                       ? Math.min(
-                          Math.max(
-                            (selectedProject.projectBalance /
-                              selectedProject.projectTarget) *
-                              100,
-                            0
-                          ),
-                          100
-                        )
+                        Math.max(
+                          (selectedProject.projectBalance /
+                            selectedProject.projectTarget) *
+                          100,
+                          0
+                        ),
+                        100
+                      )
                       : 100
                   }
                 />
