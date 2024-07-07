@@ -1,25 +1,47 @@
-@media (min-width: 0px) {
-    .adminLayoutContainer {
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        max-width: 100% !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-    }
+.admin-list:hover .MuiListItemIcon-root,
+.admin-list:hover .MuiListItemText-root,
+.admin-list:focus .MuiListItemIcon-root,
+.admin-list:focus .MuiListItemText-root,
+.admin-list:active .MuiListItemIcon-root,
+.admin-list:active .MuiListItemText-root {
+    color: #FFFFFF !important;
 }
 
-.admin-menu {
-    width: 100% !important;
-    background-color: #FFFFFF !important;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    height: 100vh;
+.admin-list:hover,
+.admin-list:focus,
+.admin-list:active {
+    background-color: #FBB03B !important;
+    color: #FFFFFF !important;
 }
 
-.admin-menu ul {
-    background-color: #FFFFFF !important;
+.settings-list:hover .MuiListItemIcon-root,
+.settings-list:hover .MuiListItemText-root,
+.settings-list:focus .MuiListItemIcon-root,
+.settings-list:focus .MuiListItemText-root,
+.settings-list:active .MuiListItemIcon-root,
+.settings-list:active .MuiListItemText-root {
+    color: #FFFFFF !important;
 }
 
-.menu-item {
-    width: 100% !important;
-    height: 64px;
+.settings-list:hover,
+.settings-list:focus,
+.settings-list:active {
+    background-color: #FBB03B !important;
+    color: #FFFFFF !important;
+}
+
+.logout-list:hover .MuiListItemIcon-root,
+.logout-list:hover .MuiListItemText-root,
+.logout-list:focus .MuiListItemIcon-root,
+.logout-list:focus .MuiListItemText-root,
+.logout-list:active .MuiListItemIcon-root,
+.logout-list:active .MuiListItemText-root {
+    color: #FFFFFF !important;
+}
+
+.logout-list:hover,
+.logout-list:focus,
+.logout-list:active {
+    background-color: #FBB03B !important;
+    color: #FFFFFF !important;
 }

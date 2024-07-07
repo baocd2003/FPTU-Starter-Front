@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react'
-import ReactApexChart from "react-apexcharts"
-import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
-import cateApiInstance from "../../utils/apiInstance/categoryApiInstance";
-import transactionApiInstance from "../../utils/apiInstance/transactionApiInstance";
-import CardData from '../../components/CardData';
-import Grid from '@mui/material/Grid';
-import './index.css';
+import Backdrop from "@mui/material/Backdrop";
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import BarChart from '../../components/BarChart';
 import CircularProgress from "@mui/material/CircularProgress";
-import Backdrop from "@mui/material/Backdrop";
-import TableAdmin from '../../components/TableAdmin';
-import BarCountDonate from '../../components/BarCountDonate';
+import Grid from '@mui/material/Grid';
+import React, { useEffect, useState } from 'react';
+import ReactApexChart from "react-apexcharts";
 import { GrTransaction } from "react-icons/gr";
+import BarChart from '../../components/BarChart';
+import BarCountDonate from '../../components/BarCountDonate';
+import CardData from '../../components/CardData';
+import TableAdmin from '../../components/TableAdmin';
+import cateApiInstance from "../../utils/apiInstance/categoryApiInstance";
+import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
+import transactionApiInstance from "../../utils/apiInstance/transactionApiInstance";
+import './index.css';
 function AdminOverview() {
     const [data, setData] = useState([]);
     const [projectsCount, setProjectCount] = useState(0);
@@ -52,24 +52,24 @@ function AdminOverview() {
 
             await projectApiInstance.get("count-donate").then(res => {
                 console.log(res.data)
-                if(res.data){
-                    if(res.data.result._isSuccess){
+                if (res.data) {
+                    if (res.data.result._isSuccess) {
                         setDonateData(res.data.result._data);
                     }
                 }
             })
 
             await transactionApiInstance.get("get-donation-stats").then(res => {
-                if(res.data){
-                    if(res.data.result._isSuccess){
+                if (res.data) {
+                    if (res.data.result._isSuccess) {
                         setDonateStat(res.data.result._data)
                     }
                 }
             })
 
             await projectApiInstance.get("/get-success-rate").then(res => {
-                if(res.data){
-                    if(res.data.result._isSuccess){
+                if (res.data) {
+                    if (res.data.result._isSuccess) {
                         setProjectRate(res.data.result._data)
                     }
                 }
@@ -133,7 +133,7 @@ function AdminOverview() {
         const itemDate = new Date(item.createDate);
         return itemDate >= startOfMonth && itemDate <= endOfMonth;
     });
-    
+
     console.log(weekFilteredData);
     // Transform data
     const transformedData = data.map(item => {
@@ -159,8 +159,8 @@ function AdminOverview() {
     //Transform donate data
     const transformedDonateData = donateData.map(item => {
         return {
-            x : item.count,
-            y : item.projectName
+            x: item.count,
+            y: item.projectName
         }
     })
 
@@ -174,9 +174,9 @@ function AdminOverview() {
         series: [
             {
                 name: "Transaction Data",
-                data: option == 1 ? transformedWeekData.map(item => item.x) 
-                : option == 2 ? transformedMonthData.map(item => item.x) 
-                : transformedData.map(item => item.x)
+                data: option == 1 ? transformedWeekData.map(item => item.x)
+                    : option == 2 ? transformedMonthData.map(item => item.x)
+                        : transformedData.map(item => item.x)
             }
         ],
         options: {
@@ -230,9 +230,9 @@ function AdminOverview() {
                 },
             },
             xaxis: {
-                categories: option == 1 ? transformedWeekData.map(item => item.y) 
-                : option == 2 ? transformedMonthData.map(item => item.y) 
-                : transformedData.map(item => item.y),
+                categories: option == 1 ? transformedWeekData.map(item => item.y)
+                    : option == 2 ? transformedMonthData.map(item => item.y)
+                        : transformedData.map(item => item.y),
                 title: {
                     text: 'Total Amount'
                 }
@@ -252,7 +252,7 @@ function AdminOverview() {
         return averageRate.toFixed(2); // Format to 2 decimal places
     };
     return (
-        <div className='container bg-[#F0F0F0]'>
+        <div className='container'>
             <div className='chart-wrap'>
                 <Backdrop
                     sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -261,29 +261,29 @@ function AdminOverview() {
                     <CircularProgress color="inherit" />
                 </Backdrop>
                 <Box sx={{ flexGrow: 1 }}>
-                <Grid container spacing={4} className='mb-4'>
-                                <Grid item xs={3} >
-                                    <CardData title={'Số lượng giao dịch'} figure={formatNumber(data.length)} kpi={100} icon={<GrTransaction/>}  />
-                                </Grid>
-                                <Grid item xs={3} >
-                                    <CardData title={'Số lượng dự án'} figure={formatNumber(projectsCount)} kpi={100} />
-                                </Grid>
-                                <Grid item xs={3} >
-                                    <CardData title={'Tổng tiền ủng hộ'} figure={`VND ${formatNumber(donateStat)}`} kpi={100} />
-                                </Grid>
-                                <Grid item xs={3} >
-                                    <CardData title={'Tỉ lệ thành công'} figure={`% ${calculateAverageRate()}`} kpi={100} />
-                                </Grid>
-                            </Grid>
+                    <Grid container spacing={4} className='mb-4'>
+                        <Grid item xs={3} >
+                            <CardData title={'Số lượng giao dịch'} figure={formatNumber(data.length)} kpi={100} icon={<GrTransaction />} />
+                        </Grid>
+                        <Grid item xs={3} >
+                            <CardData title={'Số lượng dự án'} figure={formatNumber(projectsCount)} kpi={100} />
+                        </Grid>
+                        <Grid item xs={3} >
+                            <CardData title={'Tổng tiền ủng hộ'} figure={`VND ${formatNumber(donateStat)}`} kpi={100} />
+                        </Grid>
+                        <Grid item xs={3} >
+                            <CardData title={'Tỉ lệ thành công'} figure={`% ${calculateAverageRate()}`} kpi={100} />
+                        </Grid>
+                    </Grid>
                     <Grid container spacing={2} >
                         <Grid item xs={8} >
-                            
+
                             <Box className='bg-[#FFFFFF]'>
                                 <Button onClick={() => setOption(1)}>This week</Button>
                                 <Button onClick={() => setOption(2)}>This month</Button>
                                 <ReactApexChart className="grid-chart" options={bardata.options} series={bardata.series} type="area" width={600} height={350} />
                             </Box>
-                            <BarCountDonate data={transformedDonateData}/>
+                            <BarCountDonate data={transformedDonateData} />
                         </Grid>
                         <Grid item xs={4} >
                             <BarChart data={subCateProjectsCounts} title={subCateNames} />
