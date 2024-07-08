@@ -1,4 +1,14 @@
-import { Backdrop, BottomNavigation, BottomNavigationAction, Box, Button, CircularProgress, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, InputAdornment, Modal, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, colors } from "@mui/material";
+import {
+  Backdrop, BottomNavigation,
+  BottomNavigationAction, Box, Button,
+  CircularProgress, Container,
+  Dialog, DialogActions, DialogContent,
+  DialogContentText, DialogTitle, Divider,
+  InputAdornment, Modal, Paper, Table,
+  TableBody, TableCell, TableContainer,
+  TableHead, TableRow, TextField,
+  Typography, colors, Fade, FormControl, Autocomplete, Avatar
+} from "@mui/material";
 import FSUAppBar from "../../components/AppBar";
 import Cookies from "js-cookie";
 import { useEffect, useState, forwardRef, useRef } from "react";
@@ -9,13 +19,14 @@ import { usePayOS, PayOSConfig } from "payos-checkout";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { addLoadedMoneyToWallet } from "../../hooks/useWallet";
-import "./index.css"
+import "./index.css";
+import { AccountBalance } from "@mui/icons-material";
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import GetAppOutlinedIcon from '@mui/icons-material/GetAppOutlined';
 import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
 import CreditCardOutlinedIcon from '@mui/icons-material/CreditCardOutlined';
-
+import axios from "axios";
 
 function AccountWallet() {
   const [isLoading, setIsLoading] = useState(true);
@@ -26,8 +37,14 @@ function AccountWallet() {
   const [value, setValue] = useState(0);
   const [priceInput, setPriceInput] = useState(2000);
   const [withdrawAmount, setWithdrawAmount] = useState(5000);
+  const [openCheckBank, setOpenCheckBank] = useState(false);
   const priceRef = useRef(2000);
-
+  const [selectedBank, setSelectedBank] = useState();
+  const [banks, setBanks] = useState([]);
+  const [bankOwner, setBankOwner] = useState()
+  const [accountNumber, setAccountNumber] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [bankOption, setBankOption] = useState();
   const token = Cookies.get("_auth");
 
   const fetchUserWallet = () => {
@@ -36,6 +53,18 @@ function AccountWallet() {
     })
       .then((res) => {
         setUserWallet(res.data._data);
+        if(res.data._data.bankAccount){
+          let bank = res.data._data.bankAccount
+          if(bank.bankAccountNumber){
+            setAccountNumber(bank.bankAccountNumber);
+          }
+          if(bank.ownerName){
+            setBankOwner(bank.ownerName)
+          }
+          if(bank.bankAccountName){
+            setSelectedBank(bank.bankAccountName)
+          }         
+        }
       })
       .catch(error => {
         console.error('Error fetching user wallet:', error);
@@ -47,7 +76,61 @@ function AccountWallet() {
 
   useEffect(() => {
     fetchUserWallet();
+    const banksResult = axios.get("https://api.httzip.com/api/bank/list").then(res => {
+      setBanks(res.data.data);
+     
+    })
   }, [token]);
+
+  console.log(bankOption)
+  const onSubmit = () => {
+    const bankName = (banks.find((bank) => bank.code == selectedBank)).name
+    const data = {
+      ownerName: bankOwner,
+      bankAccountNumber: accountNumber,
+      bankAccountName: bankName
+    }
+    // const data = {
+    //   ownerName: 'CAO KHA SUONG',
+    //   bankAccountNumber: 24489267,
+    //   bankAccountName: 'Ngân hàng TMCP Á Châu'
+    // }
+    dispatch(setFormData({ step: 'stepFourData', data }))
+    navigate('/init-project/step-five')
+  }
+
+  const confirmBank = async () => {
+    if(selectedBank && accountNumber){
+      const data = {
+        bank: selectedBank,
+        account: accountNumber
+      }
+      console.log(data);
+      setLoading(true);
+      await axios.post('https://api.httzip.com/api/bank/id-lookup-prod', data, {
+        headers: {
+          'x-api-key': `11f028b5-b964-4efa-ab9c-db4e199dccb4key`,
+          'x-api-secret': `691b9c60-353e-4e68-946f-ce68292884d0secret`,
+        }
+      }).then(res => {
+        setLoading(false);
+        console.log(res.data.code)
+        if (res.data.code == 200) {
+          setBankOwner(res.data.data.ownerName);
+  
+        } else {
+          notify(res.data.msg)
+        }
+      })
+    }else{
+      alert("False");
+    }
+    
+  }
+  const handleBankChange = (event, newValue) => {
+    console.log(newValue);
+    setSelectedBank(newValue);
+  };
   console.log(userWallet)
 
   const handleOpenLoadMoneyForm = () => {
@@ -130,45 +213,87 @@ function AccountWallet() {
   }
 
   const handleWithdraw = async () => {
-      fetchUserWallet();
-      console.log(withdrawAmount)
-      if(userWallet.bankAccount == null || userWallet.bankAccount == undefined){
-        setOpenWithdrawForm(false);
+    fetchUserWallet();
+    console.log(withdrawAmount)
+    if (userWallet.bankAccount == null || userWallet.bankAccount == undefined) {
+      setOpenWithdrawForm(false);
+      Swal.fire({
+        title: "Vui lòng liên kết ví của bạn với tài khoản ngân hàng ",
+        icon: "warning"
+      });
+      return;
+    }
+    if (withdrawAmount < 5000) {
+      setOpenWithdrawForm(false)
+      Swal.fire({
+        title: "Số tiền rút phải trên 5000 đồng",
+        icon: "warning"
+      });
+    } else {
+      const withdrawResponse = await withdrawApiInstance.post('/withdraw-wallet-request', {
+        amount: withdrawAmount,
+        bankAccountRequest: {
+          ownerName: userWallet.bankAccount.ownerName,
+          bankAccountNumber: userWallet.bankAccount.bankAccountNumber,
+          bankAccountName: userWallet.bankAccount.bankAccountName
+        }
+      }, {
+        headers: { Authorization: `Bearer ${token}` },
+      }).then(() => {
         Swal.fire({
-          title: "Vui lòng liên kết ví của bạn với tài khoản ngân hàng ",
-          icon: "warning"
+          title: "Tạo yêu cầu rút tiền thành công!",
+          text: "Thời gian xử lí diễn ra từ 2-3 ngày!",
+          icon: "success"
         });
-        return;
-      }
-      if(withdrawAmount < 5000){
-        setOpenWithdrawForm(false)
-        Swal.fire({
-          title: "Số tiền rút phải trên 5000 đồng",
-          icon: "warning"
-        });
-      }else{
-        const withdrawResponse = await withdrawApiInstance.post('/withdraw-wallet-request', {
-          amount : withdrawAmount,
-          bankAccountRequest:{
-            ownerName : userWallet.bankAccount.ownerName,
-            bankAccountNumber : userWallet.bankAccount.bankAccountNumber,
-            bankAccountName : userWallet.bankAccount.bankAccountName
-          }
-        }, {
-          headers: { Authorization: `Bearer ${token}` },
-        }).then(() => {
-          Swal.fire({
-            title: "Tạo yêu cầu rút tiền thành công!",
-            text: "Thời gian xử lí diễn ra từ 2-3 ngày!",
-            icon: "success"
-          });
-          fetchUserWallet();
-        })
-        console.log(withdrawResponse)
-        setOpenWithdrawForm(false)
-      }
-    
+        fetchUserWallet();
+      })
+      console.log(withdrawResponse)
+      setOpenWithdrawForm(false)
+    }
+
   }
+
+  const handleConnectBank = async () => {
+    const bankName = (banks.find((bank) => bank.code == selectedBank)).name
+    const data = {
+      ownerName: bankOwner,
+      bankAccountNumber: accountNumber,
+      bankAccountName: selectedBank
+    }
+    await walletApiInstance.post(`connect-wallet-bank/${userWallet.id}`,data).then(res => {
+      console.log(res.data);
+      handleCloseCheckBank();
+      Swal.fire({
+        title: "Liên kết thành công!",
+        text: "Bạn đã liên kết tài khoản vào ví thành công!",
+        icon: "success"
+      });
+    })
+  }
+
+  const handleOpenCheckBank = () => {
+    const selectBankName = banks.filter(b => b.code == selectedBank);
+    console.log(selectedBank)
+    setBankOption(selectBankName);
+    setOpenCheckBank(true);
+  }
+
+  const handleCloseCheckBank = () => {
+    setOpenCheckBank(false);
+  }
+
+
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 500,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
 
   // console.log(userWallet);
 
@@ -273,14 +398,6 @@ function AccountWallet() {
           >
             <Box sx={{ display: "flex", justifyContent: "flex-start", alignItems: "center", gap: 1, mb: 2, position: "absolute", top: 20, right: 30 }}>
               <AccountBalanceWalletIcon sx={{ fontSize: "2.5rem", color: "#FBB03B" }} />
-              {/* <Typography
-                sx={{
-                  fontWeight: "bold",
-                  color: "#FBB03B",
-                  fontSize: ".8rem"
-                }}>
-                Ví tiền của {userWallet.backerId}
-              </Typography> */}
             </Box>
             <Typography
               sx={{
@@ -316,12 +433,149 @@ function AccountWallet() {
             >
               <BottomNavigationAction className="wallet_option" onClick={handleOpenLoadMoneyForm} label="Nạp tiền" icon={<AddBoxOutlinedIcon />} />
               <BottomNavigationAction className="wallet_option" onClick={() => setOpenWithdrawForm(true)} label="Rút tiền" icon={<GetAppOutlinedIcon />} />
-              <BottomNavigationAction className="wallet_option" disabled label="Liên kết" icon={<AccountBalanceOutlinedIcon />} />
+              <BottomNavigationAction className="wallet_option" onClick={handleOpenCheckBank} label="Liên kết" icon={<AccountBalanceOutlinedIcon />} />
               <BottomNavigationAction className="wallet_option" disabled label="Phương thức" icon={<CreditCardOutlinedIcon />} />
 
             </BottomNavigation>
           </Box>
+          <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            open={openCheckBank}
+            onClose={handleCloseCheckBank}
+            closeAfterTransition
+            slots={{ backdrop: Backdrop }}
+            slotProps={{
+              backdrop: {
+                timeout: 500,
+              },
+            }}
+          >
+            <Fade in={openCheckBank}>
+              <Box sx={style}>
+                <Box
+                  component={Paper}
+                  elevation={3}
+                  sx={{
+                    borderRadius: '.2rem',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <Box sx={{
+                    backgroundImage: 'linear-gradient(to bottom right, #036704,  #3e9c35)', height: '3.5rem', display: 'flex',
+                    justifyContent: 'center', alignItems: 'center', gap: 2, color: 'white',
+                  }}>
+                    <AccountBalance />
+                    <Typography sx={{ fontWeight: 'bold', fontSize: '1.3rem' }}>Tài khoản ngân hàng</Typography>
+                  </Box>
 
+                  <Box sx={{ px: 3, py: 2 }}>
+                    <FormControl className="w-full" sx={{ marginBottom: '2rem !important' }} >
+                      {/* <InputLabel>Chọn ngân hàng</InputLabel> */}
+                      <Autocomplete
+                        freeSolo
+                        id="free-solo-2-demo"
+                        disableClearable
+                        value={bankOption ? bankOption[0] : null}
+                        options={banks}
+                        getOptionLabel={(option) => option.name}
+                        onChange={(event, newValue) => handleBankChange(event, newValue.code)}
+                        renderOption={(props, option) => (
+                          <Box component="li" {...props}>
+                            <Avatar alt={option.name} src={option.logo_url}
+                              sx={{
+                                marginRight: 2, objectFit: 'fill', width: 60,
+                                height: 24
+                              }} variant="rounded" />
+                            <Typography variant="body1">{option.name}</Typography>
+                          </Box>
+                        )}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Chọn ngân hàng"
+                            InputProps={{
+                              ...params.InputProps,
+                              type: 'search',
+                            }}
+                            onBlur={() => {
+                              if (!selectedBank) {
+                                setSelectedBank(undefined);
+                              }
+                            }}
+                          />
+                        )}
+                      />
+
+                    </FormControl>
+                    <FormControl className="w-full" sx={{ marginBottom: '2rem !important' }} >
+                      <TextField
+                        value={accountNumber}
+                        type='number'
+                        label="Nhập số tài khoản"
+                        onChange={(e) => setAccountNumber(e.target.value)}
+                      >
+                      </TextField>
+                    </FormControl>
+                    <FormControl className="w-full" sx={{ marginBottom: '2rem !important' }} >
+                      <TextField
+                        disabled
+                        label='Tên người thụ hưởng'
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        value={bankOwner}
+                        sx={{ background: "rgba(0, 0, 0, 0.05)" }}
+                      >
+                      </TextField>
+                    </FormControl>
+
+                    <Box sx={{ position: 'relative' }}>
+                      <Button variant='contained'
+                        disableElevation
+                        disabled={(selectedBank && accountNumber) ? false : true}
+                        onClick={() => confirmBank()}
+                        sx={{
+                          background: loading ? '#F0F0F0' : '#FBB03B',
+                          fontWeight: 'bold',
+                          '&:hover': {
+                            background: '#CC9847'
+                          },
+                          '&:focus': {
+                            outline: 'none'
+                          }
+                        }}>Xác nhận</Button>
+                      {loading && (
+                        <CircularProgress
+                          size={24}
+                          sx={{
+                            color: '#4CAF50',
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            marginTop: '-12px',
+                            marginLeft: '-12px',
+                          }}
+                        />
+                      )}
+                    </Box>
+                  </Box>
+
+                </Box>
+                <Button onClick={handleConnectBank} variant='contained'
+                  disabled={!bankOwner && !accountNumber}
+                  sx={{
+                    background: '#FBB03B', fontWeight: 'bold', marginTop:'20px',
+                    '&:hover': {
+                      background: '#CC9847'
+                    },
+                    '&:focus': {
+                      outline: 'none'
+                    }
+                  }}>Liên kết</Button>
+              </Box>
+            </Fade>
+          </Modal>
 
           <Container
             sx={{
@@ -362,10 +616,8 @@ function AccountWallet() {
             </TableContainer>
           </Container>
         </Box>
-
       )
       }
-
     </>
   )
 }

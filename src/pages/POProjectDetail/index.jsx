@@ -38,7 +38,7 @@ function POProjectDetail() {
 
   const handleScroll = () => {
     if (containerRef.current) {
-      setTabValue("1");
+      // setTabValue("1");
       containerRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   };
