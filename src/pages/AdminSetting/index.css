@@ -1,0 +1,9 @@
+.admin-setting-accordition {
+    min-width: 650;
+    height: fit-content;
+    border-radius: 0.4rem !important;
+}
+
+.admin-setting-accordition::before {
+    display: none;
+}

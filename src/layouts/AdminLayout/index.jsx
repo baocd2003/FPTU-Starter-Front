@@ -1,7 +1,8 @@
 import ProjectIcon from "@mui/icons-material/Folder";
 import { Box, Grid, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper } from "@mui/material";
 import Divider from '@mui/material/Divider';
-import React, { useState } from "react";
+import Cookies from 'js-cookie';
+import React, { useEffect, useState } from "react";
 import useSignOut from "react-auth-kit/hooks/useSignOut";
 import { BiSolidCategory } from "react-icons/bi";
 import { FaUser } from "react-icons/fa";
@@ -11,6 +12,7 @@ import { PiHandWithdrawFill } from "react-icons/pi";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import logo from "../../assets/logo.png";
+import userManagementApiInstance from '../../utils/apiInstance/userManagementApiInstance';
 import './index.css';
 
 function AdminLayout() {
@@ -18,8 +20,31 @@ function AdminLayout() {
   const location = useLocation();
   const signOut = useSignOut();
 
-  const isSettingActive = location.pathname === '/admin/setting';
+  const [email, setEmail] = useState("");
+  const [userName, setUserName] = useState("");
+
+  const isSettingActive = location.pathname === '/admin/settings';
   const [isLogoutActive, setIsLogoutActive] = useState(false);
+
+  useEffect(() => {
+    fetchUserProfile();
+  })
+
+  const fetchUserProfile = async () => {
+    try {
+      const token = Cookies.get("_auth");
+      const response = await userManagementApiInstance.get("/user-profile", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response.data != null) {
+        setUserName(response.data._data.userName);
+        setEmail(response.data._data.userEmail);
+      }
+    } catch (error) {
+      console.error('Error fetching sample API:', error);
+    }
+  };
 
   const titleList = [
     { text: "Tổng quan", path: "/admin/dashboard" },
@@ -94,7 +119,7 @@ function AdminLayout() {
         })}
         <Divider sx={{ borderBottomWidth: '0.1rem', my: '1.2rem' }} />
         <ListItem sx={{ p: 0, borderRadius: '0.4rem' }} className="settings-list">
-          <ListItemButton sx={{
+          <ListItemButton onClick={() => navigate('admin/settings')} sx={{
             borderRadius: '0.4rem',
             backgroundColor: isSettingActive ? '#FBB03B' : 'transparent',
             color: isSettingActive ? '#FFFFFF' : '#44494D',
@@ -126,40 +151,44 @@ function AdminLayout() {
   );
 
   return (
-    <Grid container sx={{ height: "100vh" }}>
-      <Grid xs={2.5} item sx={{ height: "100vh", my: '0 !important' }}>
-        <Paper
-          elevation={3}
-          sx={{
-            width: '100%',
-            height: "100%",
-            backgroundColor: "white",
-            boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
-            zIndex: 1,
-            display: "flex",
-            flexDirection: "column",
-            overflow: "hidden",
-            alignItems: 'center'
-          }}
-        >
-          <div className="flex flex-col justify-center mt-[0.8rem] mb-[1.6rem] items-center mx-[2.4rem]">
-            <img src={logo} alt="logo" className="w-[120px] h-[120px]" />
-            <div className="flex flex-col justify-center items-center overflow-hidden mt-[-0.4rem]">
-              <h1 className="text-[1.2rem] text-[#44494D] font-bold leading-relaxed" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                Administrator
-              </h1>
-              <h1 className="text-[0.8rem] text-[#A7A7A7] font-medium leading-relaxed" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                fptustarter2024@gmail.com
-              </h1>
-            </div>
-          </div>
-          {DrawerList}
-        </Paper>
-      </Grid>
-      <Grid xs={9.5} item sx={{ height: "100vh", overflowY: "auto", my: '0 !important', backgroundColor: '#F0F0F0' }}>
-        <Outlet />
-      </Grid>
-    </Grid>
+    <>
+      {email &&
+        <Grid container sx={{ height: "100vh" }}>
+          <Grid xs={2.5} item sx={{ height: "100vh", my: '0 !important' }}>
+            <Paper
+              elevation={3}
+              sx={{
+                width: '100%',
+                height: "100%",
+                backgroundColor: "white",
+                boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
+                zIndex: 1,
+                display: "flex",
+                flexDirection: "column",
+                overflow: "hidden",
+                alignItems: 'center'
+              }}
+            >
+              <div className="flex flex-col justify-center mt-[0.8rem] mb-[1.6rem] items-center mx-[2.4rem]">
+                <img src={logo} alt="logo" className="w-[120px] h-[120px]" />
+                <div className="flex flex-col justify-center items-center overflow-hidden mt-[-0.4rem]">
+                  <h1 className="text-[1.2rem] text-[#44494D] font-bold leading-relaxed" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {userName}
+                  </h1>
+                  <h1 className="text-[0.8rem] text-[#A7A7A7] font-medium leading-relaxed" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {email}
+                  </h1>
+                </div>
+              </div>
+              {DrawerList}
+            </Paper>
+          </Grid>
+          <Grid xs={9.5} item sx={{ height: "100vh", overflowY: "auto", my: '0 !important', backgroundColor: '#F0F0F0' }}>
+            <Outlet />
+          </Grid>
+        </Grid>
+      }
+    </>
   );
 }
 
