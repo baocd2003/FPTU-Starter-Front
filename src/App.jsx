@@ -13,6 +13,7 @@ import AboutUs from "./pages/AboutUs";
 import AdminCategories from "./pages/AdminCategories";
 import AdminOverview from "./pages/AdminOverview";
 import AdminProjects from "./pages/AdminProjects";
+import AdminSetting from "./pages/AdminSetting";
 import AdminUsers from "./pages/AdminUsers";
 import AdminWithdrawRequest from "./pages/AdminWithdrawRequest";
 import AllProjects from "./pages/AllProjects";
@@ -114,6 +115,7 @@ function App() {
               <Route path="/admin/users" element={<AdminUsers />} />
               <Route path="/admin/categories" element={<AdminCategories />} />
               <Route path="/admin/withdraw-request" element={<AdminWithdrawRequest />} />
+              <Route path="/admin/settings" element={<AdminSetting />} />
             </Route>
           </Route>
 
