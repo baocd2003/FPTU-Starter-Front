@@ -29,7 +29,7 @@ import PageError from "./pages/PageError";
 import UserBookmarkProject from "./pages/UserBookmarkProject";
 import UserProfile from "./pages/UserProfile";
 import UserProjects from "./pages/UserProjects";
-
+import SecondStep from "./pages/CreateProject/SecondStep";
 function App() {
   const theme = createTheme({
     typography: {
@@ -65,6 +65,7 @@ function App() {
             <Route path="/all-projects" element={<AllProjects />} />
             <Route path="/help-and-support" element={<HelpAndSupport />} />
           </Route>
+          <Route path="/create-project/second" element={<SecondStep />} />
 
           {/* <Route element={<AuthenticationLayout />}>
           <Route path="/login" element={<SignIn />} />
