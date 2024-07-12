@@ -296,7 +296,7 @@ function AdminWithdrawRequest() {
                                         <TableCell align="left">
                                             {withdrawRequestItem.withdrawRequest.wallet.backer.email}
                                         </TableCell>
-                                        <TableCell align="left" className='table-row'>{formatAmount(withdrawRequestItem.withdrawRequest.amount)} vnd</TableCell>
+                                        <TableCell align="left" className='table-row'>{formatAmount(withdrawRequestItem.withdrawRequest.amount * 0.95)} vnd</TableCell>
                                         <TableCell align="left" className='table-row' style={{
                                             fontWeight: 'bold',
                                             color: isWithinTwoDays(withdrawRequestItem.withdrawRequest.expiredDate) && (withdrawRequestItem.withdrawRequest.status != 3) ? 'red' : 'green',
@@ -393,25 +393,25 @@ function AdminWithdrawRequest() {
                                         <div className='flex items-center h-full'>
                                             <Grid container rowSpacing={0} columnSpacing={2}>
                                                 <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
-                                                    <div className='text-[1rem] text-[#44494D]'>
+                                                    <div className='text-[1rem] text-[#44494D]' style={{ overflowWrap: 'break-word' }}>
                                                         <strong>Tên ngân hàng:</strong><br />
                                                         {selectedRow.bankAccount.bankAccountName}
                                                     </div>
                                                 </Grid>
                                                 <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
-                                                    <div className='text-[1rem] text-[#44494D]'>
+                                                    <div className='text-[1rem] text-[#44494D]' style={{ overflowWrap: 'break-word' }}>
                                                         <strong>Số tài khoản:</strong><br />
                                                         {selectedRow.bankAccount.bankAccountNumber}
                                                     </div>
                                                 </Grid>
                                                 <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
-                                                    <div className='text-[1rem] text-[#44494D]'>
+                                                    <div className='text-[1rem] text-[#44494D]' style={{ overflowWrap: 'break-word' }}>
                                                         <strong>Số tiền rút:</strong><br />
-                                                        {formatAmount(selectedRow.withdrawRequest.amount)} vnd
+                                                        {formatAmount(selectedRow.withdrawRequest.amount * 0.95)} vnd
                                                     </div>
                                                 </Grid>
                                                 <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
-                                                    <div className='text-[1rem] text-[#44494D]'>
+                                                    <div className='text-[1rem] text-[#44494D]' style={{ overflowWrap: 'break-word' }}>
                                                         <strong>Ngày hết hạn:</strong><br />
                                                         <span style={{ color: isWithinTwoDays(selectedRow.withdrawRequest.expiredDate) ? 'red' : 'green', fontWeight: 'bold' }}>
                                                             {formatDate(selectedRow.withdrawRequest.expiredDate)}
@@ -419,25 +419,25 @@ function AdminWithdrawRequest() {
                                                     </div>
                                                 </Grid>
                                                 <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
-                                                    <div className='text-[1rem] text-[#44494D]'>
+                                                    <div className='text-[1rem] text-[#44494D]' style={{ overflowWrap: 'break-word' }}>
                                                         <strong>Trạng thái:</strong><br />
                                                         {status[selectedRow.withdrawRequest.status]}
                                                     </div>
                                                 </Grid>
                                                 <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
-                                                    <div className='text-[1rem] text-[#44494D]'>
+                                                    <div className='text-[1rem] text-[#44494D]' style={{ overflowWrap: 'break-word' }}>
                                                         <strong>Loại giao dịch:</strong><br />
                                                         {requestType[selectedRow.withdrawRequest.requestType]}
                                                     </div>
                                                 </Grid>
                                                 <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
-                                                    <div className='text-[1rem] text-[#44494D]'>
+                                                    <div className='text-[1rem] text-[#44494D]' style={{ overflowWrap: 'break-word' }}>
                                                         <strong>Người nhận tiền:</strong><br />
                                                         {selectedRow.backerName}
                                                     </div>
                                                 </Grid>
                                                 <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
-                                                    <div className='text-[1rem] text-[#44494D]'>
+                                                    <div className='text-[1rem] text-[#44494D]' style={{ overflowWrap: 'break-word' }}>
                                                         <strong>Email:</strong><br />
                                                         {selectedRow.withdrawRequest.wallet.backer.email}
                                                     </div>
