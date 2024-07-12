@@ -91,11 +91,12 @@ function App() {
             <Route element={<UserProfileLayout />}>
               <Route path="/profile" element={<UserProfile />} />
               <Route path="/bookmarkProject" element={<UserBookmarkProject />} />
-              <Route path="/project-detail/:projectId" element={<POProjectDetail />} />
               <Route path="/profile/projects" element={<UserProjects />} />
-              <Route path="/my-wallet" element={<AccountWallet />} />
             </Route>
           </Route>
+          <Route path="/my-wallet" element={<AccountWallet />} />
+
+          <Route path="/project-detail/:projectId" element={<POProjectDetail />} />
 
           <Route element={<ProtectedRoute allowedRoles={['Backer']} />}>
             <Route element={<CreateProjectLayout />}>

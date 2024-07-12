@@ -196,7 +196,7 @@ const StepFive = () => {
           confirmButtonText: "Đến dự án",
         }).then((result) => {
           if (result.isConfirmed) {
-            navigate("/projects");
+            navigate("/profile/projects");
           }
         });
       })

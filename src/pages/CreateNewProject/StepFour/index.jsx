@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setStepFour } from "../../../redux/projectStepSlice";
 import { Box, Button, CircularProgress, Divider, FormControl, InputLabel, MenuItem, Modal, Paper, Select, TextField, Typography, Avatar } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { AccountBalance} from "@mui/icons-material";
+import { AccountBalance } from "@mui/icons-material";
 import axios from "axios";
 import { setFormData } from "../../../redux/projectFormSlice";
 import { ToastContainer, toast } from "react-toastify";
@@ -129,8 +129,10 @@ const StepFour = () => {
                     renderOption={(props, option) => (
                       <Box component="li" {...props}>
                         <Avatar alt={option.name} src={option.logo_url}
-                         sx={{ marginRight: 2 ,objectFit: 'fill', width: 60,
-                          height: 24}} variant="rounded" />
+                          sx={{
+                            marginRight: 2, objectFit: 'fill', width: 60,
+                            height: 24
+                          }} variant="rounded" />
                         <Typography variant="body1">{option.name}</Typography>
                       </Box>
                     )}
