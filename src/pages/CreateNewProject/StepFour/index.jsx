@@ -41,7 +41,7 @@ const StepFour = () => {
     const data = {
       ownerName: bankOwner,
       bankAccountNumber: accountNumber,
-      bankAccountName: bankName
+      bankAccountName: selectedBank
     }
     // const data = {
     //   ownerName: 'CAO KHA SUONG',

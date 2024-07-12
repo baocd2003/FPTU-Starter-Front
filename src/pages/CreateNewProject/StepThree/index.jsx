@@ -7,7 +7,10 @@ import { FilePond, registerPlugin } from "react-filepond";
 import { setFormData } from "../../../redux/projectFormSlice";
 import ReactPlayer from "react-player";
 import { ToastContainer, toast } from "react-toastify";
-
+import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+import 'filepond/dist/filepond.min.css';
 
 const StepThree = () => {
   const navigate = useNavigate()
