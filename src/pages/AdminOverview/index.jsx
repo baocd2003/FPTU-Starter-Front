@@ -23,6 +23,8 @@ function AdminOverview() {
     const [donateData, setDonateData] = useState([]);
     const [donateStat, setDonateStat] = useState(0);
     const [projectRate, setProjectRate] = useState([]);
+    const [progressProjects, setProgressProjects] = useState(0);
+    const [profit, setProfit] = useState(0);
     useEffect(() => {
         setIsLoading(true);
         const fetchTrans = async () => {
@@ -67,10 +69,25 @@ function AdminOverview() {
                 }
             })
 
-            await projectApiInstance.get("/get-success-rate").then(res => {
+            await projectApiInstance.get("/average-sucess-rate").then(res => {
                 if (res.data) {
                     if (res.data.result._isSuccess) {
                         setProjectRate(res.data.result._data)
+                    }
+                }
+            })
+            await projectApiInstance.get("/count-progress-projects").then(res => {
+                if (res.data) {
+                    if (res.data.result._isSuccess) {
+                        setProgressProjects(res.data.result._data)
+                    }
+                }
+            })
+
+            await transactionApiInstance.get("get-profit").then(res => {
+                if (res.data) {
+                    if (res.data.result._isSuccess) {
+                        setProfit(res.data.result._data)
                     }
                 }
             })
@@ -247,8 +264,7 @@ function AdminOverview() {
 
     //calculate rate
     const calculateAverageRate = () => {
-        const totalRate = projectRate.reduce((sum, project) => sum + project.successRate, 0);
-        const averageRate = totalRate / projectRate.length;
+        const averageRate =projectRate * 100;
         return averageRate.toFixed(2); // Format to 2 decimal places
     };
     return (
@@ -262,23 +278,25 @@ function AdminOverview() {
                 </Backdrop>
                 <Box sx={{ flexGrow: 1 }}>
                     <Grid container spacing={4} className='mb-4'>
-                        <Grid item xs={3} >
-                            <CardData title={'Số lượng giao dịch'} figure={formatNumber(data.length)} kpi={100} icon={<GrTransaction />} />
+                        <Grid item xs={2.4} >
+                            <CardData title={'Tổng dự án'} figure={formatNumber(projectsCount)} kpi={100} />
                         </Grid>
-                        <Grid item xs={3} >
-                            <CardData title={'Số lượng dự án'} figure={formatNumber(projectsCount)} kpi={100} />
+                        <Grid item xs={2.4} >
+                            <CardData title={'Dự án hoạt động'} figure={formatNumber(progressProjects)} />
                         </Grid>
-                        <Grid item xs={3} >
+                        <Grid item xs={2.4} >
                             <CardData title={'Tổng tiền ủng hộ'} figure={`VND ${formatNumber(donateStat)}`} kpi={100} />
                         </Grid>
-                        <Grid item xs={3} >
+                        <Grid item xs={2.4} >
                             <CardData title={'Tỉ lệ thành công'} figure={`% ${calculateAverageRate()}`} kpi={100} />
+                        </Grid>
+                        <Grid item xs={2.4} >
+                            <CardData title={'Lợi nhuận'} figure={`VND ${formatNumber(profit)}`} kpi={100} />
                         </Grid>
                     </Grid>
                     <Grid container spacing={2} >
                         <Grid item xs={8} >
-
-                            <Box className='bg-[#FFFFFF]'>
+                            <Box className='bg-[#FFFFFF] rounded-[1rem]'>
                                 <Button onClick={() => setOption(1)}>This week</Button>
                                 <Button onClick={() => setOption(2)}>This month</Button>
                                 <ReactApexChart className="grid-chart" options={bardata.options} series={bardata.series} type="area" width={600} height={350} />
