@@ -1,7 +1,25 @@
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
+import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
+import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import Chip from "@mui/material/Chip";
+import Divider from "@mui/material/Divider";
+import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
+import ImageList from "@mui/material/ImageList";
+import ImageListItem from "@mui/material/ImageListItem";
+import LinearProgress from "@mui/material/LinearProgress";
 import Modal from "@mui/material/Modal";
 import Paper from "@mui/material/Paper";
+import Popover from "@mui/material/Popover";
+import Stack from "@mui/material/Stack";
+import Tab from "@mui/material/Tab";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -10,35 +28,17 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
+import Tabs from "@mui/material/Tabs";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import ImageList from "@mui/material/ImageList";
-import ImageListItem from "@mui/material/ImageListItem";
-import Grid from "@mui/material/Grid";
-import LinearProgress from "@mui/material/LinearProgress";
-import Chip from "@mui/material/Chip";
-import Stack from "@mui/material/Stack";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Divider from "@mui/material/Divider";
-import Popover from "@mui/material/Popover";
-import ZoomInIcon from "@mui/icons-material/ZoomIn";
-import IconButton from "@mui/material/IconButton";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
-import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
 import { visuallyHidden } from "@mui/utils";
 import dayjs from "dayjs";
 import Cookies from "js-cookie";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import SearchBarProjects from "../../components/SearchBarProjects";
 import BackerList from "../../components/BackerList";
+import SearchBarProjects from "../../components/SearchBarProjects";
 import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
 import transactionApiInstance from "../../utils/apiInstance/transactionApiInstance";
 import "./index.css";
@@ -226,6 +226,34 @@ function AdminProjects() {
     }
   };
 
+  const fetchProjects = async () => {
+    if (token) {
+      try {
+        const response = await projectApiInstance.get(`user-project`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (response.data._data != null) {
+          const projects = response.data._data;
+          setProjectList(projects);
+          setProject(projects);
+        }
+      } catch (error) {
+        console.error("Error fetching project list:", error);
+      }
+    } else {
+      try {
+        const response = await projectApiInstance.get(`user-project`);
+        if (response.data._data != null) {
+          const projects = response.data._data;
+          setProjectList(projects);
+          setProject(projects);
+        }
+      } catch (error) {
+        console.error("Error fetching project list:", error);
+      }
+    }
+  };
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -348,8 +376,6 @@ function AdminProjects() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-
-      console.log(response);
 
       if (response.data.result._isSuccess) {
         console.log(response.data);

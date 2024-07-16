@@ -2,6 +2,7 @@ import { CircularProgress } from "@mui/material";
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Cookies from 'js-cookie';
+import { jwtDecode } from "jwt-decode";
 import { MuiOtpInput } from 'mui-one-time-password-input';
 import React, { useEffect, useRef, useState } from 'react';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
@@ -65,6 +66,8 @@ function OTPVerificationModal({ userName, email }) {
             if (res.data._data == null) {
                 notify(`${res.data._message[0]}`);
             } else {
+                const decodedToken = jwtDecode(res.data._data.token);
+                const userRole = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
                 signIn({
                     auth: {
                         token: res.data._data.token,
@@ -72,7 +75,7 @@ function OTPVerificationModal({ userName, email }) {
                     },
                     expiresIn: 3600,
                     tokenType: "Bearer",
-                    authState: { email: email }
+                    userState: { email: email, role: userRole }
                 })
                 Swal.fire({
                     title: "Thành công",
@@ -86,7 +89,11 @@ function OTPVerificationModal({ userName, email }) {
                 }).then(() => {
                     setTimeout(() => {
                         if (Cookies.get("_auth") !== undefined) {
-                            navigate("/");
+                            if (userRole === 'Administrator') {
+                                navigate("/admin");
+                            } else {
+                                navigate("/");
+                            }
                         }
                     }, 0);
                 });

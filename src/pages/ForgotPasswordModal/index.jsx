@@ -65,6 +65,10 @@ function ForgotPasswordModal({ onClose }) {
                 setButtonDisable(false);
                 setButtonLoading(false);
                 return;
+            } else if (emailResponse.data.provider === "Google") {
+                setValidationError("Người dùng đã đăng ký email, vui lòng đăng nhập bằng email");
+                setButtonDisable(false);
+                setButtonLoading(false);
             } else {
                 const sendResponse = await userApiInstace.get('send-reset-password-link', {
                     params: { userEmail: data.get('email') },

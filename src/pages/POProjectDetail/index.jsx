@@ -1,4 +1,4 @@
-import { Circle, Close } from "@mui/icons-material";
+import { Close } from "@mui/icons-material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { Avatar, Backdrop, Box, Button, Card, CardActions, CardContent, CardMedia, Chip, CircularProgress, Container, Divider, Drawer, Grid, InputAdornment, LinearProgress, Stack, Tab, TextField, Typography, linearProgressClasses, styled } from "@mui/material";
 import { tabsClasses } from '@mui/material/Tabs';
@@ -17,9 +17,9 @@ import ProjectImages from "../../components/ProjectImages";
 import interactionApiInstance from "../../utils/apiInstance/interactionApiInstance";
 import projectApiInstance from "../../utils/apiInstance/projectApiInstance";
 import userManagementApiInstance from "../../utils/apiInstance/userManagementApiInstance";
-import './index.css';
 import walletApiInstance from "../../utils/apiInstance/walletApiInstance.jsx";
 import withdrawApiInstance from "../../utils/apiInstance/withdrawApiInstance.jsx";
+import './index.css';
 function POProjectDetail() {
   const [project, setProject] = useState(null);
   const { projectId } = useParams();
@@ -38,7 +38,7 @@ function POProjectDetail() {
   // 
   const handleScroll = () => {
     if (containerRef.current) {
-      setTabValue("1");
+      // setTabValue("1");
       containerRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   };
@@ -195,7 +195,6 @@ function POProjectDetail() {
     }
   }
 
-  // check user like
   const checkUserLike = () => {
     const token = Cookies.get("_auth");
     interactionApiInstance.get(`/check-user-like/${projectId}`, {

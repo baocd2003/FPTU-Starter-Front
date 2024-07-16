@@ -6,3 +6,10 @@
 .table-row {
     color: #44494D;
 }
+
+.emptyRequestImg {
+    width: 150px;
+    height: 150px;
+    margin-left: auto;
+    margin-right: auto;
+}

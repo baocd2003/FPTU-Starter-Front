@@ -20,13 +20,13 @@ import "./index.css";
 const pages = [
   { label: 'Trang chủ', route: '/home' },
   { label: 'Toàn bộ dự án', route: '/all-projects' },
-  { label: 'Về chúng tôi', route: '' },
-  { label: 'Hỗ trợ', route: '' }
+  { label: 'Về chúng tôi', route: '/about-us' },
+  { label: 'Hỗ trợ', route: '/help-and-support' }
 ];
 const profileMenu = [
   { label: 'Tài khoản', route: '/profile', icon: <AccountCircleIcon /> },
   { label: 'Ví của tôi', route: '/my-wallet', icon: <AccountBalanceWalletIcon /> },
-  { label: 'Dự án của tôi', route: '/projects', icon: <BallotIcon /> },
+  { label: 'Dự án của tôi', route: '/profile/projects', icon: <BallotIcon /> },
   { label: 'Đăng xuất', route: 'logout', icon: <LogoutIcon /> }
 ];
 

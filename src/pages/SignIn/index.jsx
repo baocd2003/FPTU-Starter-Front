@@ -6,6 +6,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { jwtDecode } from "jwt-decode";
 import React, { useState } from 'react';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import GoogleButton from 'react-google-button';
@@ -22,8 +23,6 @@ function setCookie(name, value, expiresIn) {
   var time = now.getTime() + (7 * 60 * 60 * 1000);
   var expireTime = time + 1000 * expiresIn;
   now.setTime(expireTime);
-  // console.log(now);
-  // console.log(now.toUTCString());
   const cookieString = `${name}=${value}; expires=${now.toUTCString()}; path=/`;
   document.cookie = cookieString;
 }
@@ -67,6 +66,8 @@ function SignIn() {
       if (res.data._data == null) {
         notify(`${res.data._message[0]}`);
       } else {
+        const decodedToken = jwtDecode(res.data._data.token);
+        const userRole = decodedToken.role;
         signIn({
           auth: {
             token: res.data._data.token,
@@ -74,7 +75,7 @@ function SignIn() {
           },
           expiresIn: 3600,
           tokenType: "Bearer",
-          authState: { email: jsonData.email }
+          userState: { email: jsonData.email, role: userRole }
         })
 
         Swal.fire({
@@ -90,7 +91,6 @@ function SignIn() {
             }
           }, 0);
         });
-        console.log(Cookies.get("_auth"));
         setCookie("_auth", Cookies.get("_auth"), 3600);
       }
       setIsLoading(false);
@@ -372,6 +372,8 @@ const GetGoogleUser = async () => {
           avatarUrl: response.data.picture
         }).then((res) => {
           if (res.data._isSuccess) {
+            const decodedToken = jwtDecode(res.data._data.token);
+            const userRole = decodedToken.role;
             signIn({
               auth: {
                 token: res.data._data.token,
@@ -379,7 +381,7 @@ const GetGoogleUser = async () => {
               },
               expiresIn: 3600 * 24 * 5,
               tokenType: "Bearer",
-              authState: { email: response.data.email }
+              userState: { email: response.data.email, role: userRole }
             });
             navigate("/home");
           } else {

@@ -152,7 +152,6 @@ function AdminUsers() {
           headers: { Authorization: `Bearer ${token}` },
         });
         const users = response.data._data;
-        console.log(users);
         setUserList(users);
       } catch (error) {
         console.error("Error fetching project list:", error);
@@ -185,6 +184,21 @@ function AdminUsers() {
         : [],
     [order, orderBy, page, rowsPerPage, userList]
   );
+
+  const handleOnClickBlock = async (userId) => {
+    try {
+      const res = await userManagementApiInstance.patch(
+        `change-status?id=${userId}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      fetchUsers();
+    } catch (error) {
+      console.error("Error: ", error);
+    }
+  };
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -229,6 +243,7 @@ function AdminUsers() {
                     </TableCell>
                     <TableCell>
                       <Button
+                        className="btn-block"
                         variant="contained"
                         size="small"
                         sx={{
@@ -244,13 +259,13 @@ function AdminUsers() {
                               left: 0,
                               right: 0,
                               bottom: 0,
-                              border: "1px solid #FFB30B",
                               pointerEvents: "none",
                             },
                           },
                         }}
+                        onClick={() => handleOnClickBlock(item.userId)}
                       >
-                        Chặn
+                        {item.userStatus === 0 ? "Chặn" : "Bỏ chặn"}
                       </Button>
                     </TableCell>
                   </TableRow>

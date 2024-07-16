@@ -10,8 +10,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
+import Typography from '@mui/material/Typography';
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from 'react';
+import EmptyRequest from '../../assets/EmptyProject.png';
 import withdrawApiInstance from '../../utils/apiInstance/withdrawApiInstance';
 import './index.css';
 
@@ -257,8 +259,9 @@ function AdminWithdrawRequest() {
     }
 
     return (
-        <div className='mx-[3.2rem] my-[1.2rem]'>
-            <h1 className='text-[1.6rem] font-bold mb-[4rem]'>Yêu cầu rút tiền</h1>
+        <div className='mx-[3.2rem] mb-[1.2rem] mt-[2.4rem]'>
+            <h1 className='text-[1.6rem] font-bold mb-[1.2rem] text-left'>Yêu cầu rút tiền</h1>
+            <h1 className='text-[1.2rem] font-bold mb-[3.2rem] text-left text-[#A7A7A7]'>Tổng số: 0</h1>
             <TableContainer component={Paper} elevation={2}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
@@ -280,41 +283,57 @@ function AdminWithdrawRequest() {
                             </TableRow>
                         </TableBody>
                     ) : (
-                        <TableBody>
-                            {(rowsPerPage > 0
-                                ? withdrawRequest.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                : withdrawRequest
-                            ).map((withdrawRequestItem) => (
-                                <TableRow
-                                    key={withdrawRequestItem.withdrawRequest.id}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
-                                    <TableCell align="left">
-                                        {withdrawRequestItem.withdrawRequest.wallet.backer.email}
-                                    </TableCell>
-                                    <TableCell align="left" className='table-row'>{formatAmount(withdrawRequestItem.withdrawRequest.amount)} vnd</TableCell>
-                                    <TableCell align="left" className='table-row' style={{
-                                        fontWeight: 'bold',
-                                        color: isWithinTwoDays(withdrawRequestItem.withdrawRequest.expiredDate) && (withdrawRequestItem.withdrawRequest.status != 3) ? 'red' : 'green',
-                                    }}>
-                                        {formatDate(withdrawRequestItem.withdrawRequest.expiredDate)}
-                                    </TableCell>
-                                    <TableCell align="left" className='table-row'>
-                                        <div style={getStatusStyle(withdrawRequestItem.withdrawRequest.status)}>{status[withdrawRequestItem.withdrawRequest.status]}</div>
-                                    </TableCell>
-                                    <TableCell align="left" className='table-row'>
-                                        <div style={getRequestTypeStyle(withdrawRequestItem.withdrawRequest.requestType)}>{requestType[withdrawRequestItem.withdrawRequest.requestType]}</div>
-                                    </TableCell>
-                                    <TableCell align="center" style={{ width: '4rem', padding: '8px' }}>
-                                        <ModeEditOutlineIcon
-                                            onClick={() => handleOpenModal(withdrawRequestItem)}
-                                            fontSize='small'
-                                            sx={{ fontSize: '1.2rem', color: '#44494D', cursor: 'pointer' }}
-                                        />
+                        withdrawRequest != null && withdrawRequest.length > 0 ? (
+                            <TableBody>
+                                {(rowsPerPage > 0
+                                    ? withdrawRequest.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    : withdrawRequest
+                                ).map((withdrawRequestItem) => (
+                                    <TableRow
+                                        key={withdrawRequestItem.withdrawRequest.id}
+                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                    >
+                                        <TableCell align="left">
+                                            {withdrawRequestItem.withdrawRequest.wallet.backer.email}
+                                        </TableCell>
+                                        <TableCell align="left" className='table-row'>{formatAmount(withdrawRequestItem.withdrawRequest.amount * 0.95)} vnd</TableCell>
+                                        <TableCell align="left" className='table-row' style={{
+                                            fontWeight: 'bold',
+                                            color: isWithinTwoDays(withdrawRequestItem.withdrawRequest.expiredDate) && (withdrawRequestItem.withdrawRequest.status != 3) ? 'red' : 'green',
+                                        }}>
+                                            {formatDate(withdrawRequestItem.withdrawRequest.expiredDate)}
+                                        </TableCell>
+                                        <TableCell align="left" className='table-row'>
+                                            <div style={getStatusStyle(withdrawRequestItem.withdrawRequest.status)}>{status[withdrawRequestItem.withdrawRequest.status]}</div>
+                                        </TableCell>
+                                        <TableCell align="left" className='table-row'>
+                                            <div style={getRequestTypeStyle(withdrawRequestItem.withdrawRequest.requestType)}>{requestType[withdrawRequestItem.withdrawRequest.requestType]}</div>
+                                        </TableCell>
+                                        <TableCell align="center" style={{ width: '4rem', padding: '8px' }}>
+                                            <ModeEditOutlineIcon
+                                                onClick={() => handleOpenModal(withdrawRequestItem)}
+                                                fontSize='small'
+                                                sx={{ fontSize: '1.2rem', color: '#44494D', cursor: 'pointer' }}
+                                            />
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        ) : (
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell colSpan={6} align="center">
+                                        <img src={EmptyRequest} alt='Not found' className='emptyRequestImg mt-12' />
+                                        <Typography style={{ marginTop: '2rem', fontWeight: 'bold', fontSize: '1.2rem', lineHeight: '1rem', color: "#969696" }}>
+                                            Không có gì ở đây cả
+                                        </Typography>
+                                        <Typography style={{ marginTop: '1rem', fontWeight: 'bold', fontSize: '1.2rem', lineHeight: '1rem', color: "#969696", marginBottom: '2.4rem' }}>
+                                            Không có kết quả nào cho bạn
+                                        </Typography>
                                     </TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
+                            </TableBody>
+                        )
                     )}
                 </Table>
                 <TablePagination
@@ -374,25 +393,25 @@ function AdminWithdrawRequest() {
                                         <div className='flex items-center h-full'>
                                             <Grid container rowSpacing={0} columnSpacing={2}>
                                                 <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
-                                                    <div className='text-[1rem] text-[#44494D]'>
+                                                    <div className='text-[1rem] text-[#44494D]' style={{ overflowWrap: 'break-word' }}>
                                                         <strong>Tên ngân hàng:</strong><br />
                                                         {selectedRow.bankAccount.bankAccountName}
                                                     </div>
                                                 </Grid>
                                                 <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
-                                                    <div className='text-[1rem] text-[#44494D]'>
+                                                    <div className='text-[1rem] text-[#44494D]' style={{ overflowWrap: 'break-word' }}>
                                                         <strong>Số tài khoản:</strong><br />
                                                         {selectedRow.bankAccount.bankAccountNumber}
                                                     </div>
                                                 </Grid>
                                                 <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
-                                                    <div className='text-[1rem] text-[#44494D]'>
+                                                    <div className='text-[1rem] text-[#44494D]' style={{ overflowWrap: 'break-word' }}>
                                                         <strong>Số tiền rút:</strong><br />
-                                                        {formatAmount(selectedRow.withdrawRequest.amount)} vnd
+                                                        {formatAmount(selectedRow.withdrawRequest.amount * 0.95)} vnd
                                                     </div>
                                                 </Grid>
                                                 <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
-                                                    <div className='text-[1rem] text-[#44494D]'>
+                                                    <div className='text-[1rem] text-[#44494D]' style={{ overflowWrap: 'break-word' }}>
                                                         <strong>Ngày hết hạn:</strong><br />
                                                         <span style={{ color: isWithinTwoDays(selectedRow.withdrawRequest.expiredDate) ? 'red' : 'green', fontWeight: 'bold' }}>
                                                             {formatDate(selectedRow.withdrawRequest.expiredDate)}
@@ -400,25 +419,25 @@ function AdminWithdrawRequest() {
                                                     </div>
                                                 </Grid>
                                                 <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
-                                                    <div className='text-[1rem] text-[#44494D]'>
+                                                    <div className='text-[1rem] text-[#44494D]' style={{ overflowWrap: 'break-word' }}>
                                                         <strong>Trạng thái:</strong><br />
                                                         {status[selectedRow.withdrawRequest.status]}
                                                     </div>
                                                 </Grid>
                                                 <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
-                                                    <div className='text-[1rem] text-[#44494D]'>
+                                                    <div className='text-[1rem] text-[#44494D]' style={{ overflowWrap: 'break-word' }}>
                                                         <strong>Loại giao dịch:</strong><br />
                                                         {requestType[selectedRow.withdrawRequest.requestType]}
                                                     </div>
                                                 </Grid>
                                                 <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
-                                                    <div className='text-[1rem] text-[#44494D]'>
+                                                    <div className='text-[1rem] text-[#44494D]' style={{ overflowWrap: 'break-word' }}>
                                                         <strong>Người nhận tiền:</strong><br />
                                                         {selectedRow.backerName}
                                                     </div>
                                                 </Grid>
                                                 <Grid item xs={6} sx={{ my: '0.8rem !important' }}>
-                                                    <div className='text-[1rem] text-[#44494D]'>
+                                                    <div className='text-[1rem] text-[#44494D]' style={{ overflowWrap: 'break-word' }}>
                                                         <strong>Email:</strong><br />
                                                         {selectedRow.withdrawRequest.wallet.backer.email}
                                                     </div>

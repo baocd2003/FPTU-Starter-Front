@@ -1,23 +1,19 @@
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Collapse from "@mui/material/Collapse";
+import IconButton from "@mui/material/IconButton";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
+import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import TableSortLabel from "@mui/material/TableSortLabel";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import Collapse from "@mui/material/Collapse";
-import IconButton from "@mui/material/IconButton";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import TablePagination from "@mui/material/TablePagination";
-import { visuallyHidden } from "@mui/utils";
-import dayjs from "dayjs";
-import Cookies from "js-cookie";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import SearchBarCategories from "../../components/SearchBarCategories";
@@ -195,15 +191,15 @@ function AdminCategories() {
       prevCategoriesList.map((category) =>
         category.id === categoryId
           ? {
-              ...category,
-              subCategories: [
-                ...category.subCategories,
-                {
-                  id: `${category.subCategories.length + 1}`,
-                  name: subCategoryName,
-                },
-              ],
-            }
+            ...category,
+            subCategories: [
+              ...category.subCategories,
+              {
+                id: `${category.subCategories.length + 1}`,
+                name: subCategoryName,
+              },
+            ],
+          }
           : category
       )
     );

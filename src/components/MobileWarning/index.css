@@ -1,0 +1,11 @@
+.warning-message {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #feecce;
+    text-align: center;
+    padding: 10px;
+    z-index: 9999;
+    margin-bottom: 5.2rem;
+}

@@ -1,7 +1,8 @@
 .cardBox{
   background: linear-gradient(to right, #ffbf96, #FCAE3D) !important;
   border-radius: 12px;
-  color: #FFFFFF
+  color: #FFFFFF;
+  height: 200px;
 }
 .circle {
     display: flex;
@@ -10,7 +11,7 @@
     margin-top: 15px;
   }
   .circle h1 {
-    font-size: 30px;
+    font-size: 20px;
     font-weight: 500;
     color: #f7f7f7;
   }
@@ -20,7 +21,7 @@
 .circle p {
     color: #989eb3;
     margin-top: 10px;
-    font-size: 17px;
+    font-size: 15px;
   }
   .light .circle h1,
   .light .circle p {
@@ -34,5 +35,5 @@
     position: absolute;
     top: 0;
     right: 0;
-    height: 100%;
+    height: 200px;
   }

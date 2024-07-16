@@ -1,8 +1,6 @@
 import { Typography, Box } from "@mui/material"
 
 function ProjectDetailStat({ numb, stat }) {
-
-
   return (
     <Box
       sx={{

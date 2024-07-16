@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setStepFour } from "../../../redux/projectStepSlice";
-import { Box, Button, CircularProgress, Divider, FormControl, InputLabel, MenuItem, Modal, Paper, Select, TextField, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Divider, FormControl, InputLabel, MenuItem, Modal, Paper, Select, TextField, Typography, Avatar } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { AccountBalance } from "@mui/icons-material";
 import axios from "axios";
 import { setFormData } from "../../../redux/projectFormSlice";
 import { ToastContainer, toast } from "react-toastify";
-
+import Autocomplete from '@mui/material/Autocomplete';
 
 const StepFour = () => {
   const bankState = useSelector((state) => state.projectForm.projectForm.stepFourData)
@@ -17,7 +17,7 @@ const StepFour = () => {
   const [selectedBank, setSelectedBank] = useState();
   const [banks, setBanks] = useState([]);
   const [bankOwner, setBankOwner] = useState()
-  const [accountNumber, setAccountNumber] = useState()
+  const [accountNumber, setAccountNumber] = useState('')
   const [loading, setLoading] = useState(false)
 
   const notify = (mess) => {
@@ -30,17 +30,18 @@ const StepFour = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     dispatch(setStepFour())
-    const banksResult = axios.get("https://api.vietqr.io/v2/banks").then(res => {
+    const banksResult = axios.get("https://api.httzip.com/api/bank/list").then(res => {
       setBanks(res.data.data);
     })
   }, [])
 
+  console.log(banks);
   const onSubmit = () => {
-    const bankName = (banks.find((bank) => bank.bin == selectedBank)).name
+    const bankName = (banks.find((bank) => bank.code == selectedBank)).name
     const data = {
       ownerName: bankOwner,
       bankAccountNumber: accountNumber,
-      bankAccountName: bankName
+      bankAccountName: selectedBank
     }
     // const data = {
     //   ownerName: 'CAO KHA SUONG',
@@ -51,31 +52,32 @@ const StepFour = () => {
     navigate('/init-project/step-five')
   }
 
-
-  console.log(banks)
   const confirmBank = async () => {
     const data = {
-      bin: selectedBank,
-      accountNumber: accountNumber
+      bank: selectedBank,
+      account: accountNumber
     }
+    console.log(data);
     setLoading(true);
-    await axios.post('https://api.vietqr.io/v2/lookup', data, {
+    await axios.post('https://api.httzip.com/api/bank/id-lookup-prod', data, {
       headers: {
-        'x-client-id': '4a055d72-d6ea-4e6d-af6a-6ef1695500dc',
-        'x-api-key': '3917cb1f-95f3-44a9-95f2-3ef17bc054af',
+        'x-api-key': `11f028b5-b964-4efa-ab9c-db4e199dccb4key`,
+        'x-api-secret': `691b9c60-353e-4e68-946f-ce68292884d0secret`,
       }
     }).then(res => {
       setLoading(false);
       console.log(res.data.code)
-      if (res.data.code.toString() == '00') {
-        setBankOwner(res.data.data.accountName);
+      if (res.data.code == 200) {
+        setBankOwner(res.data.data.ownerName);
 
       } else {
-        notify(res.data.desc)
+        notify(res.data.msg)
       }
     })
   }
-
+  const handleBankChange = (event, newValue) => {
+    setSelectedBank(newValue);
+  };
   return (
     <>
       <ToastContainer />
@@ -115,16 +117,45 @@ const StepFour = () => {
 
               <Box sx={{ px: 3, py: 2 }}>
                 <FormControl className="w-full" sx={{ marginBottom: '2rem !important' }} >
-                  <InputLabel>Chọn ngân hàng</InputLabel>
-                  <Select
+                  {/* <InputLabel>Chọn ngân hàng</InputLabel> */}
+                  <Autocomplete
+                    freeSolo
+                    id="free-solo-2-demo"
+                    disableClearable
+                    value={bankState ? bankState.BankAccountName : selectedBank}
+                    options={banks}
+                    getOptionLabel={(option) => option.name}
+                    onChange={(event, newValue) => handleBankChange(event, newValue.code)}
+                    renderOption={(props, option) => (
+                      <Box component="li" {...props}>
+                        <Avatar alt={option.name} src={option.logo_url}
+                          sx={{
+                            marginRight: 2, objectFit: 'fill', width: 60,
+                            height: 24
+                          }} variant="rounded" />
+                        <Typography variant="body1">{option.name}</Typography>
+                      </Box>
+                    )}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Chọn ngân hàng"
+                        InputProps={{
+                          ...params.InputProps,
+                          type: 'search',
+                        }}
+                      />
+                    )}
+                  />
+                  {/* <Select
                     value={bankState ? bankState.BankAccountName : selectedBank}
                     label="Chọn ngân hàng"
                     onChange={(e) => setSelectedBank(e.target.value)}
                   >
                     {banks.map((bank, index) => (
-                      <MenuItem key={index} value={bank.bin}>{bank.name}</MenuItem>
+                      <MenuItem key={index} value={bank.code}>{bank.name}</MenuItem>
                     ))}
-                  </Select>
+                  </Select> */}
                 </FormControl>
                 <FormControl className="w-full" sx={{ marginBottom: '2rem !important' }} >
                   <TextField

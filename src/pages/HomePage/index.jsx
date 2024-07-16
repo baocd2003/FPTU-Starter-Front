@@ -12,29 +12,28 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Aos from 'aos';
 import 'aos/dist/aos.css';
+import axios from 'axios';
 import Cookies from 'js-cookie';
+import { jwtDecode } from "jwt-decode";
 import React, { useEffect, useRef, useState } from 'react';
+import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import { FaHandsHelping } from "react-icons/fa";
 import { IoIosSettings } from "react-icons/io";
 import { RiPieChart2Fill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
 import { TypeAnimation } from 'react-type-animation';
+import StudentImg1 from '../../assets/banner-carousel-1.png';
+import StudentImg2 from '../../assets/sinhvienfpt2.jpg';
 import FSUAppBar from '../../components/AppBar';
 import BannerCarousel from '../../components/BannerCarousel';
 import Footer from '../../components/Footer';
 import ProjectCard from '../../components/ProjectCard';
-import { ToastContainer, toast } from 'react-toastify';
-import './index.css';
-import axios from 'axios';
-import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import userApiInstace from '../../utils/apiInstance/userApiInstace';
-import StudentImg1 from '../../assets/banner-carousel-1.png'
-import StudentImg2 from '../../assets/sinhvienfpt2.jpg'
-import { Troubleshoot } from '@mui/icons-material';
+import './index.css';
 
 function HomePage() {
 	const [checkIsLogin, setCheckIsLogin] = useState(false);
-	// const [isLoadingLogin, setIsLoadingLogin] = useState(false);
 	const swiperPopularProjectRef = useRef(null);
 	const swiperNewProjectRef = useRef(null);
 
@@ -53,7 +52,7 @@ function HomePage() {
 	return (
 		<div className="home">
 			<FSUAppBar isLogined={checkIsLogin} />
-			<Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={(location.hash)}>
+			<Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={!!(location.hash)}>
 				<CircularProgress color="inherit" />
 			</Backdrop>
 			<ToastContainer />
@@ -435,6 +434,8 @@ const GetGoogleUser = async () => {
 					avatarUrl: response.data.picture
 				}).then((res) => {
 					if (res.data._isSuccess) {
+						const decodedToken = jwtDecode(res.data._data.token);
+						const userRole = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
 						signIn({
 							auth: {
 								token: res.data._data.token,
@@ -442,7 +443,7 @@ const GetGoogleUser = async () => {
 							},
 							expiresIn: 3600 * 24 * 5,
 							tokenType: "Bearer",
-							authState: { email: response.data.email }
+							userState: { email: response.data.email, role: userRole }
 						});
 						window.location.href = import.meta.env.VITE_APP_URL.toString();
 					} else {
@@ -462,17 +463,14 @@ const GetGoogleUser = async () => {
 			})
 			.catch((error) => {
 				if (error.response && error.response.status === 401) {
-					// invalid token => prompt for user permission.
 					handleGoogleLogin();
 				} else {
 					console.error("Error fetching user data:", error);
 				}
 			})
-		// setIsLoading(false)
 
 	} else {
 		handleGoogleLogin();
-		// setIsLoading(false);
 	}
 }
 
