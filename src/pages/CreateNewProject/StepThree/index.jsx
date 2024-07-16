@@ -9,9 +9,11 @@ import ReactPlayer from "react-player";
 import { ToastContainer, toast } from "react-toastify";
 import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
 import 'filepond/dist/filepond.min.css';
-
+// Register the plugin
+registerPlugin(FilePondPluginFileValidateType);
 const StepThree = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -104,6 +106,7 @@ const StepThree = () => {
                 onupdatefiles={setThumbnailFile}
                 allowMultiple={false}
                 maxFiles={1}
+                acceptedFileTypes={['image/*']}
                 onChange={() => console.log(thumbnailFile)}
                 // server="/api"
                 name="files"
@@ -137,6 +140,7 @@ const StepThree = () => {
                 maxFiles={1}
                 // server="/api"
                 name="files"
+                acceptedFileTypes={['video/mp4', 'video/avi', 'video/mov']}
                 labelIdle='Kéo hoặc thả file vào đây hoặc <span class="filepond--label-action">Tải từ máy</span>'
               />
               {liveDemoFile.length > 0 && (
@@ -177,6 +181,7 @@ const StepThree = () => {
                 onupdatefiles={setImages}
                 allowMultiple={true}
                 maxFiles={4}
+                acceptedFileTypes={['image/*']}
                 // server="/api"
                 // disabled={true}
                 name="files"
