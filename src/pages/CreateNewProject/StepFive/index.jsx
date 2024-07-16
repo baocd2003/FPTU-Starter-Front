@@ -189,6 +189,7 @@ const StepFive = () => {
         }
       }).then((res) => {
         // console.log(res)
+        setIsLoading(false)
         Swal.fire({
           title: "Khởi tạo thành công",
           text: "Dự án của bạn sẽ được xét duyệt trong 3-5 ngày, hãy kiên nhẫn nhé!",
@@ -204,7 +205,6 @@ const StepFive = () => {
     } catch (err) {
       throw err
     } finally {
-      setIsLoading(false)
     }
   }
 
