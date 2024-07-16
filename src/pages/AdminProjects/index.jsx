@@ -125,7 +125,7 @@ function EnhancedTableHead(props) {
             align={headCell.numeric ? "right" : "left"}
           >
             {headCell.id !== "projectOwnerName" &&
-              headCell.id !== "projectStatus" ? (
+            headCell.id !== "projectStatus" ? (
               <TableSortLabel
                 active={orderBy === headCell.id}
                 direction={orderBy === headCell.id ? order : "asc"}
@@ -222,6 +222,34 @@ function AdminProjects() {
       } else {
         setProgressValue(progressPercentage);
         setProgressText(`${progressPercentage.toFixed(2)}%`);
+      }
+    }
+  };
+
+  const fetchProjects = async () => {
+    if (token) {
+      try {
+        const response = await projectApiInstance.get(`user-project`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (response.data._data != null) {
+          const projects = response.data._data;
+          setProjectList(projects);
+          setProject(projects);
+        }
+      } catch (error) {
+        console.error("Error fetching project list:", error);
+      }
+    } else {
+      try {
+        const response = await projectApiInstance.get(`user-project`);
+        if (response.data._data != null) {
+          const projects = response.data._data;
+          setProjectList(projects);
+          setProject(projects);
+        }
+      } catch (error) {
+        console.error("Error fetching project list:", error);
       }
     }
   };
@@ -372,9 +400,9 @@ function AdminProjects() {
     () =>
       Array.isArray(projectList) && projectList.length > 0
         ? stableSort(projectList, getComparator(order, orderBy)).slice(
-          page * rowsPerPage,
-          page * rowsPerPage + rowsPerPage
-        )
+            page * rowsPerPage,
+            page * rowsPerPage + rowsPerPage
+          )
         : [],
     [order, orderBy, page, rowsPerPage, projectList]
   );
@@ -528,8 +556,9 @@ function AdminProjects() {
                   </Box>
                   <Box
                     sx={{
-                      backgroundColor: `${backgroundColor[selectedProject.projectStatus]
-                        }`,
+                      backgroundColor: `${
+                        backgroundColor[selectedProject.projectStatus]
+                      }`,
                     }}
                     className="text-center mt-4 p-1 text-slate-100 font-medium rounded"
                   >
@@ -654,16 +683,16 @@ function AdminProjects() {
                   variant={"determinate"}
                   value={
                     selectedProject.projectBalance <
-                      selectedProject.projectTarget
+                    selectedProject.projectTarget
                       ? Math.min(
-                        Math.max(
-                          (selectedProject.projectBalance /
-                            selectedProject.projectTarget) *
-                          100,
-                          0
-                        ),
-                        100
-                      )
+                          Math.max(
+                            (selectedProject.projectBalance /
+                              selectedProject.projectTarget) *
+                              100,
+                            0
+                          ),
+                          100
+                        )
                       : 100
                   }
                 />
