@@ -3,8 +3,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import BallotIcon from '@mui/icons-material/Ballot';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import { AppBar, Avatar, Backdrop, Badge, Box, Button, CircularProgress, Container, Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material';
+import { AppBar, Avatar, Backdrop, Box, Button, CircularProgress, Container, Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material';
 import Cookies from 'js-cookie';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -190,9 +189,6 @@ function FSUAppBar({ isLogined, refetchData }) {
             </div>
             {isLogined && user ?
               <Box sx={{ maxWidth: '100%', mr: { xs: '16px', lg: '6rem' }, display: 'flex', alignItems: 'center' }}>
-                <Badge badgeContent={0} max={99} showZero sx={{ marginRight: '32px', "& .MuiBadge-badge": { backgroundColor: '#FBB03B !important' } }}>
-                  <NotificationsIcon className='notiIcon' fontSize='large' sx={{ color: '#44494D', cursor: 'pointer', transition: 'color 0.3s', '&:hover': { color: '#FBB03B' } }} />
-                </Badge>
                 <Tooltip title="Tài khoản">
                   <IconButton sx={{ p: 0, mr: '16px' }} onMouseOver={handleOpenProfileMenu} aria-controls="menu-appbar" aria-haspopup="true" className='focusedMenuItem'>
                     <Avatar alt="User" src={user.userAvatarUrl} />

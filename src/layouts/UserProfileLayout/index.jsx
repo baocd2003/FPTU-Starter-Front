@@ -1,14 +1,14 @@
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
-import { Button, CircularProgress, Divider } from '@mui/material';
+import ProjectIcon from "@mui/icons-material/Folder";
+import { Box, CircularProgress, Grid, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Backdrop from '@mui/material/Backdrop';
-import Box from '@mui/material/Box';
-import Tab from '@mui/material/Tab';
-import Tabs, { tabsClasses } from '@mui/material/Tabs';
 import Cookies from 'js-cookie';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { FaHeart, FaUser } from "react-icons/fa";
+import { IoMdWallet } from "react-icons/io";
 import 'react-image-crop/dist/ReactCrop.css';
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
 import FSUAppBar from "../../components/AppBar";
 import Footer from "../../components/Footer";
@@ -19,82 +19,43 @@ import './index.css';
 
 function UserProfileLayout() {
     const navigate = useNavigate();
-    const [isBgImage, setIsBgImage] = useState(false);
-    const [isImage, setIsImage] = useState(false);
     const [user, setUser] = useState(null);
+    const [isImage, setIsImage] = useState(false);
     const [tabValue, setTabValue] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [isLoadingUpdateImg, setIsLoadingUpdateImg] = useState(false);
-    const [isLoadingBgImg, setIsLoadingBgImg] = useState(false);
-    const inputBgRef = useRef(null);
+
+    const location = useLocation();
+
+    const titleList = [
+        { text: "Tài khoản", path: "/profile" },
+        { text: "Dự án", path: "/profile/projects" },
+        { text: "Yêu thích", path: "/profile/like-projects" },
+        { text: "Ví của tôi", path: "/profile/my-wallet" },
+    ];
+
+    const iconMapping = {
+        0: <FaUser style={{ fontSize: '1.6rem' }} />,
+        1: <ProjectIcon sx={{ fontSize: '1.6rem' }} />,
+        2: <FaHeart style={{ fontSize: '1.6rem' }} />,
+        3: <IoMdWallet style={{ fontSize: '1.6rem' }} />,
+    };
+
+    const onClickMapping = {
+        0: () => navigate("/profile"),
+        1: () => navigate("/profile/projects"),
+        2: () => navigate("/profile/like-projects"),
+        3: () => navigate("/profile/my-wallet"),
+    };
 
     //Set AppBar refetchData
     const [refetchData, isRefetchData] = useState(false);
 
     //open input avatar model
     const [openAvt, setOpenAvt] = useState(false);
-    const [openBg, setOpenBg] = useState(false);
     const [avatarUrl, setAvatarUrl] = useState(null);
-    const [bgAvatarUrl, setBgAvatarUrl] = useState(null);
 
     const token = Cookies.get("_auth");
-
-    //Upload Background
-    const handleOpenBg = () => {
-        inputBgRef.current.click();
-    }
-
-    const updateBackground = async (event) => {
-        setIsLoadingBgImg(true);
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const formData = new FormData();
-        formData.append('imgFile', file);
-
-        try {
-            const imgResponse = await userManagementApiInstance.post("/upload-image", formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${token}`
-                },
-            });
-
-            if (imgResponse.status === 200) {
-                const userUpdateRequest = {
-                    accountName: user.accountName,
-                    userName: user.userName,
-                    userEmail: user.userEmail,
-                    userBackground: imgResponse.data,
-                    userPhone: user.userPhone,
-                    userBirthDate: user.userBirthDate,
-                    userAddress: user.userAddress,
-                    userGender: user.userGender,
-                    userAvt: user.userAvatarUrl
-                };
-                const response = await userManagementApiInstance.put("/user-profile", userUpdateRequest, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-
-                if (response.status === 200) {
-                    Swal.fire({
-                        title: "Thành công",
-                        text: "Cập nhật thành công",
-                        icon: "success",
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        isRefetchData(true);
-                        fetchUserProfile();
-                    });
-                }
-            }
-        } catch (error) {
-            console.error('Error uploading background image:', error);
-        } finally {
-            setIsLoadingBgImg(false);
-        }
-    }
 
     //Upload avatar
     const handleOpenAvt = () => setOpenAvt(true);
@@ -171,10 +132,8 @@ function UserProfileLayout() {
 
                 if (response.data != null) {
                     setUser(response.data._data);
-                    setIsBgImage(response.data._data.userBgAvatarUrl != null);
                     setIsImage(response.data._data.userAvatarUrl != null);
                     setAvatarUrl(response.data._data.userAvatarUrl);
-                    setBgAvatarUrl(response.data._data.userBgAvatarUrl)
                 }
             } catch (error) {
                 console.error('Error fetching sample API:', error);
@@ -204,229 +163,110 @@ function UserProfileLayout() {
         setTabValue(newValue);
     };
 
-    // UserProfile
-    const navigateUserProfile = () => {
-        navigate("/profile");
-    }
-
-    // UserBookmarkProject
-    const navigateUserBookmarkProject = () => {
-        navigate("/bookmarkProject");
-    }
-
-    const navigateToWallet = () => {
-        navigate("/my-wallet")
-    }
-
     return (
-        <div>
+        <div className='mt-[5.2rem]'>
             <FSUAppBar isLogined={!!token} refetchData={refetchData} />
             <Backdrop
                 sx={{
                     color: '#fff',
                     zIndex: (theme) => theme.zIndex.drawer + 100,
                 }}
-                open={isLoadingUpdateImg || isLoadingBgImg}
+                open={isLoadingUpdateImg || !user || isLoading}
             >
                 <CircularProgress color="inherit" />
             </Backdrop>
-            <div className='userProfile'>
-                {isLoading || !user ? (
-                    <div className='w-full flex justify-center mt-1 mb-8'>
-                        <CircularProgress sx={{ color: '#FBB03B' }} />
-                    </div>
-                ) : (
-                    <div>
-                        {/* <div className='text-left mt-1 mb-8'>
-                            <a className='text-[#44494D] font-bold hover:text-[#FBB03B] hover:underline cursor-pointer transition-all duration-300' onClick={() => navigate("/profile")}>Tài khoản</a>
-                        </div> */}
-                        <div style={{ width: '100%', height: 'auto' }}>
-                            <div style={{
-                                position: 'relative',
-                                width: '100%',
-                                height: '10rem',
-                                backgroundColor: isBgImage ? 'transparent' : '#E2E2E2',
-                                borderRadius: '16px',
-                            }}
-                                className='backgroundImg'
-                            >
-                                {isBgImage && (
-                                    <img
-                                        src={user.userBgAvatarUrl}
+            <div className='mx-[8rem] pt-[1.6rem]'>
+                <Grid container columnSpacing={8}>
+                    <Grid item xs={4}>
+                        <Paper elevation={3}
+                            sx={{
+                                zIndex: 1,
+                                display: "flex",
+                                flexDirection: "column",
+                                overflow: "hidden",
+                                alignItems: 'center',
+                                position: 'sticky', top: '4.8rem'
+                            }}>
+                            <div className='flex w-full flex-col justify-center items-center'>
+                                <div className='h-[8rem] w-full bg-gradient-to-b from-[#FBB03B] to-[#FFFFFF]'></div>
+                                <div className='rounded-full bg-[#FFFFFF] w-[9.6rem] h-[9.6rem] flex justify-center items-center mt-[-4.8rem] relative'>
+                                    {isImage ? (
+                                        <Avatar
+                                            alt="User"
+                                            src={user.userAvatarUrl || ''}
+                                            sx={{ width: "8rem", height: "8rem" }}
+                                        />
+                                    ) : (
+                                        <Avatar
+                                            alt="User"
+                                            src={''}
+                                            sx={{ width: "8rem", height: "8rem" }}
+                                        />
+                                    )}
+
+                                    <div
                                         style={{
-                                            width: '100%',
-                                            height: '100%',
-                                            borderRadius: '10px',
-                                            overflow: 'hidden !important',
-                                            objectFit: 'cover'
-                                        }}
-                                        alt="Image"
-                                    />
-                                )}
-                                <div className='bgImgButton rounded-[10px]'
-                                    style={{
-                                        position: isBgImage ? 'absolute' : 'relative',
-                                        zIndex: 10
-                                    }}>
-                                    <Button
-                                        onClick={handleOpenBg}
-                                        variant="contained"
-                                        startIcon={<CameraAltIcon />}
-                                        sx={{
-                                            color: "#44494D",
-                                            backgroundColor: 'white',
-                                            mb: "1rem",
-                                            mr: "1rem",
-                                            fontWeight: 'bold',
-                                            textTransform: 'none !important',
-                                            '&:hover': {
-                                                backgroundColor: '#FBB03B',
-                                                color: 'white',
-                                            },
-                                            '&:active': {
-                                                outline: 'none !important'
-                                            },
-                                            '&:focus': {
-                                                outline: 'none !important'
-                                            },
+                                            position: 'absolute',
+                                            bottom: 8,
+                                            right: 12
                                         }}
                                     >
-                                        {isBgImage ? 'Đổi ảnh nền' : 'Thêm ảnh nền'}
-                                    </Button>
-                                    <input type='file' ref={inputBgRef} style={{ display: 'none' }} onChange={updateBackground} />
-                                </div>
-                            </div>
-                        </div>
-                        <div className='avatarProfile mt-[-2rem] flex'>
-                            <div className='relative'>
-                                {isImage ? (
-                                    <Avatar
-                                        alt="User"
-                                        src={user.userAvatarUrl || ''}
-                                        sx={{ width: "8rem", height: "8rem", marginLeft: '20px', marginRight: '20px', outline: '.5rem solid white' }}
-                                    />
-                                ) : (
-                                    <Avatar
-                                        alt="User"
-                                        src={''}
-                                        sx={{ width: "8rem", height: "8rem", marginLeft: '20px', marginRight: '20px', outline: '.5rem solid white' }}
-                                    />
-                                )}
-                                <div
-                                    style={{
-                                        position: 'absolute',
-                                        bottom: 0,
-                                        right: 24
-                                    }}
-                                >
-                                    <Avatar
-                                        onClick={handleOpenAvt}
-                                        sx={{
-                                            cursor: 'pointer', backgroundColor: 'white', boxShadow: '0 0 5px rgba(0, 0, 0, 0.2)',
-                                            color: '#44494D',
-                                            '&:hover': {
-                                                backgroundColor: '#FBB03B',
-                                                color: 'white',
-                                                transition: 'all 0.3s',
-                                            }
-                                        }}>
-                                        <CameraAltIcon />
-                                    </Avatar>
-                                </div>
-                            </div>
-                            <div className='briefInfo flex w-full'>
-                                {user ? (
-                                    <div className='flex flex-col userBriefInfo'>
-                                        <h1 className='text-3xl font-semibold'>{user.accountName}</h1>
-                                        <h2 className='font-medium text-xl pt-2'>Số dư ví:<span className='text-[#FBB03B] ml-3'>0 VND</span></h2>
+                                        <Avatar
+                                            onClick={handleOpenAvt}
+                                            sx={{
+                                                cursor: 'pointer', backgroundColor: 'white', boxShadow: '0 0 5px rgba(0, 0, 0, 0.2)',
+                                                color: '#44494D',
+                                                '&:hover': {
+                                                    backgroundColor: '#FBB03B',
+                                                    color: 'white',
+                                                    transition: 'all 0.3s',
+                                                }
+                                            }}>
+                                            <CameraAltIcon />
+                                        </Avatar>
                                     </div>
-                                ) : (
-                                    <div>Tải thông tin người dùng...</div>
-                                )}
-                                {/* <div className='flex flex-row justify-center items-center gap-4'>
-                                    <Button
-                                        variant="contained"
-                                        startIcon={<BallotIcon />}
-                                        onClick={() => navigate("/profile/projects")}
-                                        sx={{
-                                            color: "#44494D",
-                                            backgroundColor: 'white',
-                                            mb: { xs: '40px', lg: '32px' },
-                                            textTransform: 'none !important',
-                                            '&:hover': {
-                                                backgroundColor: '#FBB03B',
-                                                color: 'white',
-                                            },
-                                            '&:active': {
-                                                outline: 'none !important'
-                                            },
-                                            '&:focus': {
-                                                outline: 'none !important'
-                                            },
-                                            fontWeight: 'bold'
-                                        }}
-                                    >
-                                        Dự án của tôi
-                                    </Button>
-                                    <Button
-                                        variant="contained"
-                                        startIcon={<NoteAddIcon />}
-                                        onClick={() => navigate("/choose-cate")}
-                                        sx={{
-                                            color: "#44494D",
-                                            backgroundColor: 'white',
-                                            mb: { xs: '40px', lg: '32px' },
-                                            mr: { xs: '0px', lg: '32px' },
-                                            textTransform: 'none !important',
-                                            '&:hover': {
-                                                backgroundColor: '#FBB03B',
-                                                color: 'white',
-                                            },
-                                            '&:active': {
-                                                outline: 'none !important'
-                                            },
-                                            '&:focus': {
-                                                outline: 'none !important'
-                                            },
-                                            fontWeight: 'bold'
-                                        }}
-                                    >
-                                        Bắt đầu dự án
-                                    </Button>
-                                </div> */}
+                                </div>
                             </div>
-                        </div>
-                        <Divider sx={{ mt: 8 }} />
-                        <Box sx={{ width: '100%', position: "sticky", top: "10rem" }}>
-                            <Tabs
-                                value={tabValue}
-                                onChange={handleChange}
-                                variant="scrollable"
-                                allowScrollButtonsMobile
-                                sx={{
-                                    [`& .${tabsClasses.scrollButtons}`]: {
-                                        '&.Mui-disabled': { opacity: 0.3 },
-                                    },
-                                    [`& .MuiTabs-indicator`]: {
-                                        backgroundColor: '#FBB03B',
-                                    },
-                                    width: { lg: '80%', xs: '100%' },
-                                    '&.MuiTabs-scrollButtonsDesktop': {
-                                        display: 'flex',
-                                    },
-                                }}
-                            >
-                                <Tab label="Thông tin cá nhân" onClick={navigateUserProfile} className='userProfleTab' sx={{ fontWeight: 'bold', width: { lg: '20%', xs: '100%' } }} />
-                                <Tab label="Dự án của tôi" className='userProfleTab' onClick={() => navigate("/profile/projects")} sx={{ fontWeight: 'bold', width: { lg: '20%', xs: '100%' } }} />
-                                <Tab label="Đóng góp" disabled onClick={navigateUserBookmarkProject} className='userProfleTab' sx={{ fontWeight: 'bold', width: { lg: '20%', xs: '100%' } }} />
-                                <Tab label="Dự án yêu thích" disabled className='userProfleTab' sx={{ fontWeight: 'bold', width: { lg: '20%', xs: '100%' } }} />
-                                {/* <Tab label="Ví điện tử" onClick={navigateToWallet} className='userProfleTab' sx={{ fontWeight: 'bold', fontSize: '16px', width: { lg: '25%', xs: '100%' } }} /> */}
-                            </Tabs>
-                        </Box>
-                        <Divider />
-                    </div>
-                )}
-                <Outlet />
+                            {user ?
+                                <div className="flex flex-col justify-center items-center overflow-hidden mx-[2rem]">
+                                    <h1 className="text-[1.4rem] text-[#44494D] font-bold leading-relaxed my-[0.4rem]">
+                                        {user.userName}
+                                    </h1>
+                                </div>
+                                : null
+                            }
+                            <Box sx={{ width: '100%', flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                                <List sx={{ mx: '2.4rem', flexGrow: 1, mb: '1.2rem', mt: '0.8rem' }}>
+                                    {titleList.map((item, index) => {
+                                        const isActive = location.pathname === item.path;
+                                        return (
+                                            <ListItem key={item.text} onClick={onClickMapping[index]} sx={{ p: 0, mb: '0.8rem', borderRadius: '0.4rem' }} className="admin-list">
+                                                <ListItemButton
+                                                    sx={{
+                                                        borderRadius: '0.4rem',
+                                                        backgroundColor: isActive ? '#FBB03B' : 'transparent',
+                                                        color: isActive ? '#FFFFFF' : '#44494D',
+                                                    }}
+                                                >
+                                                    <ListItemIcon sx={{ color: isActive ? '#FFFFFF' : '#44494D' }}>
+                                                        {iconMapping[index]}
+                                                    </ListItemIcon>
+                                                    <ListItemText
+                                                        primary={item.text}
+                                                        primaryTypographyProps={{ fontSize: '1rem', fontWeight: '700' }}
+                                                    />
+                                                </ListItemButton>
+                                            </ListItem>
+                                        );
+                                    })}
+                                </List>
+                            </Box>
+                        </Paper>
+                    </Grid>
+                    <Grid item xs={8}>
+                        <Outlet context={{ setIsLoading }} />
+                    </Grid>
+                </Grid>
             </div>
             <Footer />
             <UploadAvatarModel open={openAvt} handleCloseAvt={handleCloseAvt} user={user} userAvatarUrl={avatarUrl} updateAvatar={updateAvatar} />

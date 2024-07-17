@@ -1,20 +1,101 @@
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import EditIcon from '@mui/icons-material/Edit';
-import LockIcon from '@mui/icons-material/Lock';
-import { Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, OutlinedInput, Select, TextField } from "@mui/material";
+import { Edit as EditIcon, Visibility, VisibilityOff } from '@mui/icons-material';
+import { Backdrop, Button, CircularProgress, FormControl, Grid, IconButton, InputAdornment, InputLabel, MenuItem, Paper, Select, TextField } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
 import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { FaAddressCard, FaBirthdayCake, FaLock, FaUser } from "react-icons/fa";
+import { GoHomeFill } from "react-icons/go";
+import { ImBin2 } from "react-icons/im";
+import { MdEmail, MdOutlineTransgender, MdSwitchAccount } from "react-icons/md";
+import { RiLockPasswordFill } from "react-icons/ri";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import Swal from 'sweetalert2';
 import userManagementApiInstance from '../../utils/apiInstance/userManagementApiInstance';
 import './index.css';
 
+const today = dayjs();
+const minDate = today.subtract(100, 'year');
+
+const CustomTextField = styled(TextField)(({ theme }) => ({
+    '& label': {
+        fontSize: '0.875rem',
+        color: '#6B7280',
+    },
+    '& .MuiOutlinedInput-root': {
+        '& fieldset': {
+            borderRadius: '10px',
+        },
+        '&:hover fieldset': {
+            borderColor: '#D1D5DB',
+        },
+        '&.Mui-focused fieldset': {
+            borderColor: '#D1D5DB',
+        },
+    },
+    '& .MuiInputBase-input': {
+        padding: '14px 16px',
+        fontSize: '1rem',
+    },
+}));
+
+const CustomDatePicker = styled(DatePicker)(({ theme }) => ({
+    width: '100%',
+    height: '100%',
+    '& button': {
+        outline: 'none',
+    },
+    '& label': {
+        fontSize: '0.875rem',
+        color: '#6B7280',
+    },
+    '& .MuiOutlinedInput-root': {
+        '& fieldset': {
+            borderRadius: '10px',
+        },
+        '&:hover fieldset': {
+            borderColor: '#D1D5DB',
+        },
+        '&.Mui-focused fieldset': {
+            borderColor: '#D1D5DB',
+        },
+    },
+    '& .MuiInputBase-input': {
+        padding: '14px 16px',
+        fontSize: '1rem',
+    },
+}));
+
+const CustomSelect = styled(Select)(({ theme }) => ({
+    '& .MuiOutlinedInput-root': {
+        borderRadius: '10px !important',
+        '&:hover fieldset': {
+            borderColor: '#D1D5DB',
+        },
+        '&.Mui-focused fieldset': {
+            borderColor: '#D1D5DB',
+        },
+    },
+    '& .MuiInputBase-input': {
+        padding: '14px 16px',
+        fontSize: '1rem',
+        borderRadius: '10px !important',
+    },
+    '& .MuiSelected': {
+        fontSize: '1rem !important',
+    },
+    textAlign: 'left',
+    height: '49px',
+    borderRadius: '10px !important',
+}));
+
 function UserProfile() {
+    const { setIsLoading } = useOutletContext();
     const [isEditProfile, setIsEditProfile] = useState(false);
+    const [isEditPassword, setIsEditPassword] = useState(false);
     const [selectedGender, setSelectedGender] = useState('');
     const [userEmail, setUserEmail] = useState('');
     const [accountName, setAccountName] = useState('');
@@ -23,9 +104,16 @@ function UserProfile() {
     const [userPhone, setUserPhone] = useState('');
     const [userAddress, setUserAddress] = useState('');
     const [user, setUser] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     const token = Cookies.get("_auth");
+
+    const [showPassword, isShowPassword] = useState(false);
+    const [showChangedPassword, isShowChangedPassword] = useState(false);
+    const [showConfirmPassword, isShowConfirmPassword] = useState(false);
+
+    const handleClickShowPassword = () => isShowPassword((show) => !show);
+    const handleClickShowChangedPassword = () => isShowChangedPassword((show) => !show);
+    const handleClickShowConfirmPassword = () => isShowConfirmPassword((show) => !show);
 
     // Gender options
     const gender = ['Nam', 'Nữ', 'Khác'];
@@ -77,14 +165,28 @@ function UserProfile() {
         }
     }
 
+    const handleEditPassword = () => {
+        setIsEditPassword(!isEditPassword);
+        if (isEditPassword == true) {
+            if (token) {
+                fetchUserData();
+            }
+        }
+    }
+
+    const handleUpdatePassword = () => {
+
+    }
+
     const handleUpdateProfile = () => {
+        console.log(userBirthDate);
         setIsLoading(true);
         const userUpdateRequest = {
             accountName: accountName,
             userName: userName,
             userEmail: userEmail,
             userPhone: userPhone,
-            userBirthDate: `${userBirthDate.get('year')} - ${userBirthDate.get('month') + 1 < 10 ? `0${userBirthDate.get('month') + 1}` : userBirthDate.get('month') + 1} - ${userBirthDate.get('date')}`,
+            userBirthDate: userBirthDate == null ? null : `${userBirthDate.get('year')} - ${userBirthDate.get('month') + 1 < 10 ? `0${userBirthDate.get('month') + 1}` : userBirthDate.get('month') + 1} - ${userBirthDate.get('date')}`,
             userAddress: userAddress,
             userGender: selectedGender,
             userAvt: user.userAvatarUrl,
@@ -115,301 +217,446 @@ function UserProfile() {
                 console.error('Error fetching user profile:', error);
             })
             .finally(() => {
+                setIsEditProfile(false);
                 setIsLoading(false);
             });
     }
 
     return (
-        <div className='mt-[64px] w-[100%] flex justify-center items-center'>
-            {isLoading || !user ? (
-                <CircularProgress sx={{ color: '#FBB03B' }} />
-            ) : (
-                <div className="userContent">
-                    <h1 className='text-[#44494D] text-2xl font-bold'>Thông tin cá nhân</h1>
-                    <h2 className='text-[#44494D] font-medium mt-4 subtitle'>Những thông tin dưới đây sẽ được hiển thị trên trang cá nhân của bạn</h2>
-                    <div className='mt-[48px]'>
-                        <Grid container spacing={'64px'} rowSpacing={{ lg: '16px', xs: '4px' }}>
-                            <Grid item xs={12} lg={6}>
-                                <TextField
-                                    margin="normal"
+        <Paper elevation={3} sx={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexDirection: 'column',
+            px: '2rem',
+            py: '1.6rem'
+        }}>
+            {user == null ?
+                <Backdrop
+                    sx={{
+                        color: '#fff',
+                        zIndex: (theme) => theme.zIndex.drawer + 100,
+                    }}
+                    open={!user || isLoading}
+                >
+                    <CircularProgress color="inherit" />
+                </Backdrop>
+                : <>
+                    <h1 className='text-left w-full text-[1.2rem] font-bold mb-[3.2rem]'>Thông tin tài khoản</h1>
+                    <div className='w-full mb-[3.2rem]'>
+                        <div className='flex justify-between gap-[1rem] items-center mb-[1.2rem]'>
+                            <div className='flex justify-between gap-[1rem] items-center'>
+                                <FaAddressCard style={{ color: '#44494D', fontSize: '1.4rem' }} />
+                                <h1 className='text-[1rem] text-left font-bold'>Thông tin cá nhân</h1>
+                            </div>
+                            {!isEditProfile ? (
+                                <div className="flex justify-center gap-4 profileButton">
+                                    <Button
+                                        variant="contained"
+                                        startIcon={<EditIcon />}
+                                        onClick={handleEditProfile}
+                                        sx={{
+                                            color: "#44494D",
+                                            backgroundColor: 'white',
+                                            textTransform: 'none !important',
+                                            '&:hover': {
+                                                backgroundColor: '#FBB03B',
+                                                color: 'white',
+                                            },
+                                            '&:active': {
+                                                outline: 'none !important'
+                                            },
+                                            '&:focus': {
+                                                outline: 'none !important'
+                                            },
+                                            '.MuiButton-startIcon': {
+                                                marginRight: '12px',
+                                            },
+                                            fontWeight: 'bold',
+                                        }}
+                                    >
+                                        Chỉnh sửa
+                                    </Button>
+                                </div>
+                            ) : (
+                                <div className="flex justify-center gap-4 profileButton">
+                                    <Button
+                                        variant="contained"
+                                        startIcon={<ImBin2 />}
+                                        onClick={handleEditProfile}
+                                        sx={{
+                                            color: "#44494D",
+                                            backgroundColor: 'white',
+                                            textTransform: 'none !important',
+                                            '&:hover': {
+                                                backgroundColor: '#E2E2E2',
+                                                color: '#44494D',
+                                            },
+                                            '&:active': {
+                                                outline: 'none !important'
+                                            },
+                                            '&:focus': {
+                                                outline: 'none !important'
+                                            },
+                                            '.MuiButton-startIcon': {
+                                                marginRight: '12px',
+                                            },
+                                            fontWeight: 'bold',
+                                        }}
+                                    >
+                                        Bỏ qua
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        startIcon={<EditIcon />}
+                                        onClick={handleUpdateProfile}
+                                        sx={{
+                                            color: "#44494D",
+                                            backgroundColor: 'white',
+                                            textTransform: 'none !important',
+                                            '&:hover': {
+                                                backgroundColor: '#FBB03B',
+                                                color: 'white',
+                                            },
+                                            '&:active': {
+                                                outline: 'none !important'
+                                            },
+                                            '&:focus': {
+                                                outline: 'none !important'
+                                            },
+                                            fontWeight: 'bold',
+                                        }}
+                                    >
+                                        Lưu chỉnh sửa
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
+                        <Grid container columnSpacing={4} rowSpacing={0}>
+                            <Grid item xs={6}>
+                                <CustomTextField
+                                    label="Email"
+                                    variant="outlined"
+                                    value={user?.userEmail || ""}
                                     fullWidth
-                                    id="email"
-                                    label="Địa chỉ Email"
-                                    name="email"
-                                    disabled
-                                    InputLabelProps={{
-                                        sx: {
-                                            fontSize: '14px',
-                                        },
+                                    disabled={!isEditProfile}
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start" sx={{ ml: '0.4rem' }}>
+                                                <MdEmail style={{ color: '#44494D' }} />
+                                            </InputAdornment>
+                                        ),
                                     }}
-                                    sx={{
-                                        width: '100%',
-                                        '& input': {
-                                            height: '16px',
-                                        },
-                                        fontSize: '10px'
-                                    }}
-                                    value={userEmail || ''}
                                 />
                             </Grid>
-                            <Grid item xs={12} lg={6}>
-                                <TextField
-                                    margin="normal"
-                                    fullWidth
+                            <Grid item xs={6}>
+                                <CustomTextField
                                     label="Tên tài khoản"
-                                    required
-                                    disabled={!isEditProfile}
-                                    InputLabelProps={{
-                                        sx: {
-                                            fontSize: '14px',
-                                        },
-                                    }}
-                                    sx={{
-                                        width: '100%',
-                                        '& input': {
-                                            height: '16px',
-                                        },
-                                        fontSize: '10px'
-                                    }}
-                                    value={accountName || ''}
-                                    onChange={(e) => setAccountName(e.target.value)}
-                                />
-                            </Grid>
-                            <Grid item xs={12} lg={6}>
-                                <TextField
-                                    margin="normal"
+                                    variant="outlined"
+                                    value={user?.userName || ""}
                                     fullWidth
-                                    label="Họ và tên"
-                                    required
                                     disabled={!isEditProfile}
-                                    InputLabelProps={{
-                                        sx: {
-                                            fontSize: '14px',
-                                        },
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start" sx={{ ml: '0.4rem' }}>
+                                                <MdSwitchAccount style={{ color: '#44494D' }} />
+                                            </InputAdornment>
+                                        ),
                                     }}
-                                    sx={{
-                                        width: '100%',
-                                        '& input': {
-                                            height: '16px',
-                                        },
-                                        fontSize: '10px'
-                                    }}
-                                    value={userName || ''}
                                     onChange={(e) => setUserName(e.target.value)}
                                 />
                             </Grid>
-                            <Grid container item xs={12} lg={6} spacing={'32px'} rowSpacing={{ lg: '0px', xs: '4px' }}>
-                                <Grid container item xs={12} lg={6} direction={'row'}>
-                                    <LocalizationProvider dateAdapter={AdapterDayjs} >
-                                        <DatePicker label="Ngày sinh"
-                                            closeOnSelect
-                                            disabled={!isEditProfile}
-                                            value={userBirthDate}
-                                            onChange={(date) => setUserBirthDate(date)}
-                                            slotProps={{
-                                                field: { clearable: true },
-                                            }}
-                                            sx={{
-                                                width: '100%',
-                                                marginTop: '16px',
-                                                marginBottom: '8px',
-                                                height: '49px',
-                                                '.MuiInputBase-root': {
-                                                    height: '49px'
-                                                },
-                                                '& button': {
-                                                    outline: 'none'
-                                                },
-                                            }}
-                                        />
-                                    </LocalizationProvider>
-                                </Grid>
-                                <Grid container item xs={12} lg={6}>
-                                    <FormControl fullWidth sx={{ marginTop: '16px', marginBottom: '8px' }}>
-                                        <InputLabel disabled={!isEditProfile}>
-                                            Giới tính
-                                        </InputLabel>
-                                        <Select
-                                            disabled={!isEditProfile}
-                                            value={selectedGender || ''}
-                                            onChange={handleGenderChange}
-                                            input={<OutlinedInput label="Giới tính" />}
-                                            sx={{
-                                                textAlign: 'left',
-                                                height: '49px'
-                                            }}
-                                        >
-                                            {gender.map((gender) => (
-                                                <MenuItem
-                                                    key={gender}
-                                                    value={gender}
-                                                >
-                                                    {gender}
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
-                                    </FormControl>
-                                </Grid>
-                            </Grid>
-                            <Grid item xs={12} lg={6}>
-                                <TextField
-                                    margin="normal"
+                            <Grid item xs={6}>
+                                <CustomTextField
+                                    label="Họ và Tên"
+                                    variant="outlined"
+                                    value={user?.accountName || ""}
                                     fullWidth
-                                    label="Số điện thoại"
                                     disabled={!isEditProfile}
-                                    InputLabelProps={{
-                                        sx: {
-                                            fontSize: '14px',
-                                        },
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start" sx={{ ml: '0.4rem' }}>
+                                                <FaUser style={{ color: '#44494D' }} />
+                                            </InputAdornment>
+                                        ),
                                     }}
-                                    sx={{
-                                        width: '100%',
-                                        '& input': {
-                                            height: '16px',
-                                        },
-                                        fontSize: '10px'
-                                    }}
-                                    value={userPhone || ''}
-                                    onChange={(e) => setUserPhone(e.target.value)}
+                                    onChange={(e) => setAccountName(e.target.value)}
                                 />
                             </Grid>
-                            <Grid item xs={12} lg={6}>
-                                <TextField
-                                    margin="normal"
+                            <Grid item xs={6}>
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <CustomDatePicker
+                                        disabled={!isEditProfile}
+                                        label="Ngày sinh"
+                                        value={userBirthDate}
+                                        onChange={(newValue) => setUserBirthDate(newValue)}
+                                        minDate={minDate}
+                                        maxDate={today}
+                                        slotProps={{
+                                            textField: {
+                                                InputProps: {
+                                                    startAdornment: (
+                                                        <InputAdornment position="start" sx={{ ml: '0.4rem' }}>
+                                                            <FaBirthdayCake style={{ color: '#44494D' }} />
+                                                        </InputAdornment>
+                                                    ),
+                                                },
+                                            },
+                                        }}
+                                    />
+                                </LocalizationProvider>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <FormControl fullWidth>
+                                    <InputLabel
+                                        sx={{
+                                            fontSize: '0.875rem !important',
+                                            color: 'rgba(0, 0, 0, 0.38)',
+                                        }}>Giới tính</InputLabel>
+                                    <CustomSelect
+                                        disabled={!isEditProfile}
+                                        labelId="gender-select-label"
+                                        id="gender-select"
+                                        value={selectedGender}
+                                        placeholder={"Giới tính"}
+                                        label="Giới tính"
+                                        onChange={handleGenderChange}
+                                        startAdornment={
+                                            <InputAdornment position="start" sx={{ ml: '0.4rem' }}>
+                                                <MdOutlineTransgender style={{ color: '#44494D' }} />
+                                            </InputAdornment>
+                                        }
+                                    >
+                                        {gender.map((g, index) => (
+                                            <MenuItem key={index} value={g}>
+                                                {g}
+                                            </MenuItem>
+                                        ))}
+                                    </CustomSelect>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <CustomTextField
+                                    label="Số điện thoại"
+                                    variant="outlined"
+                                    value={user?.userPhone || ""}
+                                    placeholder='Số điện thoại'
                                     fullWidth
-                                    label="Địa chỉ"
-                                    required
+                                    type='number'
                                     disabled={!isEditProfile}
-                                    InputLabelProps={{
-                                        sx: {
-                                            fontSize: '14px',
-                                        },
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start" sx={{ ml: '0.4rem' }}>
+                                                <GoHomeFill style={{ color: '#44494D' }} />
+                                            </InputAdornment>
+                                        ),
                                     }}
-                                    sx={{
-                                        width: '100%',
-                                        '& input': {
-                                            height: '16px',
-                                        },
-                                        fontSize: '10px'
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <CustomTextField
+                                    label="Địa chỉ"
+                                    variant="outlined"
+                                    value={user?.userAddress || ""}
+                                    placeholder='Địa chỉ'
+                                    fullWidth
+                                    disabled={!isEditProfile}
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start" sx={{ ml: '0.4rem' }}>
+                                                <GoHomeFill style={{ color: '#44494D' }} />
+                                            </InputAdornment>
+                                        ),
                                     }}
-                                    value={userAddress || ''}
-                                    onChange={(e) => setUserAddress(e.target.value)}
                                 />
                             </Grid>
                         </Grid>
                     </div>
-                    {!isEditProfile ? (
-                        <div className="mt-[48px] flex justify-center profileButton">
-                            <Button
-                                variant="contained"
-                                startIcon={<LockIcon />}
-                                disabled
-                                sx={{
-                                    color: "#44494D",
-                                    backgroundColor: 'white',
-                                    textTransform: 'none !important',
-                                    '&:hover': {
-                                        backgroundColor: '#DD5746',
-                                        color: 'white',
-                                    },
-                                    '&:active': {
-                                        outline: 'none !important'
-                                    },
-                                    '&:focus': {
-                                        outline: 'none !important'
-                                    },
-                                    fontWeight: 'bold',
-                                    width: '160px'
-                                }}
-                            >
-                                Đổi mật khẩu
-                            </Button>
-                            <Button
-                                variant="contained"
-                                startIcon={<EditIcon />}
-                                onClick={handleEditProfile}
-                                sx={{
-                                    color: "#44494D",
-                                    backgroundColor: 'white',
-                                    textTransform: 'none !important',
-                                    '&:hover': {
-                                        backgroundColor: '#FBB03B',
-                                        color: 'white',
-                                    },
-                                    '&:active': {
-                                        outline: 'none !important'
-                                    },
-                                    '&:focus': {
-                                        outline: 'none !important'
-                                    },
-                                    '.MuiButton-startIcon': {
-                                        marginRight: '12px',
-                                    },
-                                    fontWeight: 'bold',
-                                    width: '160px'
-                                }}
-                            >
-                                Chỉnh sửa
-                            </Button>
+                    <div className='w-full'>
+                        <div className='flex justify-between gap-[1rem] items-center mb-[1.2rem]'>
+                            <div className='flex justify-between gap-[1rem] items-center'>
+                                <RiLockPasswordFill style={{ color: '#44494D', fontSize: '1.4rem' }} />
+                                <h1 className='text-[1rem] text-left font-bold'>Thông tin bảo mật</h1>
+                            </div>
+                            {!isEditPassword ? (
+                                <div className="flex justify-center gap-4 profileButton">
+                                    <Button
+                                        variant="contained"
+                                        startIcon={<EditIcon />}
+                                        onClick={handleEditPassword}
+                                        sx={{
+                                            color: "#44494D",
+                                            backgroundColor: 'white',
+                                            textTransform: 'none !important',
+                                            '&:hover': {
+                                                backgroundColor: '#FBB03B',
+                                                color: 'white',
+                                            },
+                                            '&:active': {
+                                                outline: 'none !important'
+                                            },
+                                            '&:focus': {
+                                                outline: 'none !important'
+                                            },
+                                            '.MuiButton-startIcon': {
+                                                marginRight: '12px',
+                                            },
+                                            fontWeight: 'bold',
+                                        }}
+                                    >
+                                        Chỉnh sửa
+                                    </Button>
+                                </div>
+                            ) : (
+                                <div className="flex justify-center gap-4 profileButton">
+                                    <Button
+                                        variant="contained"
+                                        startIcon={<ImBin2 />}
+                                        onClick={handleEditPassword}
+                                        sx={{
+                                            color: "#44494D",
+                                            backgroundColor: 'white',
+                                            textTransform: 'none !important',
+                                            '&:hover': {
+                                                backgroundColor: '#E2E2E2',
+                                                color: '#44494D',
+                                            },
+                                            '&:active': {
+                                                outline: 'none !important'
+                                            },
+                                            '&:focus': {
+                                                outline: 'none !important'
+                                            },
+                                            '.MuiButton-startIcon': {
+                                                marginRight: '12px',
+                                            },
+                                            fontWeight: 'bold',
+                                        }}
+                                    >
+                                        Bỏ qua
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        startIcon={<EditIcon />}
+                                        onClick={handleUpdatePassword}
+                                        sx={{
+                                            color: "#44494D",
+                                            backgroundColor: 'white',
+                                            textTransform: 'none !important',
+                                            '&:hover': {
+                                                backgroundColor: '#FBB03B',
+                                                color: 'white',
+                                            },
+                                            '&:active': {
+                                                outline: 'none !important'
+                                            },
+                                            '&:focus': {
+                                                outline: 'none !important'
+                                            },
+                                            fontWeight: 'bold',
+                                        }}
+                                    >
+                                        Lưu chỉnh sửa
+                                    </Button>
+                                </div>
+                            )}
                         </div>
-                    ) : (
-                        <div className="mt-[48px] flex justify-center profileButton">
-                            <Button
-                                variant="contained"
-                                startIcon={<ArrowBackIcon />}
-                                onClick={handleEditProfile}
-                                sx={{
-                                    color: "#44494D",
-                                    backgroundColor: 'white',
-                                    textTransform: 'none !important',
-                                    '&:hover': {
-                                        backgroundColor: '#E2E2E2',
-                                        color: '#44494D',
-                                    },
-                                    '&:active': {
-                                        outline: 'none !important'
-                                    },
-                                    '&:focus': {
-                                        outline: 'none !important'
-                                    },
-                                    '.MuiButton-startIcon': {
-                                        marginRight: '12px',
-                                    },
-                                    fontWeight: 'bold',
-                                    width: '160px'
-                                }}
-                            >
-                                Bỏ qua
-                            </Button>
-                            <Button
-                                variant="contained"
-                                startIcon={<EditIcon />}
-                                onClick={handleUpdateProfile}
-                                sx={{
-                                    color: "#44494D",
-                                    backgroundColor: 'white',
-                                    textTransform: 'none !important',
-                                    '&:hover': {
-                                        backgroundColor: '#FBB03B',
-                                        color: 'white',
-                                    },
-                                    '&:active': {
-                                        outline: 'none !important'
-                                    },
-                                    '&:focus': {
-                                        outline: 'none !important'
-                                    },
-                                    fontWeight: 'bold',
-                                    width: '160px'
-                                }}
-                            >
-                                Lưu chỉnh sửa
-                            </Button>
-                        </div>
-                    )}
-                </div>
-            )}
-        </div>
+                        <Grid container columnSpacing={4} rowSpacing={0}>
+                            <Grid item xs={6}>
+                                <CustomTextField
+                                    label="Mật khẩu hiện tại"
+                                    variant="outlined"
+                                    fullWidth
+                                    type={showPassword ? 'text' : 'password'}
+                                    defaultValue={"defaultpassword"}
+                                    disabled={!isEditPassword}
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start" sx={{ ml: '0.4rem' }}>
+                                                <FaLock style={{ color: '#44494D' }} />
+                                            </InputAdornment>
+                                        ),
+                                        endAdornment: (
+                                            <InputAdornment position="end" sx={{ mr: '0.4rem' }}>
+                                                <IconButton sx={{ outline: 'none !important' }}
+                                                    aria-label="toggle password visibility"
+                                                    onClick={handleClickShowPassword}
+                                                    edge="end"
+                                                    disabled={!isEditPassword}
+                                                >
+                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        )
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <CustomTextField
+                                    label="Mật khẩu muốn đổi"
+                                    variant="outlined"
+                                    type={showChangedPassword ? 'text' : 'password'}
+                                    fullWidth
+                                    defaultValue={"defaultpassword"}
+                                    disabled={!isEditPassword}
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start" sx={{ ml: '0.4rem' }}>
+                                                <FaLock style={{ color: '#44494D' }} />
+                                            </InputAdornment>
+                                        ),
+                                        endAdornment: (
+                                            <InputAdornment position="end" sx={{ mr: '0.4rem' }}>
+                                                <IconButton sx={{ outline: 'none !important' }}
+                                                    aria-label="toggle password visibility"
+                                                    onClick={handleClickShowChangedPassword}
+                                                    edge="end"
+                                                    disabled={!isEditPassword}
+                                                >
+                                                    {showChangedPassword ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        )
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <CustomTextField
+                                    label="Xác nhận mật khẩu"
+                                    variant="outlined"
+                                    type={showConfirmPassword ? 'text' : 'password'}
+                                    fullWidth
+                                    defaultValue={"defaultpassword"}
+                                    disabled={!isEditPassword}
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start" sx={{ ml: '0.4rem' }}>
+                                                <FaLock style={{ color: '#44494D' }} />
+                                            </InputAdornment>
+                                        ),
+                                        endAdornment: (
+                                            <InputAdornment position="end" sx={{ mr: '0.4rem' }}>
+                                                <IconButton sx={{ outline: 'none !important' }}
+                                                    aria-label="toggle password visibility"
+                                                    onClick={handleClickShowConfirmPassword}
+                                                    edge="end"
+                                                    disabled={!isEditPassword}
+                                                >
+                                                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        )
+                                    }}
+                                />
+                            </Grid>
+                        </Grid>
+                    </div>
+                </>
+            }
+        </Paper>
     );
 }
 

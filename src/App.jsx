@@ -22,14 +22,14 @@ import StepFour from "./pages/CreateNewProject/StepFour";
 import StepOne from "./pages/CreateNewProject/StepOne";
 import StepThree from "./pages/CreateNewProject/StepThree";
 import StepTwo from "./pages/CreateNewProject/StepTwo";
+import SecondStep from "./pages/CreateProject/SecondStep";
 import HelpAndSupport from "./pages/HelpAndSupport";
 import HomePage from "./pages/HomePage";
 import POProjectDetail from "./pages/POProjectDetail";
 import PageError from "./pages/PageError";
-import UserBookmarkProject from "./pages/UserBookmarkProject";
+import UserLikedProject from "./pages/UserLikedProject";
 import UserProfile from "./pages/UserProfile";
 import UserProjects from "./pages/UserProjects";
-import SecondStep from "./pages/CreateProject/SecondStep";
 function App() {
   const theme = createTheme({
     typography: {
@@ -91,7 +91,7 @@ function App() {
           <Route element={<ProtectedRoute allowedRoles={['Backer']} />}>
             <Route element={<UserProfileLayout />}>
               <Route path="/profile" element={<UserProfile />} />
-              <Route path="/bookmarkProject" element={<UserBookmarkProject />} />
+              <Route path="/profile/like-projects" element={<UserLikedProject />} />
               <Route path="/profile/projects" element={<UserProjects />} />
             </Route>
           </Route>

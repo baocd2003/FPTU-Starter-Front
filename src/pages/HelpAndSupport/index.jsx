@@ -92,8 +92,8 @@ function HelpAndSupport() {
     return (
         <div className='mt-[5.2rem]'>
             <FSUAppBar isLogined={checkIsLogin} />
-            <div data-aos="fade-up" className='help-and-support-banner h-[40vh] select-none flex flex-col relative items-center justify-center'>
-                <div className='h-full flex flex-col items-center justify-center'>
+            <div className='help-and-support-banner h-[40vh] select-none flex flex-col relative items-center justify-center'>
+                <div data-aos="fade-up" className='h-full flex flex-col items-center justify-center'>
                     <Typography variant="h1" sx={{ fontSize: { lg: '2.4rem', xs: '1.6rem' }, textAlign: 'center', color: '#44494D', fontWeight: 600, textShadow: '.12rem .12rem .3rem rgba(0, 0, 0, 0.2)', mx: '5rem' }}>
                         Hỗ trợ và trợ giúp
                     </Typography>

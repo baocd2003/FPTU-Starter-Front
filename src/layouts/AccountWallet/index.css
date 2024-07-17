@@ -13,24 +13,25 @@
   color: white !important;
 }
 
-.wallet_option:hover span{
+.wallet_option:hover span {
   color: white !important;
 }
 
-.wallet_option:focus{
+.wallet_option:focus {
   outline: none !important;
   transform: none !important;
   translate: none !important;
 }
 
-.wallet_option:focus span, .wallet_option:active span{
+.wallet_option:focus span,
+.wallet_option:active span {
   color: rgba(0, 0, 0, 0.5) !important;
   outline: none !important;
   transform: none !important;
   translate: none !important;
 }
 
-.wallet_option[disabled]{
+.wallet_option[disabled] {
   background-color: rgba(0, 0, 0, 0.1);
   border: .12rem solid rgba(0, 0, 0, 0.1) !important;
   opacity: 0.5;
@@ -46,5 +47,5 @@
 }
 
 .Mui-selected {
-  font-size: 0.75rem !important;
+  font-size: 0.75rem;
 }
