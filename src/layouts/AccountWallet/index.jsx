@@ -163,6 +163,20 @@ function AccountWallet() {
     return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
   };
 
+  // Function to format the date and time
+function formatDateTime() {
+  const now = new Date();
+  const options = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  };
+  return now.toLocaleString('vi-VN', options);
+}
+
   const openPaymentDialog = async (checkOutResponse) => {
     if (checkOutResponse) {
       const url = checkOutResponse.checkoutUrl;
@@ -188,7 +202,7 @@ function AccountWallet() {
             fetchUserWallet();
             Swal.fire({
               title: "Giao dịch thành công!",
-              text: "Bạn đã nạp tiền vào ví thành công!",
+              html: `Bạn đã nạp <b style='color:#FCAE3D'>${payOsTransaction.data.data.amount}</b> vào ví thành công ${formatDateTime()}!`,
               icon: "success"
             });
           } catch (err) {
