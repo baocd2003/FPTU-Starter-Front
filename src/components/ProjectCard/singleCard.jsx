@@ -23,6 +23,8 @@ function SingleCard({ id, category, imageLink, title, po, amount, progress, days
     navigate(`/project-detail/${id}`);
   }
 
+  console.log(numericProgress)
+
   return (
     <Card sx={{ width: '18rem', height: 'fit-content', padding: '16px', boxShadow: '0', borderRadius: '0.8rem', transition: 'all 0.2s', backgroundColor: 'transparent' }} className='project-card'>
       <CardMedia
@@ -138,7 +140,7 @@ function SingleCard({ id, category, imageLink, title, po, amount, progress, days
             {progress} %
           </Typography>
         </div>
-        <LinearProgress className='progressBar' variant="determinate" value={numericProgress} sx={{ borderRadius: '0.4rem', height: '0.4rem', marginBottom: '0.4rem' }} />
+        <LinearProgress className='progressBar' variant="determinate" value={numericProgress >= 100 ? 100 : numericProgress} sx={{ borderRadius: '0.4rem', height: '0.4rem', marginBottom: '0.4rem' }} />
         <Typography variant="h6" sx={{ textAlign: "left", fontSize: '1rem', marginBottom: '0', fontWeight: 'bold' }}>
           Mục tiêu: {formattedGoal} VND
         </Typography>
