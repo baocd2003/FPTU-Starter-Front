@@ -35,7 +35,8 @@ function POProjectDetail() {
   const [backerList, setBackerList] = useState([]);
   const containerRef = useRef(null);
   const [isSuccess, setIsSuccess] = useState(false);
-  // 
+  const [user, setUser] = useState(null);
+  const token = Cookies.get("_auth");
   const handleScroll = () => {
     if (containerRef.current) {
       // setTabValue("1");
@@ -78,6 +79,26 @@ function POProjectDetail() {
       });
   }
 
+  const fetchUserProfile = async () => {
+    if (token) {
+      setIsLoading(true);
+      try {
+        const response = await userManagementApiInstance.get("/user-profile", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (response.data != null) {
+          setUser(response.data._data);
+
+        }
+      } catch (error) {
+        console.error('Error fetching sample API:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+
   const [openDrawer, setOpenDrawer] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [freeDonateAmount, setFreeDonateAmount] = useState(5000);
@@ -108,27 +129,34 @@ function POProjectDetail() {
   //donate
   const handleFreeDonate = () => {
     try {
-      if (checkEnoughWallet(freeDonateAmount)) {
-        const data = {
-          projectId: project.id,
-          amountDonate: freeDonateAmount
-        }
-        setIsLoading(true)
-        const token = Cookies.get("_auth");
-        projectApiInstance.post("/free-backer-donate", data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-          .then((res) => {
-            getProjectDetail()
-            Swal.fire({
-              title: "Bạn đã giao dịch thành công!",
-              text: `Bạn đã ủng hộ nhanh cho của dự án ${project.projectName}`,
-              icon: "success"
+      if (token == undefined || token == null) {
+        checkAuth();
+      } else {
+        if (checkEnoughWallet(freeDonateAmount)) {
+          const data = {
+            projectId: project.id,
+            amountDonate: freeDonateAmount
+          }
+          setIsLoading(true)
+          const token = Cookies.get("_auth");
+          projectApiInstance.post("/free-backer-donate", data, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+            .then((res) => {
+              console.log(res.data)
+              getProjectDetail()
+              Swal.fire({
+                title: "Bạn đã giao dịch thành công!",
+                html: `Cảm ơn <b style='color:#FCAE3D'>${user.userName}</b> 
+                 đã ủng hộ <b style='color:#FCAE3D'>${res.data._data.donateAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</b>  
+                 cho của dự án <b style='color:#FCAE3D'> ${project.projectName}</b> ${formatDateTime()} `,
+                icon: "success"
+              });
+              // navigate('/my-wallet')
             });
-            // navigate('/my-wallet')
-          });
+        }
       }
 
     } catch (err) {
@@ -137,7 +165,19 @@ function POProjectDetail() {
       setIsLoading(false);
     }
   }
-
+  // Function to format the date and time
+  function formatDateTime() {
+    const now = new Date();
+    const options = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    };
+    return now.toLocaleString('vi-VN', options);
+  }
   const confirmDonatePackage = () => {
     try {
       if (checkEnoughWallet(selectedPackage.requiredAmount)) {
@@ -152,10 +192,14 @@ function POProjectDetail() {
           },
         })
           .then((res) => {
+            console.log(res);
             getProjectDetail()
             Swal.fire({
               title: "Bạn đã giao dịch thành công!",
-              text: `Bạn đã ủng hộ gói ${selectedPackage.packageName} của dự án ${project.projectName}`,
+              html: `
+              Cảm ơn <b style='color:#FCAE3D'>${user.userName}</b> 
+              đã ủng hộ <b style='color:#FCAE3D'>${selectedPackage.requiredAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</b>
+              gói ${selectedPackage.packageName} của dự án <b style='color:#FCAE3D'> ${project.projectName}</b> ${formatDateTime()}`,
               icon: "success"
             });
             // navigate('/my-wallet')
@@ -171,9 +215,14 @@ function POProjectDetail() {
   }
 
   const handleDonatePackage = (projectPackage) => {
-    setSelectedPackage(projectPackage)
+    if (token == undefined || token == null) {
+      checkAuth();
+    } else {
+      setSelectedPackage(projectPackage)
 
-    setOpenDrawer(true)
+      setOpenDrawer(true)
+    }
+
   }
 
   //check login
@@ -241,7 +290,7 @@ function POProjectDetail() {
       });
   }
 
-  // console.log('project', project)
+
 
   useEffect(() => {
     //check project owner
@@ -251,6 +300,7 @@ function POProjectDetail() {
       setCheckOwner(false);
     } else {
       fetchUserWallet(token)
+      fetchUserProfile(token)
       projectApiInstance.get(`/check-owner?projectId=${projectId}`, {
         headers: { Authorization: `Bearer ${token}` }
       }).then(res => {
